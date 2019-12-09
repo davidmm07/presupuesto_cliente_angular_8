@@ -5,8 +5,6 @@ export let FORM_INFO_VIGENCIA = {
     campos: [
         {
             //Falta mirar si el código del centro gestor se puede asignar de forma dinámica
-
-
             etiqueta: 'select',
             claseGrid: 'col-lg-6 col-md-6 col-sm-6 col-xs-6',
             nombre: 'CodigoCentroGestor',
