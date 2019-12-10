@@ -36,6 +36,10 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { ListModificacionApropiacionComponent } from './consulta-modificacion-apropiacion/list-modificacion-apropiacion.component';
 import { RubrosFuenteComponent } from './fuentes/rubros-fuente/rubros-fuente.component';
 import { ListarVigenciaComponent } from './listar-vigencia/listar-vigencia.component';
+import { AnulacionDocumentoComponent } from './anulacion-documento-pres/anulacion-documento.component';
+import { SetModificacionFuenteComponent } from './modificacion-apropiacion/set-modificacion-fuente/set-modificacion-fuente.component';
+import { ShowModificationFuenteComponent } from './modificacion-apropiacion/show-modification-fuente/show-modification-fuente.component';
+
 
 @NgModule({
   declarations: [
@@ -57,6 +61,9 @@ import { ListarVigenciaComponent } from './listar-vigencia/listar-vigencia.compo
     ListModificacionApropiacionComponent,
     RubrosFuenteComponent,
     ListarVigenciaComponent,
+    AnulacionDocumentoComponent,
+    SetModificacionFuenteComponent,
+    ShowModificationFuenteComponent
   ],
   providers: [
     ConfiguracionService,

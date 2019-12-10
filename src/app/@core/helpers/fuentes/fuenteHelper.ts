@@ -36,6 +36,11 @@ export class FuenteHelper {
                         this.pUpManager.showErrorAlert('No se pudo consultar las fuentes');
                         return undefined;
                     }
+                    else if (!id || this.query_params== '0/1'){
+                        res.forEach(element => {
+                            element.Vigencia == "0"?element.Vigencia="sin vigencia asignada":element.Vigencia;
+                        });
+                    }
                     return res;
                 },
             ),
@@ -110,8 +115,8 @@ export class FuenteHelper {
         if (params) {
             this.query_params = '/' + params.Vigencia + '/' + params.UnidadEjecutora;
         }
-        this.rqManager.setPath('PLAN_CUENTAS_MONGO_SERVICE');
-        return this.rqManager.delete('fuente_financiamiento', id.toString() + this.query_params).pipe(
+        this.rqManager.setPath('PLAN_CUENTAS_MID_SERVICE');
+        return this.rqManager.delete('fuente_financiamiento_apropiacion', id.toString() + this.query_params).pipe(
             map(
                 (res) => {
                     return res;

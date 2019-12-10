@@ -176,7 +176,12 @@
     "suspension": "Suspensión",
     "adicion": "Adición",
     "organismo_emisor": "Organismo emisor",
-    "placeholder_organismo_emisor": "Organismo emisor"
+    "placeholder_organismo_emisor": "Organismo emisor",
+    "movimiento_origen": "Movimiento origen",
+    "proceso_anulacion": "Proceso de anulación",
+    "cdp": "CDP",
+    "rp": "CRP",
+    "jefe_presupuesto": "JEFE SECCIÓN PRESUPUESTO"
   },
   "RUBRO": {
     "asignar_rubro": "Asignar Rubro",
@@ -202,7 +207,9 @@
     "saldo_fuente": "Saldo de la Fuente: ",
     "agregar_vigencia": "Agregar vigencia para la fuente: ",
     "consulta_rubros_fuente": "Consulta de rubros por fuente: ",
-    "comprobacion-diferencia": "El valor de la(s) fuente(s) supera el de la apropiación por un valor de: "
+    "comprobacion-diferencia": "El valor de la(s) fuente(s) supera el de la apropiación por un valor de: ",
+    "select_fuente": "Seleccione una fuente de financiamiento",
+    "total_plan_ad": "Total Plan de Adquisiciones: "
   },
   "ACTIVIDAD":{
     "comprobacion-diferencia": "El valor de la(s) actividad(es) supera el de la apropiación por un valor de: "
@@ -241,6 +248,8 @@
     "valor-reduccion": "Valor reducción",
     "quitar-dependencia": "Quitar Dependencia",
     "traslado": "Traslado",
+    "fuente_origen": "Fuente Origen",
+    "fuente_destino": "Fuente Destino",
     "cuenta_credito": "Cuenta crédito",
     "cuenta_contra_credito": "Cuenta contra crédito"
   },
@@ -253,6 +262,8 @@
     "confirmacion_eliminar": "Producto Eliminado"
   },
   "CDP": {
+    "cdp": "CDP",
+    "cdp_modificacion": "CDP modificación presupuestal",
     "solicitudes_cdp": "Lista de solicitudes de certificado de disponibilidad presupuestal",
     "lista_cdp": "Lista certificados de disponibilidad presupuestal",
     "n_solicitud": "N° Solicitud de CDP",
@@ -275,6 +286,7 @@
     "anular_cdp": "Anular CDP",
     "total_comprometido": "Totalmente comprometido",
     "expedido": "Expedido",
+    "registrada": "Expedido",
     "parcial_comprometido": "Parcialmente comprometido",
     "valor_actual": "Valor actual",
     "valor_inicial": "Valor inicial"
