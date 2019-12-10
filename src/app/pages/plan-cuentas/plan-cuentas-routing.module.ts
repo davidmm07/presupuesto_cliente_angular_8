@@ -17,10 +17,7 @@ import { ListSolicitudCrpComponent } from './crp/list-solicitud-crp/list-solicit
 import { ListCrpComponent } from './crp/list-crp/list-crp.component';
 import { ListModificacionApropiacionComponent } from './consulta-modificacion-apropiacion/list-modificacion-apropiacion.component';
 import { ShowModificationApropiacionDataComponent } from './consulta-modificacion-apropiacion/show-modificacion-apropiacion/show-modificacion-apropiacion.component';
-import { InicioVigenciaComponent } from './inicio-vigencia/inicio-vigencia.component';
-
-
-
+import { ListarVigenciaComponent } from './listar-vigencia/listar-vigencia.component';
 
 const routes: Routes = [{
   path: 'arbol',
@@ -80,8 +77,8 @@ const routes: Routes = [{
   component: ListModificacionApropiacionComponent,
 },
 {
-  path: 'inicio-vigencia',
-  component: InicioVigenciaComponent,
+  path: 'listar-vigencia',
+  component: ListarVigenciaComponent,
 }
 
 ];
