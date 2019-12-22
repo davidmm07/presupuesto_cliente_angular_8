@@ -79,7 +79,7 @@ export class PagesComponent implements OnInit {
                 } else {
                   this.object = {
                     title: this.dataMenu[i].Nombre,
-                    icon: '',
+                    icon: 'file-text',
                     link: this.dataMenu[i].Url,
                     home: false,
                     key: this.dataMenu[i].Nombre,

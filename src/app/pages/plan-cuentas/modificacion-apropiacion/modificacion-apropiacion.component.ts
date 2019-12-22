@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { DETALLE_MODIFICACION_FORM } from './detalle_modificacion_form';
 import { FormManager } from '../../../@core/managers/formManager';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,7 +13,6 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class ModificacionApropiacionComponent implements OnInit {
     @ViewChild('stepper', { static: true }) stepper: MatStepper;
-
     formDetalle: object;
     detalleMovimiento: any;
 
@@ -24,6 +23,15 @@ export class ModificacionApropiacionComponent implements OnInit {
     setModValidationForm: FormGroup;
     previusStepIndex: number;
     modifiactionFinalData: object;
+    checkAfectationFinalData: object;
+    clean: boolean = false;
+    options = [
+        { value: 'apropiacion', label: 'Apropiación' },
+        { value: 'fuente', label: 'Fuente de Financiamiento' }
+      ];
+      option = { value: '', label: ''};
+    @Output() saved: EventEmitter<boolean> = new EventEmitter();
+
     ngOnInit() {
         this.detalleValidationForm = new FormGroup({
             valid: new FormControl(null, Validators.required),
@@ -37,6 +45,20 @@ export class ModificacionApropiacionComponent implements OnInit {
         this.modifiactionFinalData = {};
     }
 
+    ngOnDestroy() {
+        this.detalleValidationForm = new FormGroup({
+            valid: new FormControl(null, Validators.required),
+        });
+        this.setModValidationForm = new FormGroup({
+            valid: new FormControl(null, Validators.required),
+        });
+        this.linearMode = true;
+        this.formDetalleValidFlag = false;
+        this.previusStepIndex = 0;
+        this.modifiactionFinalData = {};
+        this.clean = true;
+    }
+
 
 
     constructor(
@@ -44,7 +66,7 @@ export class ModificacionApropiacionComponent implements OnInit {
         private docHelper: DocumentHelper,
     ) {
         this.formDetalle = FormManager.ConstruirForm(DETALLE_MODIFICACION_FORM, this.translate, this.translate.instant('MODIF.detalle_modificacion'));
-        const tipoDocumentoIndex = FormManager.getIndexForm(this.formDetalle, 'tipoDocumento');
+        const tipoDocumentoIndex = FormManager.getIndexForm(this.formDetalle, 'TipoDocumento');
         this.formDetalle['campos'][tipoDocumentoIndex]['opciones'] = this.docHelper.getDocumentType();
     }
 
@@ -53,7 +75,7 @@ export class ModificacionApropiacionComponent implements OnInit {
             this.detalleValidationForm.patchValue({
                 valid: true
             });
-            this.modifiactionFinalData['detail'] = $event.data;
+            this.modifiactionFinalData['detail'] = $event.data['detalleModificacion'];
             this.stepper.next();
         } else {
             this.detalleValidationForm.patchValue({
@@ -73,7 +95,10 @@ export class ModificacionApropiacionComponent implements OnInit {
                     this.formDetalleValidFlag = !this.formDetalleValidFlag;
                     break;
                 case 1:
-                    this.setSteppValidator(this.modifiactionFinalData['afectation']);
+                    console.info($event);
+                    break;
+                case 2:
+                    this.setSteppValidator(this.checkAfectationFinalData);
                     break;
                 default:
                     break;
@@ -81,27 +106,37 @@ export class ModificacionApropiacionComponent implements OnInit {
         });
     }
 
-    public setSteppValidator($event: Array<any> = []) {
+    public setSteppValidator($event: object) {
         setTimeout(() => {
             if ($event) {
-                this.modifiactionFinalData['afectation'] = $event;
-                if ($event.length > 0) {
-                    this.setModValidationForm.patchValue({
-                        valid: true
-                    });
-                    this.stepper.next();
-                } else {
-                    this.setModValidationForm.patchValue({
-                        valid: null
-                    });
-                    if (this.stepper.selectedIndex > this.previusStepIndex) {
-                        this.stepper.selectedIndex = this.previusStepIndex;
+                this.checkAfectationFinalData = $event;
+                if (this.checkAfectationFinalData['afectation']) {
+                    this.modifiactionFinalData['afectation'] = this.checkAfectationFinalData['afectation'];
+                    if (this.checkAfectationFinalData['afectation'].length > 0 && this.checkAfectationFinalData['balanced'] && this.checkAfectationFinalData['balanced'] === true) {
+                        this.setModValidationForm.patchValue({
+                            valid: true
+                        });
+                        if (this.checkAfectationFinalData['changeStep']) {
+                            this.stepper.next();
+                        }
+                    } else {
+                        this.setModValidationForm.patchValue({
+                            valid: null
+                        });
+
                     }
                 }
+
             }
         });
 
     }
 
+    onSaved($event) {
+        this.saved.emit(true);
+    }
 
+    public nextStep() {
+        this.stepper.next();
+    }
 }

@@ -15,6 +15,7 @@ import {
   NbCardModule,
 } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -29,6 +30,7 @@ import {
   DinamicformComponent,
   ListEntityComponent,
   CrudEntityComponent,
+  ControlMessages,
 } from './components';
 import {
   CapitalizePipe,
@@ -46,6 +48,7 @@ import { DEFAULT_THEME } from './styles/theme.default';
 import { COSMIC_THEME } from './styles/theme.cosmic';
 import { CORPORATE_THEME } from './styles/theme.corporate';
 import { DARK_THEME } from './styles/theme.dark';
+import { KRONOS_THEME } from './styles/theme.kronos';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import {
@@ -85,6 +88,10 @@ import {
   MatTooltipModule,
   MatTreeModule,
 } from '@angular/material';
+import { SafeurlPipe } from './pipes/safeurl.pipe';
+import { PDFviewerComponent } from './components/pdfviewer/pdfviewer.component';
+import { SharedModule } from '../shared/shared.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -113,6 +120,8 @@ const COMPONENTS = [
   DinamicformComponent,
   ListEntityComponent,
   CrudEntityComponent,
+  ControlMessages,
+  PDFviewerComponent,
 ];
 const PIPES = [
   CapitalizePipe,
@@ -120,6 +129,7 @@ const PIPES = [
   RoundPipe,
   TimingPipe,
   NumberWithCommasPipe,
+  SafeurlPipe
 ];
 
 const MAT_MODULES = [
@@ -165,18 +175,18 @@ const MAT_MODULES = [
 const NB_THEME_PROVIDERS = [
   ...NbThemeModule.forRoot(
     {
-      name: 'default',
+      name: 'kronos',
       // name: 'ud',
     },
-    [DEFAULT_THEME, COSMIC_THEME, CORPORATE_THEME, DARK_THEME],
+    [DEFAULT_THEME, COSMIC_THEME, CORPORATE_THEME, DARK_THEME, KRONOS_THEME],
   ).providers,
   ...NbSidebarModule.forRoot().providers,
   ...NbMenuModule.forRoot().providers,
 ];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, ...NB_MODULES, ...MAT_MODULES, Ng2SmartTableModule],
-  exports: [CommonModule, FormsModule, ReactiveFormsModule, ...PIPES, ...COMPONENTS, ...MAT_MODULES],
+  imports: [SharedModule, CommonModule, FormsModule, ReactiveFormsModule, ...NB_MODULES, ...MAT_MODULES, Ng2SmartTableModule, CurrencyMaskModule],
+  exports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule, ...PIPES, ...COMPONENTS, ...MAT_MODULES],
   declarations: [...COMPONENTS, ...PIPES, DinamicformComponent, ListEntityComponent, CrudEntityComponent],
 })
 export class ThemeModule {

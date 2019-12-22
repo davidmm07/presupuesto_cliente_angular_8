@@ -2,6 +2,26 @@ kind: pipeline
 name: cliente_deploy
 
 steps:
+  - name: sonar_scanner_test
+    image: timbru31/java-node
+    commands:
+     - export RELEASE=4.2.0.1873
+     - apt-get install curl grep sed unzip nodejs npm
+     - curl --insecure -o ./sonarscanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$RELEASE-linux.zip
+     - unzip sonarscanner.zip
+     - rm sonarscanner.zip
+     - rm -rf sonar-scanner-$RELEASE-linux/jre
+     - sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' ./sonar-scanner-$RELEASE-linux/bin/sonar-scanner
+     - cp sonar-project.properties ./sonar-scanner-$RELEASE-linux/conf/sonar-scanner.properties
+     - sonar-scanner-$RELEASE-linux/bin/sonar-scanner
+    when:
+      branch:
+      - dev
+      - test
+      - master
+      event:
+      - push
+
   - name: nodejs-test
     image: node:12.6.0
     commands:
@@ -13,7 +33,6 @@ steps:
         - test
       event:
         - push
-        - pull_request
 
   - name: nodejs-master
     image: node:12.6.0
@@ -26,7 +45,6 @@ steps:
       - master
       event:
       - push
-      - pull_request
 
   - name: publish-s3-test
     image: plugins/s3
@@ -45,7 +63,6 @@ steps:
       - test
       event:
       - push
-      - pull_request
 
   - name: publish-s3-master
     image: plugins/s3
@@ -64,7 +81,6 @@ steps:
       - master
       event:
       - push
-      - pull_request
 
   - name: NotifyTelegram
     image: appleboy/drone-telegram
@@ -73,22 +89,23 @@ steps:
         from_secret: telegram_token
       to:
         from_secret: telegram_to
-    format: html
-    message: >
-      {{#success build.status}} With Drone 1.0
+      format: html
+      message: >
+        {{#success build.status}}
           <code>{{repo.owner}}/{{repo.name}}</code> <a href="{{build.link}}">SUCCESS</a>
-          <code>{{commit.branch}}</code>@<a href="{{commit.link}}">{{truncate commit.sha 7}}</a><code> By:{{commit.author}}</code>
+          <code>{{commit.branch}}</code>@<a href="{{commit.link}}">{{truncate commit.sha 7}}</a>
+          <code> By:{{commit.author}}</code>
         {{else}}
           <code>{{repo.owner}}/{{repo.name}}</code> <a href="{{build.link}}">FAILURE</a>
-          <code>{{commit.branch}}</code>@<a href="{{commit.link}}">{{truncate commit.sha 7}}</a><code> By:{{commit.author}}</code>
+          <code>{{commit.branch}}</code>@<a href="{{commit.link}}">{{truncate commit.sha 7}}</a>
+          <code> By:{{commit.author}}</code>
         {{/success}}
     when:
       branch:
       - master
       - test
+      event:
+      - push
       status:
       - failure
       - success
-      event:
-      - push
-      - pull_request

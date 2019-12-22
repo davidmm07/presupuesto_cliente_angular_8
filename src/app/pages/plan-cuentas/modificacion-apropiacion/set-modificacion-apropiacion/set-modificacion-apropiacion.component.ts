@@ -2,8 +2,10 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormManager } from '../../../../@core/managers/formManager';
 import { ModApropiacionHelper } from '../../../../@core/helpers/modApropiacionHelper';
-import { ModType, ModApropiationData } from '../../../../@core/interfaces/modificationInterface';
+import { ModApropiationData } from '../../../../@core/interfaces/modificationInterface';
 import { ArbolRubroApropiacionInterface } from '../../../../@core/interfaces/arbolRubroApropiacionInterface';
+import { TypeGeneral } from '../../../../@core/interfaces/TypeGeneralInterface';
+import { CommonHelper } from '../../../../@core/helpers/commonHelper';
 
 @Component({
     selector: 'ngx-set-modificacion-apropiacion',
@@ -14,7 +16,7 @@ export class SetModificacionApropiacionComponent implements OnInit {
     @Input() aprAfectation: Array<ModApropiationData>;
     @Output() aprAfectationChange: EventEmitter<Array<ModApropiationData>> = new EventEmitter();
     @Output() setStepValidationEvent: EventEmitter<any> = new EventEmitter();
-
+    @Output() eventChange = new EventEmitter();
     apropiacionFormStruct: any = {
         valid: true,
     };
@@ -25,24 +27,37 @@ export class SetModificacionApropiacionComponent implements OnInit {
         value: true,
     };
 
-    modTypes: Array<any>;
+    modTypes: Array<TypeGeneral>;
     apropiacionValidator: FormGroup;
     showResumenTab: boolean;
     showAprSelection: boolean;
     modValueForm: FormGroup;
-    modTypeSelected: ModType;
+    modTypeSelected: TypeGeneral;
     accountTypeSelected: string;
     creditAccount: ArbolRubroApropiacionInterface;
     cnCreditAccount: ArbolRubroApropiacionInterface;
+    balanceado: boolean = false;
+    vigenciaActual: number;
+    selectedType: any;
 
-
-    constructor() {
+    constructor(private modHelper: ModApropiacionHelper,
+        private comnHelper: CommonHelper) {
 
     }
     async ngOnInit() {
         await this.cleanData();
         this.aprAfectation = [];
+        this.modHelper.getModTypes().subscribe((res) => {
+            this.modTypes = res.filter(this.movApropiaciones) ;
+        });
+    }
 
+    public movApropiaciones( movimiento ) {
+        const acronimo = movimiento.Acronimo
+        if ( 'adicion'    === acronimo ||
+             'suspension' === acronimo ||
+             'traslado'   === acronimo ||
+             'reduccion'  === acronimo   ) return true;
     }
 
     public accountSelection(account: string) {
@@ -63,7 +78,6 @@ export class SetModificacionApropiacionComponent implements OnInit {
                     this.cnCreditAccount = $event;
                     this.modValueForm.controls['cnCredAccount'].patchValue(`${this.cnCreditAccount.Codigo} / ${this.cnCreditAccount.Nombre}`);
                     break;
-
                 default:
                     break;
             }
@@ -72,18 +86,22 @@ export class SetModificacionApropiacionComponent implements OnInit {
     }
 
     public async addModToList() {
+        const modType = JSON.parse(JSON.stringify(this.modValueForm.value['modType']));
+
+        modType['Parametros'] = modType['Parametros'] ? JSON.stringify(modType['Parametros']) : undefined;
         const currentAprData: ModApropiationData = {
-            Tipo: this.modValueForm.value['modType'],
+            Tipo: modType,
             CuentaCredito: this.creditAccount,
             CuentaContraCredito: this.cnCreditAccount ? this.cnCreditAccount : undefined,
             Valor: this.modValueForm.value['value']
         };
 
         this.aprAfectation.push(currentAprData);
-        await this.cleanData();
+        this.eventChange.emit(true);
     }
 
     public async cleanData() {
+        this.selectedType = undefined;
         this.showResumenTab = false;
         this.showAprSelection = false;
         this.cnCreditAccount = undefined;
@@ -91,13 +109,17 @@ export class SetModificacionApropiacionComponent implements OnInit {
         this.apropiacionValidator = FormManager.BuildGroupForm(this.apropiacionFormStruct);
         this.modValueForm = FormManager.BuildGroupForm(this.modValueFormStruct);
         this.modValueForm.controls['credAccount'].disable();
-        this.modTypes = await ModApropiacionHelper.getModTypes();
         this.accountTypeSelected = '';
-
-        this.modValueForm.controls['modType'].valueChanges.subscribe((selected: ModType) => {
+        this.comnHelper.geCurrentVigencia().subscribe(res => {
+            this.vigenciaActual = res;
+        });
+        this.modValueForm.controls['modType'].valueChanges.subscribe((selected: TypeGeneral) => {
+            if (selected.Parametros) {
+                selected.Parametros = JSON.parse(selected.Parametros);
+            }
             this.modTypeSelected = selected;
             if (this.modTypeSelected) {
-                if (selected.Params['CuentaContraCredito']) {
+                if (selected.Parametros['CuentaContraCredito']) {
                     this.modValueForm = FormManager.addFormControl(this.modValueForm, {
                         cnCredAccount: true,
                     });
@@ -112,7 +134,23 @@ export class SetModificacionApropiacionComponent implements OnInit {
 
     }
 
-    public getDataEvent() {
-        this.setStepValidationEvent.emit(this.aprAfectation);
+    public getDataEvent(changeStep) {
+        this.setStepValidationEvent.emit({
+            afectation: this.aprAfectation,
+            balanced: this.balanceado,
+            changeStep,
+        });
+    }
+
+    async checkComprobacion(event: boolean) {
+        this.balanceado = event['balanceado'];
+        if (event['clean'] && event['clean'] === true) {
+            await this.cleanData();
+        }
+        this.setStepValidationEvent.emit({
+            afectation: this.aprAfectation,
+            balanced: this.balanceado,
+            changeStep: false,
+        });
     }
 }

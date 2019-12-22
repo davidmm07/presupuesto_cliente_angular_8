@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { catchError, map } from 'rxjs/operators';
 import { HttpErrorManager } from './errorManager';
-
 /**
  * This class manage the http connections with internal REST services. Use the response format {
  *  Code: 'xxxxx',
@@ -39,7 +38,7 @@ export class RequestManager {
   /**
    * Perform a GET http request
    * @param endpoint service's end-point
-   * @param params (an Key, Value object with que query params for the request)
+   * @param params (a Key, Value object with que query params for the request)
    * @returns Observable<any>
    */
   get(endpoint, params?) {
@@ -50,12 +49,17 @@ export class RequestManager {
       }
 
     }
+    this.httpOptions = {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      }),
+    };
     this.httpOptions.params = queryParams;
     return this.http.get<any>(`${this.path}${endpoint}`, this.httpOptions).pipe(
       map(
         (res) => {
 
-          if (res && res.hasOwnProperty('Body')) {
+          if (res && res.hasOwnProperty('Body') && res['Type'] !== 'error') {
             return res['Body'];
           } else {
             return res;
@@ -74,6 +78,16 @@ export class RequestManager {
   post(endpoint, element) {
     return this.http.post<any>(`${this.path}${endpoint}`, element, this.httpOptions).pipe(
       catchError(this.errManager.handleError),
+      map(
+        (res) => {
+
+          if (res && res.hasOwnProperty('Body') && res['Type'] !== 'error') {
+            return res['Body'];
+          } else {
+            return res;
+          }
+        },
+      ),
     );
   }
 
@@ -84,7 +98,7 @@ export class RequestManager {
    * @returns Observable<any>
    */
   put(endpoint, element, id) {
-    return this.http.put<any>(`${this.path}${endpoint}${id}`, element, this.httpOptions).pipe(
+    return this.http.put<any>(`${this.path}${endpoint}${id}`, JSON.stringify(element), this.httpOptions).pipe(
       catchError(this.errManager.handleError),
     );
   }
@@ -108,6 +122,12 @@ export class RequestManager {
    * @returns Observable<any>
    */
   delete(endpoint, id) {
+    this.httpOptions = {
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
+      }),
+    };
     return this.http.delete<any>(`${this.path}${endpoint}/${id}`, this.httpOptions).pipe(
       catchError(this.errManager.handleError),
     );

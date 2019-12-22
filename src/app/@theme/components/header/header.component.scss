@@ -61,7 +61,16 @@
       padding: 0;
     }
   }
+  .logo-kronos{
+    width: 80%;
+  }
+  .icono{
+    color:  #faad0b;
+  }
 
+  .usuario {
+    color: black;
+  }
   @include media-breakpoint-down(is) {
     nb-select {
       display: none;

@@ -41,14 +41,10 @@ export class ProductoHelper {
      */
     public productoRegister(productoData) {
         this.rqManager.setPath('PLAN_CUENTAS_MONGO_SERVICE');
-        console.info(productoData);
+
         return this.rqManager.post('producto', productoData).pipe(
             map(
                 (res) => {
-                    if (res['Type'] === 'error') {
-                        this.pUpManager.showErrorAlert('No Se Pudo Registrar El producto, Compruebe que no exista un producto con el mismo Código.');
-                        return undefined;
-                    }
                     return res;
                 },
             ),
@@ -66,13 +62,9 @@ export class ProductoHelper {
      */
     public productoDelete(id: number) {
         this.rqManager.setPath('PLAN_CUENTAS_MONGO_SERVICE');
-        return this.rqManager.delete('producto/', id).pipe(
+        return this.rqManager.delete('producto', id).pipe(
             map(
                 (res) => {
-                    if (res['Type'] === 'error') {
-                        this.pUpManager.showErrorAlert('No Se Pudo Eliminar El producto, Compruebe que no exista un producto con el mismo Código.');
-                        return undefined;
-                    }
                     return res;
                 },
             ),
@@ -94,10 +86,6 @@ export class ProductoHelper {
         return this.rqManager.put('producto/', productoData, productoData._id).pipe(
             map(
                 (res) => {
-                    if (res['Type'] === 'error') {
-                        this.pUpManager.showErrorAlert('No Se Pudo Actualizar El producto, Compruebe que no exista un producto con el mismo Código.');
-                        return undefined;
-                    }
                     return res;
                 },
             ),

@@ -1,4 +1,6 @@
 import { ArbolRubroApropiacionInterface } from './arbolRubroApropiacionInterface';
+import { FuenteFinanciamientoInterface } from './fuenteFinanciamientoInterface';
+import { TypeGeneral } from './TypeGeneralInterface';
 
 export interface ModType {
     Id: any;
@@ -8,8 +10,15 @@ export interface ModType {
 }
 
 export interface ModApropiationData {
-    Tipo: ModType;
+    Tipo: TypeGeneral;
     CuentaCredito: ArbolRubroApropiacionInterface;
     CuentaContraCredito?: ArbolRubroApropiacionInterface;
+    Valor: number;
+}
+
+export interface ModFuenteData {
+    Tipo: TypeGeneral;
+    MovimientoOrigen?: FuenteFinanciamientoInterface;
+    CuentaCredito?: ArbolRubroApropiacionInterface;
     Valor: number;
 }

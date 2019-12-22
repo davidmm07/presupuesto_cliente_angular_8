@@ -4,6 +4,19 @@ button[nbTreeGridRowToggle] {
   padding: 0;
 }
 
+.table-row {
+  &:hover {
+    background: #e6e6e6;
+  }
+
+}
+:host ::ng-deep table tr td {
+  padding: -0.125rem 1.25rem !important;
+  font-size: 12px !important;
+}
+.aligned-code {
+  padding-left: 8px;
+}
 .search-label {
   display: block;
 }
@@ -40,3 +53,9 @@ button[nbTreeGridRowToggle] {
     width: 23%;
   }
 }
+
+
+.moneyField {
+  text-align: right;
+}
+
