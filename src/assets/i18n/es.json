@@ -144,7 +144,7 @@
     "nombre": "Nombre",
     "tipo_documento": "Tipo de documento",
     "fecha_documento": "Fecha de documento",
-    "numero_documento": "Numero documento",
+    "numero_documento": "Número documento",
     "area_funcional": "Área funcional",
     "centro_gestor": "Centro gestor",
     "placeholder_valor": "Valor",
@@ -191,8 +191,16 @@
     "cdp_modificacion": "CDP modificación presupuestal",
     "lista_anulaciones": "Lista anulaciones",
     "consecutivo": "Consecutivo",
+    "rector": "Rector",
+    "convenios": "Convenios",
     "saldo_rubro": "Saldo del rubro",
-    "relacionado": "relacionado"
+    "relacionado": "relacionado",
+    "Parcial": "Parcial",
+    "Total": "Total",
+    "cdp_suspension": "CDP suspensión",
+    "cdp_traslado": "CDP traslado",
+    "cdp_reduccion": "CDP reducción",
+    "anulation_not_allowed": "Anulación para este documento no permitida."
   },
   "RUBRO": {
     "asignar_rubro": "Asignar Rubro",
@@ -296,6 +304,9 @@
   "CDP": {
     "cdp": "CDP",
     "cdp_modificacion": "CDP modificación presupuestal",
+    "cdp_suspension": "CDP suspensión",
+    "cdp_traslado": "CDP traslado",
+    "cdp_reduccion": "CDP reducción",
     "solicitudes_cdp": "Lista de solicitudes de certificado de disponibilidad presupuestal",
     "lista_cdp": "Lista certificados de disponibilidad presupuestal",
     "n_solicitud": "N° Solicitud de CDP",
@@ -326,7 +337,9 @@
     "ordenador_gasto": "ORDENADOR DE GASTO",
     "saldo": "Saldo del CDP",
     "informacion": "Información del CDP",
-    "valor_cdp": "Valor del CDP"
+    "valor_cdp": "Valor del CDP",
+    "anulado": "Anulado",
+    "numero": "Nº de CDP"
   },
   "CRP": {
     "crp": "Certificado de Registro Presupuestal",
@@ -359,18 +372,20 @@
     "distribuir_crp": "Distribuya el valor del CRP en los rubros:",
     "crp_info": "Información del CRP",
     "valor": "Valor del CRP",
-    "valores_iguales": "El valor distribuido debe coincidir con el valor del CRP"
+    "valores_iguales": "El valor distribuido debe coincidir con el valor del CRP",
+    "monto": "Monto del CRP",
+    "fecha_inicio": "Fecha inicio de vigencia",
+    "fecha_final": "Fecha final de vigencia",
+    "Solicitud_efectuada": "Solicitud de CRP registrada"
   },
   "VIGENCIA" : {
     "cierre_vigencia_titulo" : "Cierre de vigencia.",
     "precierre_button": "Ver información de precierre",
     "ejecucion": "Resumen ejecución presupuestal",
-    "fuentes": "Fuentes de financiamiento con saldo disponible",
-    "reservas": "Lista de CRP que pasarán a estado reserva",
-    "pasivos": "Lista de reservas que pasarán a estado pasivo",
-    "ejecutar_cierre": "Ejecutar cierre de vigencia"
-  },
-  "VIGENCIA": {
+    "fuentes": "Saldo Fuentes",
+    "reservas": "Reservas",
+    "pasivos": "Pasivos",
+    "ejecutar_cierre": "Ejecutar cierre de vigencia",
     "solicitud_crear_vigencia": "Crear una Nueva Vigencia",
     "codigo_centro_gestor": "Código Centro Gestor",
     "codigo_area_funcional": "Código Área Funcional",
