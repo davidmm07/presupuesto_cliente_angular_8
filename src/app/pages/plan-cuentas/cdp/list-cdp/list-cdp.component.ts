@@ -80,7 +80,6 @@ export class ListCdpComponent implements OnInit {
         filter: true,
         valuePrepareFunction: () => this.centros['1'],
         filterFunction(cell?: any, search?: string): boolean {
-          console.info(cell, search);
           if (centrosCopy['1'].includes(search) || search === '') {
             return true;
           } else {
@@ -119,7 +118,7 @@ export class ListCdpComponent implements OnInit {
         delete: false,
         custom: [
           { name: 'ver', title: '<i class="fas fa-eye" title="Ver" (click)="ver($event)"></i>' },
-          { name: 'anular', title: '<i class="fas fa-ban" title="Anular" (click)="anular($event)"></i>' },
+          // { name: 'anular', title: '<i class="fas fa-ban" title="Anular" (click)="anular($event)"></i>' },
         ],
         position: 'right'
       },
@@ -136,16 +135,14 @@ export class ListCdpComponent implements OnInit {
       documentos: this.loadDataFunction('2019', '1', 'cdp'),
       cdp: this.cdpHelper.getListaCDP()
     }).subscribe(res => {
-      
-      if (res.cdp.Body) {
+      if (res.cdp) {
         res.documentos.forEach((documento: any) => {
           const solCdp = res.cdp.filter((cdp: object) => cdp['_id'] === documento.Data.solicitud_cdp)[0];
           documento.necesidad = solCdp ? solCdp.necesidad : undefined;
         });
-        
       }
       const data = <Array<any>>res.documentos;
-        this.source.load(data);
+      this.source.load(data);
     });
   }
 
@@ -154,6 +151,7 @@ export class ListCdpComponent implements OnInit {
     if (event.data.necesidad) {
       this.modPresupuestal = false;
     } else {
+      console.info('mod presupuestal')
       this.modPresupuestal = true;
       event.data['NumeroDocumento'] = event.data.Data.numero_documento;
       event.data['TipoDocumento'] = event.data.Data.tipo_documento.Nombre;

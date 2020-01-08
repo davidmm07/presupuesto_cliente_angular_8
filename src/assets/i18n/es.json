@@ -37,13 +37,13 @@
       "solicitar_crp": "Solicitar CRP",
       "crp": "Certificados de Registro Presupuestal"
     },
-
     "gestion_cdp": {
       "gestion_cdp": "Gestión de CDP",
       "solicitud_cdp": "Solicitud CDP",
       "cdp": "Certificado Disponibilidad Presupuestal",
       "cdp_acronimo": "CDP"
     },
+    "vigencia":"Vigencias",
     "auth": {
       "auth": "Autenticación",
       "login": "Iniciar sesión",
@@ -376,7 +376,13 @@
     "monto": "Monto del CRP",
     "fecha_inicio": "Fecha inicio de vigencia",
     "fecha_final": "Fecha final de vigencia",
-    "Solicitud_efectuada": "Solicitud de CRP registrada"
+    "Solicitud_efectuada": "Solicitud de CRP registrada",
+    "lista_crp": "Lista de CRP expedidos",
+    "numero": "Nº de CRP",
+    "pasivo": "Expedido",
+    "parcial_comprometido": "Parcialmente comprometido",
+    "total_comprometido": "Totalmente comprometido",
+    "saldo": "Saldo del CRP"
   },
   "VIGENCIA" : {
     "cierre_vigencia_titulo" : "Cierre de vigencia.",
@@ -384,7 +390,7 @@
     "ejecucion": "Resumen ejecución presupuestal",
     "fuentes": "Saldo Fuentes",
     "reservas": "Reservas",
-    "pasivos": "Pasivos",
+    "pasivos": "Pasivos exigibles",
     "ejecutar_cierre": "Ejecutar cierre de vigencia",
     "solicitud_crear_vigencia": "Crear una Nueva Vigencia",
     "codigo_centro_gestor": "Código Centro Gestor",

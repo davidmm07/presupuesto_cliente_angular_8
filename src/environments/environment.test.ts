@@ -8,6 +8,8 @@ export const environment = {
   NUXEO: {
     PATH: 'https://documental.udistrital.edu.co/nuxeo/',
   },
+  CLIENTE_PRESUPUESTO: '/pages/plan-cuentas',
+  CLIENTE_CONTABILIDAD: 'https://pruebascontabilidad.portaloas.udistrital.edu.co/pages',
   WSO2_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/',
   NECESIDADES_CRUD_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/necesidades_crud/v1/',
   ADMINISTRATIVA_PRUEBAS_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/administrativa_amazon_api/v1/',
@@ -22,6 +24,14 @@ export const environment = {
   CORE_AMAZON_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/core_amazon_crud/v1/",
   NOTIFICACION_SERVICE: 'wss://autenticacion.portaloas.udistrital.edu.co/apioas/notificacion_ws/v1/',
   CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/',
+  KNOWAGE: {
+    PROTOCOL: 'http',
+    HOST: 'intelligentia.udistrital.edu.co',
+    PORT: '',
+    CONTEXTPATH: 'knowage',
+    USER: 'bidev',
+    PASSWORD: 'bidev',
+},
   TOKEN: {
     AUTORIZATION_URL: 'https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize',
     CLIENTE_ID: 'aWFPYYJ5gP2JdDP390gFP7gU1dYa',
