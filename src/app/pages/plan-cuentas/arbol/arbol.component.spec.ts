@@ -1,16 +1,56 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {HttpClientModule} from '@angular/common/http';
 
-import { ArbolComponent } from './arbol.component';
+import {
+  NbTreeGridModule,
+  NbSelectModule,
+  NbAlertModule,
+  NbTabsetModule,
+  NbStepperModule,
+  NbCardModule,
+  NbTooltipModule,
+  NbCheckboxModule
+} from '@nebular/theme';
+
+import { ArbolComponent , FsIconAComponent } from './arbol.component';
 
 describe('ArbolComponent', () => {
   let component: ArbolComponent;
-  let fixture: ComponentFixture < ngx; -arbolComponent > ;
+  let fixture: ComponentFixture<ArbolComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ArbolComponent ],
+      declarations: [ArbolComponent, FsIconAComponent],
+      imports: [
+        HttpClientTestingModule,
+        TranslateModule.forRoot(),
+        FormsModule,
+        NbTreeGridModule,
+        NbSelectModule,
+        NbAlertModule,
+        NbTabsetModule,
+        NbStepperModule,
+        NbCardModule,
+        NbTooltipModule,
+        NbCheckboxModule
+        // NbActionsModule,
+        // NbLayoutModule,
+        // NbMenuModule,
+        // NbSearchModule,
+        // NbSidebarModule,
+        // NbUserModule,
+        // NbContextMenuModule,
+        // NbButtonModule,
+        // NbSelectModule,
+        // NbIconModule,
+        // NbThemeModule,
+        // NbCardModule,
+      ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
