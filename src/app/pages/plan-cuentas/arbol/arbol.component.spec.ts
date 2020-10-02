@@ -36,18 +36,6 @@ describe('ArbolComponent', () => {
         NbCardModule,
         NbTooltipModule,
         NbCheckboxModule
-        // NbActionsModule,
-        // NbLayoutModule,
-        // NbMenuModule,
-        // NbSearchModule,
-        // NbSidebarModule,
-        // NbUserModule,
-        // NbContextMenuModule,
-        // NbButtonModule,
-        // NbSelectModule,
-        // NbIconModule,
-        // NbThemeModule,
-        // NbCardModule,
       ]
     })
       .compileComponents();
