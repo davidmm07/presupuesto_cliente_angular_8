@@ -71,6 +71,7 @@ export class ListEntityComponent implements OnInit {
     this.filtrarLista();
   }
   ngOnChanges(changes) {
+    console.log(changes);
     if (changes['paramsFieldsName'] && changes['paramsFieldsName'].currentValue) {
       this.paramsFieldsName = changes['paramsFieldsName'].currentValue;
       this.loadData();
@@ -125,8 +126,9 @@ export class ListEntityComponent implements OnInit {
   }
 
   loadData(): void {
-
+    console.log('ok load')
     this.loadDataFunction('', this.paramsFieldsName ? this.paramsFieldsName : '').subscribe(res => {
+      console.log(res)
       if (res !== null) {
         const data = <Array<any>>res;
         this.source.load(data);
@@ -200,6 +202,7 @@ export class ListEntityComponent implements OnInit {
     Swal.fire(opt).then(willDelete => {
       if (willDelete.value) {
         this.deleteDataFunction(event.data[this.uuidDeleteField], this.paramsFieldsName ? this.paramsFieldsName : '').subscribe(res => {
+          console.log(res)
           if (res['Type'] === 'error') {
             if ( res['Message']) {
               this.popUpManager.showErrorAlert(res['Message']);
@@ -207,6 +210,7 @@ export class ListEntityComponent implements OnInit {
               this.popUpManager.showErrorAlert(res['Body']);
             }
           } else {
+            console.log('ok delete')
             this.loadData();
             this.popUpManager.showSuccessAlert(
               this.translate.instant(this.deleteConfirmMessage)
@@ -247,7 +251,10 @@ export class ListEntityComponent implements OnInit {
       this.loadData();
       this.cambiotab = !this.cambiotab;
       this.crudcambiotab.emit(this.cambiotab);
+    } else {
+      this.loadData();
     }
+    
   }
   itemselec(event): void {
     // console.info(event);

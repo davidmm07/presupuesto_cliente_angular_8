@@ -93,6 +93,7 @@ export class CrudEntityComponent implements OnInit {
             this.popUpManager.showErrorAlert(res['Message']);
           } else {
             this.loadData();
+            console.log('ok update')
             this.eventChange.emit(true);
             this.popUpManager.showSuccessAlert(
               this.translate.instant(
@@ -121,6 +122,8 @@ export class CrudEntityComponent implements OnInit {
           if (res['Type'] === 'error') {
             this.popUpManager.showErrorAlert(res['Message']);
           } else {
+            this.loadData();
+            console.log('ok create')
             this.entityInfo = res;
             this.eventChange.emit(true);
             this.popUpManager.showSuccessAlert(
