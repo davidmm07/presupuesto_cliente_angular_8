@@ -1,8 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import {HttpClientModule} from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import {
   NbTreeGridModule,
@@ -12,10 +11,13 @@ import {
   NbStepperModule,
   NbCardModule,
   NbTooltipModule,
+  // NbRadioModule,
+  NbToastrService,
+  NbSpinnerModule,
   NbCheckboxModule
 } from '@nebular/theme';
 
-import { ArbolComponent , FsIconAComponent } from './arbol.component';
+import { ArbolComponent, FsIconAComponent } from './arbol.component';
 
 describe('ArbolComponent', () => {
   let component: ArbolComponent;
@@ -35,8 +37,11 @@ describe('ArbolComponent', () => {
         NbStepperModule,
         NbCardModule,
         NbTooltipModule,
+        // NbRadioModule,
+        NbSpinnerModule,
         NbCheckboxModule
-      ]
+      ],
+      providers: [ NbToastrService ]
     })
       .compileComponents();
   }));
