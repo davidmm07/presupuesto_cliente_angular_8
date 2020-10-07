@@ -93,6 +93,7 @@ steps:
   when:
     branch:
     - release/*
+    - feature/*
     event:
     - push
 
