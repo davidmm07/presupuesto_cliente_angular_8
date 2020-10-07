@@ -1,4 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
+// import { ThemeModule } from '../../../@theme/theme.module';
+import {
+  NbActionsModule,
+  NbLayoutModule,
+  NbMenuModule,
+  NbSearchModule,
+  NbSidebarModule,
+  NbUserModule,
+  NbContextMenuModule,
+  NbButtonModule,
+  NbSelectModule,
+  NbIconModule,
+  NbThemeModule,
+  NbCardModule,
+} from '@nebular/theme';
+
 
 import { ApropiacionesComponent } from './apropiaciones.component';
 
@@ -8,9 +25,24 @@ describe('ApropiacionesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ApropiacionesComponent ],
+      declarations: [ApropiacionesComponent],
+      imports: [
+        TranslateModule.forRoot(),
+        NbActionsModule,
+        NbLayoutModule,
+        NbMenuModule,
+        NbSearchModule,
+        NbSidebarModule,
+        NbUserModule,
+        NbContextMenuModule,
+        NbButtonModule,
+        NbSelectModule,
+        NbIconModule,
+        NbThemeModule,
+        NbCardModule,
+      ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
