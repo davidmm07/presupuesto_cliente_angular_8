@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { DETALLE_MODIFICACION_FORM } from './detalle_modificacion_form';
 import { FormManager } from '../../../@core/managers/formManager';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,7 +11,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
     templateUrl: './modificacion-apropiacion.component.html',
     styleUrls: ['./modificacion-apropiacion.component.scss'],
 })
-export class ModificacionApropiacionComponent implements OnInit {
+export class ModificacionApropiacionComponent implements OnInit, OnDestroy {
     @ViewChild('stepper', { static: true }) stepper: MatStepper;
     formDetalle: object;
     detalleMovimiento: any;

@@ -148,7 +148,7 @@ export class ApropiacionHelper {
 
     public getVigenciasList() {
         this.rqManager.setPath('PLAN_CUENTAS_MONGO_SERVICE');
-        const unidadEjecutora = 1;
+        // const unidadEjecutora = 1;
         return this.rqManager.get(`vigencia/vigencias_total`).pipe(
             map(
                 (res) => {

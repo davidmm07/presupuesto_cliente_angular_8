@@ -56,13 +56,13 @@ export class ListFuenteComponent implements OnInit {
 
   ngOnInit() {
     this.apHelper.getVigenciasList().subscribe(res => {
-      console.log(res)
+      // console.log(res)
       if (res) {
         this.vigencias = this.selectVigenciasArea(res);
       }
     });
     this.commonHelper.geCurrentVigencia().subscribe(res => {
-      console.log(res);
+      // console.log(res);
       if (res) {
         this.vigenciaSel = res + '';
       }
@@ -175,7 +175,7 @@ export class ListFuenteComponent implements OnInit {
   }
 
   onSelect(selectedItem: any) {
-    console.log(selectedItem)
+    // console.log(selectedItem)
     if (selectedItem === 'all') {
       this.vigenciaSel = 'Todas';
       if (this)
@@ -185,7 +185,7 @@ export class ListFuenteComponent implements OnInit {
       if (this)
       this.paramsFieldsName = { Vigencia: this.vigenciaSel, UnidadEjecutora: 1 };
     }
-    
+
   }
   onExternalTabActivator($event: string) {
     if ($event === 'external-create') {

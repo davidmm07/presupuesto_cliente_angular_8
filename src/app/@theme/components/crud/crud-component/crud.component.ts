@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { FormManager } from '../../../../@core/managers/formManager';
 import { PopUpManager } from '../../../../@core/managers/popUpManager';
@@ -12,7 +12,7 @@ import { RequestManager } from '../../../../@core/managers/requestManager';
   templateUrl: './crud.component.html',
   styleUrls: ['./crud.component.scss']
 })
-export class CrudEntityComponent implements OnInit {
+export class CrudEntityComponent implements OnInit, OnChanges {
   @Input('entitiId') entitiId: any;
   @Input('formEntity') formEntity: any;
   @Input('formTittle') formTittle: string;
@@ -93,7 +93,7 @@ export class CrudEntityComponent implements OnInit {
             this.popUpManager.showErrorAlert(res['Message']);
           } else {
             this.loadData();
-            console.log('ok update')
+            // console.log('ok update')
             this.eventChange.emit(true);
             this.popUpManager.showSuccessAlert(
               this.translate.instant(
@@ -123,7 +123,7 @@ export class CrudEntityComponent implements OnInit {
             this.popUpManager.showErrorAlert(res['Message']);
           } else {
             this.loadData();
-            console.log('ok create')
+            // console.log('ok create')
             this.entityInfo = res;
             this.eventChange.emit(true);
             this.popUpManager.showSuccessAlert(

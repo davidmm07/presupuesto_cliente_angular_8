@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter, OnChanges } from '@angular/core';
 import { Rubro } from '../../../@core/data/models/rubro';
 import { FuenteFinanciamiento } from '../../../@core/data/models/fuente_financiamiento';
 import { FORM_VALUE_FUENTE } from '../fuentes/form-value-fuente';
@@ -15,7 +15,7 @@ import { debug } from 'util';
   templateUrl: './dependencias.component.html',
   styleUrls: ['./dependencias.component.scss']
 })
-export class DependenciasComponent implements OnInit {
+export class DependenciasComponent implements OnInit, OnChanges {
 
   @Output() auxcambiotab = new EventEmitter<boolean>();
   @Output() eventChange = new EventEmitter();

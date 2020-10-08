@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, OnChanges } from '@angular/core';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { LocalDataSource } from 'ng2-smart-table';
 import Swal from 'sweetalert2';
@@ -11,7 +11,7 @@ import { RequestManager } from '../../../../@core/managers/requestManager';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListEntityComponent implements OnInit {
+export class ListEntityComponent implements OnInit, OnChanges {
   // Local Inputs ...
   @Input('uuidReadFieldName') uuidReadField: string;
   @Input('paramsFieldsName') paramsFieldsName: object;
@@ -71,7 +71,7 @@ export class ListEntityComponent implements OnInit {
     this.filtrarLista();
   }
   ngOnChanges(changes) {
-    console.log(changes);
+    // console.log(changes);
     if (changes['paramsFieldsName'] && changes['paramsFieldsName'].currentValue) {
       this.paramsFieldsName = changes['paramsFieldsName'].currentValue;
       this.loadData();
@@ -126,9 +126,9 @@ export class ListEntityComponent implements OnInit {
   }
 
   loadData(): void {
-    console.log('ok load')
+    // console.log('ok load')
     this.loadDataFunction('', this.paramsFieldsName ? this.paramsFieldsName : '').subscribe(res => {
-      console.log(res)
+      // console.log(res)
       if (res !== null) {
         const data = <Array<any>>res;
         this.source.load(data);
@@ -202,7 +202,7 @@ export class ListEntityComponent implements OnInit {
     Swal.fire(opt).then(willDelete => {
       if (willDelete.value) {
         this.deleteDataFunction(event.data[this.uuidDeleteField], this.paramsFieldsName ? this.paramsFieldsName : '').subscribe(res => {
-          console.log(res)
+          // console.log(res)
           if (res['Type'] === 'error') {
             if ( res['Message']) {
               this.popUpManager.showErrorAlert(res['Message']);
@@ -210,7 +210,7 @@ export class ListEntityComponent implements OnInit {
               this.popUpManager.showErrorAlert(res['Body']);
             }
           } else {
-            console.log('ok delete')
+            // console.log('ok delete')
             this.loadData();
             this.popUpManager.showSuccessAlert(
               this.translate.instant(this.deleteConfirmMessage)
@@ -254,7 +254,7 @@ export class ListEntityComponent implements OnInit {
     } else {
       this.loadData();
     }
-    
+
   }
   itemselec(event): void {
     // console.info(event);

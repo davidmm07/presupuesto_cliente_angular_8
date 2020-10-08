@@ -107,9 +107,9 @@ export class VerSolicitudCdpComponent implements OnInit {
       }
       this.TrNecesidad = trNecesidad;
 
-      this.admAmazonHelper.getProveedor(this.TrNecesidad['Necesidad']['DependenciaNecesidadId']['OrdenadorGastoId']).subscribe(res => {
-        if (res) {
-          this.ordenadorGasto = res['NomProveedor'];
+      this.admAmazonHelper.getProveedor(this.TrNecesidad['Necesidad']['DependenciaNecesidadId']['OrdenadorGastoId']).subscribe(res1 => {
+        if (res1) {
+          this.ordenadorGasto = res1['NomProveedor'];
         }
       });
     });
@@ -138,8 +138,8 @@ export class VerSolicitudCdpComponent implements OnInit {
         res.forEach(element  => {
           movimientosRequest.push(this.movimientosHelper.getByMovimientoPadre(this.solicitud['Vigencia'], this.solicitud['CentroGestor'], element._id));
         });
-        forkJoin(movimientosRequest).subscribe(res => {
-          res.forEach(element => {
+        forkJoin(movimientosRequest).subscribe(res2 => {
+          res2.forEach(element => {
             if (element) {
               this.movimientosRp.push(element);
             }
