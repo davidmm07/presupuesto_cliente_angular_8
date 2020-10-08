@@ -143,14 +143,16 @@ export class RubrosFuenteComponent implements OnInit {
   loadInfoIncome(Codigo?: string) {
     if (this.infoinput.Rubros && !Codigo) {
       for (const key in this.infoinput.Rubros) {
-        const element = this.infoinput.Rubros[key];
-        if (element.Tipo === 'INGRESO') {
-          this.apHelper.getFullArbolByNode(key, this.infoinput.Vigencia).subscribe((response) => {
-            if (response) {
-              this.rbIncome = response[0].data;
-              console.info(this.rbIncome);
-            }
-          });
+        if (true) {
+          const element = this.infoinput.Rubros[key];
+          if (element.Tipo === 'INGRESO') {
+            this.apHelper.getFullArbolByNode(key, this.infoinput.Vigencia).subscribe((response) => {
+              if (response) {
+                this.rbIncome = response[0].data;
+                console.info(this.rbIncome);
+              }
+            });
+          }
         }
       }
     } else {
@@ -172,9 +174,11 @@ export class RubrosFuenteComponent implements OnInit {
       this.incomeRubroAdd = $event;
       if (this.infoinput.Rubros) {
         for (const key in this.infoinput.Rubros) {
-          const element = this.infoinput.Rubros[key];
-          if (element.Tipo === 'INGRESO') {
-            delete this.infoinput.Rubros[key];
+          if (true) {
+            const element = this.infoinput.Rubros[key];
+            if (element.Tipo === 'INGRESO') {
+              delete this.infoinput.Rubros[key];
+            }
           }
         }
       }
