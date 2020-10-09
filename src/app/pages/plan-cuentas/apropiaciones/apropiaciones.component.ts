@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Rubro } from '../../../@core/data/models/rubro';
 import { ApropiacionHelper } from '../../../@core/helpers/apropiaciones/apropiacionHelper';
-import { FuenteHelper } from '../../../@core/helpers/fuentes/fuenteHelper';
+// import { FuenteHelper } from '../../../@core/helpers/fuentes/fuenteHelper';
 import { PopUpManager } from '../../../@core/managers/popUpManager';
 import { ArbolApropiacion } from '../../../@core/data/models/arbol_apropiacion';
 import { CommonHelper } from '../../../@core/helpers/commonHelper';
-import { VigenciaHelper } from '../../../@core/helpers/vigencia/vigenciaHelper';
-import { DependenciaHelper } from '../../../@core/helpers/oikos/dependenciaHelper';
+// import { VigenciaHelper } from '../../../@core/helpers/vigencia/vigenciaHelper';
+// import { DependenciaHelper } from '../../../@core/helpers/oikos/dependenciaHelper';
 import { registerLocaleData } from '@angular/common';
 import locales from '@angular/common/locales/es-CO';
 registerLocaleData(locales, 'co');
@@ -54,11 +54,11 @@ export class ApropiacionesComponent implements OnInit {
 
   constructor(
     private apHelper:          ApropiacionHelper,
-    private fuenteHelper:      FuenteHelper,
+    // private fuenteHelper:      FuenteHelper,
     private commonHelper:      CommonHelper,
     private popManager:        PopUpManager,
-    private dependenciaHelper: DependenciaHelper,
-    private vigenciaHelper:    VigenciaHelper
+    // private dependenciaHelper: DependenciaHelper,
+    // private vigenciaHelper:    VigenciaHelper
   ) {
     this.vigenciaSel = '2020';    // TODO: traer del endpoint vigencia_actual +1
     this.optionView = 'Apropiaciones';

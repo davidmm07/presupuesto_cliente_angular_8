@@ -2,7 +2,7 @@
     <nb-card status="warning">
         <nb-card-header>
             {{ "CRP.crp" | translate }}
-            <div class="text-right">
+            <div class="text-right" *ngIf="vigencias[0]">
                 <strong>{{'GLOBAL.vigencia' | translate}}: </strong>
                 <nb-select id="select_vigencia" placeholder="{{vigenciaUrl || vigencias[0]['valor']}}" hero status="info" [(selected)]="vigenciaUrl">
                     <nb-option *ngFor="let v of vigencias" [value]="v.valor" (click)="onSelect(v.valor)">{{v.valor}}
@@ -17,5 +17,5 @@
         </nb-card-body>
     </nb-card>
 </div>
-<ngx-ver-solicitud-crp *ngIf="cambiotab" [solicitudcrp]="crp" [expedido]="true" (eventChange)="cambiotab = $event">
+<ngx-ver-solicitud-crp *ngIf="cambiotab" [solicitudcrp]="crp" [expedido]="true" (eventChange)="RefrescarTabla($event)">
 </ngx-ver-solicitud-crp>

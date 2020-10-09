@@ -92,9 +92,9 @@ export class CierreVigenciaHelper {
     public esHoy(someDate) {
         const today = new Date();
         someDate = new Date(someDate);
-        return someDate.getDate() == today.getDate() &&
-            someDate.getMonth() == today.getMonth() &&
-            someDate.getFullYear() == today.getFullYear();
+        return someDate.getDate() === today.getDate() &&
+            someDate.getMonth() === today.getMonth() &&
+            someDate.getFullYear() === today.getFullYear();
     }
 
 }

@@ -1,17 +1,17 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
-import { ApropiacionHelper } from '../../../../@core/helpers/apropiaciones/apropiacionHelper';
-import { CommonHelper } from '../../../../@core/helpers/commonHelper';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+// import { ApropiacionHelper } from '../../../../@core/helpers/apropiaciones/apropiacionHelper';
+// import { CommonHelper } from '../../../../@core/helpers/commonHelper';
 import { PlanAdquisicionHelper } from '../../../../@core/helpers/plan_adquisicion/planAdquisicionHelper';
 import { FuenteHelper } from '../../../../@core/helpers/fuentes/fuenteHelper';
 import { DependenciaHelper } from '../../../../@core/helpers/oikos/dependenciaHelper';
-import { PopUpManager } from '../../../../@core/managers/popUpManager';
+// import { PopUpManager } from '../../../../@core/managers/popUpManager';
 
 @Component({
   selector: 'ngx-plan-adquisiciones-rubro',
   templateUrl: './plan-adquisiciones-rubro.component.html',
   styleUrls: ['./plan-adquisiciones-rubro.component.scss'],
 })
-export class PlanAdquisicionesRubroComponent implements OnInit {
+export class PlanAdquisicionesRubroComponent implements OnInit, OnChanges {
 
   @Input() rubroSeleccionado: any;
   @Input() ayuda: string;
@@ -25,10 +25,10 @@ export class PlanAdquisicionesRubroComponent implements OnInit {
   diferenciaFuentesApropiacion: number;
 
   constructor(
-    private apHelper: ApropiacionHelper,
+    // private apHelper: ApropiacionHelper,
     private planAdHelper: PlanAdquisicionHelper,
-    private commonHelper: CommonHelper,
-    private popManager: PopUpManager,
+    // private commonHelper: CommonHelper,
+    // private popManager: PopUpManager,
     private fuenteHelper: FuenteHelper,
     private dependenciaHelper: DependenciaHelper,
   ) {
