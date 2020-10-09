@@ -155,7 +155,7 @@ export class ListModificacionApropiacionComponent implements OnInit {
 
   }
   onChange(event) {
-    
+
   }
 
   loadOptionsVigencia(): void {

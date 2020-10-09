@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { LocalDataSource } from 'ng2-smart-table';
 import { TranslateService } from '@ngx-translate/core';
 import { CRPHelper } from '../../../../@core/helpers/crp/crpHelper';
-import { RequestManager } from '../../../../@core/managers/requestManager';
-import { CDPHelper } from '../../../../@core/helpers/cdp/cdpHelper';
+// import { RequestManager } from '../../../../@core/managers/requestManager';
+// import { CDPHelper } from '../../../../@core/helpers/cdp/cdpHelper';
 
 
 @Component({
@@ -30,9 +30,10 @@ export class ListSolicitudCrpComponent implements OnInit {
 
   constructor(private translate: TranslateService,
     private crpHelper: CRPHelper,
-    private cdpHelper: CDPHelper,
+    // private cdpHelper: CDPHelper,
     // tslint:disable-next-line
-    private rqManager: RequestManager, ) { }
+    // private rqManager: RequestManager
+    ) { }
 
   ngOnInit() {
     this.crpHelper.getInfoContrato(458, 2017);
@@ -148,7 +149,7 @@ export class ListSolicitudCrpComponent implements OnInit {
 
 
   loadCRPData () {
-    const a = this.crpHelper.getFullCRP();
+    // const a = this.crpHelper.getFullCRP();
 
   }
 

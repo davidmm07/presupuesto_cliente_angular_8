@@ -3,13 +3,13 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FORM_INFO_SOL_CRP } from './form_info_sol_crp';
 import { SolicitudCrp } from '../../../../@core/data/models/sol_crp';
 import { RubroHelper } from '../../../../@core/helpers/rubros/rubroHelper';
-import { AdmAmazonHelper } from '../../../../@core/helpers/administrativa/admAmazonHelper';
+// import { AdmAmazonHelper } from '../../../../@core/helpers/administrativa/admAmazonHelper';
 import { DocumentoPresupuestalHelper } from '../../../../@core/helpers/documentoPresupuestal/documentoPresupuestalHelper';
 import { MovimientosHelper } from '../../../../@core/helpers/movimientos/movimientosHelper';
 import { TranslateService } from '@ngx-translate/core';
 import { PopUpManager } from '../../../../@core/managers/popUpManager';
 import { CRPHelper } from '../../../../@core/helpers/crp/crpHelper';
-import { CDPHelper } from '../../../../@core/helpers/cdp/cdpHelper';
+// import { CDPHelper } from '../../../../@core/helpers/cdp/cdpHelper';
 import { Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 @Component({
@@ -48,10 +48,10 @@ export class SolicitudCrpComponent implements OnInit {
   constructor(
     private translate: TranslateService,
     private crpHelper: CRPHelper,
-    private cdpHelper: CDPHelper,
+    // private cdpHelper: CDPHelper,
     private rubroHelper: RubroHelper,
     private popManager: PopUpManager,
-    private admAmazonHelper: AdmAmazonHelper,
+    // private admAmazonHelper: AdmAmazonHelper,
     private router: Router,
     private docPresupuestalHelper: DocumentoPresupuestalHelper,
     private movimientosHelper: MovimientosHelper
@@ -132,8 +132,8 @@ export class SolicitudCrpComponent implements OnInit {
           })
         ).subscribe((res: Array<any>) => {
           res.forEach(element => {
-            this.rubroHelper.getRubro(element.Padre).subscribe(res => {
-              element.InfoRubro = res[0];
+            this.rubroHelper.getRubro(element.Padre).subscribe(res3 => {
+              element.InfoRubro = res3[0];
             });
           });
           console.info(res);

@@ -2,13 +2,11 @@ import {
   Component,
   OnInit,
   Input,
-  Output,
-  EventEmitter,
   OnChanges
 } from '@angular/core';
 import { registerLocaleData, CurrencyPipe } from '@angular/common';
 import locales from '@angular/common/locales/es-CO';
-import { ModApropiacionHelper } from '../../../@core/helpers/modApropiacionHelper';
+// import { ModApropiacionHelper } from '../../../@core/helpers/modApropiacionHelper';
 import { MovimientosHelper } from '../../../@core/helpers/movimientos/movimientosHelper';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';

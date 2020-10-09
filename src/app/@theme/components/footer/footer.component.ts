@@ -46,7 +46,7 @@ export class FooterComponent {
         'presupuesto/../assets/images/pin-outline.svg'
       )
     );
-    translate.use(translate.getBrowserLang());
+    this.translate.use(this.translate.getBrowserLang());
   }
 }
 

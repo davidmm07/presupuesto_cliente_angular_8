@@ -30,7 +30,7 @@ import {
   DinamicformComponent,
   ListEntityComponent,
   CrudEntityComponent,
-  ControlMessages,
+  ControlMessagesComponent,
 } from './components';
 import {
   CapitalizePipe,
@@ -120,7 +120,7 @@ const COMPONENTS = [
   DinamicformComponent,
   ListEntityComponent,
   CrudEntityComponent,
-  ControlMessages,
+  ControlMessagesComponent,
   PDFviewerComponent,
 ];
 const PIPES = [
