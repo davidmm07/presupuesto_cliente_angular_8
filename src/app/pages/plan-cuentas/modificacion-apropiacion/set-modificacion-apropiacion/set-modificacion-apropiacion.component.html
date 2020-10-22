@@ -1,23 +1,33 @@
 <nb-card>
   <nb-card-body class="global-container">
-      <legend align="center">
-          <small>Registro de movimientos de la modificación</small>
-        </legend>
-        <br>
+    <!--<legend align="center">
+        <small>Registro de movimientos de la modificación</small>
+      </legend>
+      <br>-->
+  <!--Cambio en el titulo, preguntar por aprobacion o dejar comentario arriba-->
+    <legend align="center">
+      <small>Registro de movimientos</small>
+    </legend>
+    <br>
+    <nb-alert status="warning">Modificación de Apropiaciones</nb-alert>
+  <!--***************-->
     <nb-tabset class="basic-op-item">
       
-      <nb-tab tabTitle="{{ 'GLOBAL.registro' | translate }}">
+      <nb-tab tabTitle="{{ 'GLOBAL.registro' | translate }}" active="{{ !localtabActived }}">
         <div class="set-mod-value-container">
           <div class="value-registration-item">
             <form
               [formGroup]="modValueForm"
               class="mod-registration-container form-horizontal"
             >
+<!--tipo de modificación-->
               <mat-form-field
                 floatLabel="always"
                 class="mod-registration-input-item"
               >
+
                 <mat-label>{{ "GLOBAL.tipo" | translate }}</mat-label>
+
                 <mat-select formControlName="modType" [(value)]="selectedType" placeholder=" --Seleccionar--">
 
                   <mat-option
@@ -26,40 +36,50 @@
                   >
                     {{ modType.Nombre }}
                   </mat-option>
+
                 </mat-select>
+
               </mat-form-field>
 
+<!--cuenta credito modificación-->
               <mat-form-field
                 class="mod-registration-input-item"
                 *ngIf="modTypeSelected"
                 floatLabel="always"
               >
                 <mat-label>{{ "MODIF.cuenta_credito" | translate }}</mat-label>
+                
                 <input
                   matInput
                   placeholder="{{ 'MODIF.cuenta_credito' | translate }}"
                   formControlName="credAccount"
                   disabled
                 />
-                <span matPrefix
-                  ><button
-                    class="selection-button"
+
+                <span *ngIf="creditAccount">
+                  <b>
+                    {{ "GLOBAL.saldo" | translate }} :
+                    {{
+                      creditAccount.ValorActual
+                        | currency: "COP":"symbol":"4.2-2":"co"
+                    }}
+                  </b>
+                </span>
+                
+              <!--boton seleccionar-->
+                <span matSuffix>
+                  <button
+                    class="btn ng-start-insert btn-sm btn-info"
                     mat-button
                     (click)="accountSelection('credito')"
                   >
                     {{ "GLOBAL.seleccionar" | translate }}
-                  </button></span
-                >
-                <span *ngIf="creditAccount"
-                  ><b
-                    >{{ "GLOBAL.saldo" | translate }} :
-                    {{
-                      creditAccount.ValorActual
-                        | currency: "COP":"symbol":"4.2-2":"co"
-                    }}</b
-                  ></span
-                >
+                  </button>
+                </span>
+
               </mat-form-field>
+
+<!--cuenta contra credito modificación-->
               <mat-form-field
                 class="mod-registration-input-item"
                 *ngIf="
@@ -68,34 +88,38 @@
                   modTypeSelected['Parametros']['CuentaContraCredito']
                 "
               >
-                <mat-label>{{
-                  "MODIF.cuenta_contra_credito" | translate
-                }}</mat-label>
+
+                <mat-label>{{ "MODIF.cuenta_contra_credito" | translate }}</mat-label>
+                
                 <input
                   matInput
                   placeholder="{{ 'MODIF.cuenta_contra_credito' | translate }}"
                   formControlName="cnCredAccount"
                   disabled
                 />
-                <span matPrefix
-                  ><button
+
+                <span *ngIf="cnCreditAccount">
+                  <b>{{ "GLOBAL.saldo" | translate }} :
+                    {{
+                      cnCreditAccount.ValorActual
+                        | currency: "COP":"symbol":"4.2-2":"co"
+                    }}</b>
+                </span>
+
+<!--boton seleccionar-->
+                <span matSuffix>
+                  <button
+                    class="btn ng-start-insert btn-sm btn-info"
                     mat-button
                     (click)="accountSelection('contraCredito')"
                   >
                     {{ "GLOBAL.seleccionar" | translate }}
-                  </button></span
-                >
-                <span *ngIf="cnCreditAccount"
-                  ><b
-                    >{{ "GLOBAL.saldo" | translate }} :
-                    {{
-                      cnCreditAccount.ValorActual
-                        | currency: "COP":"symbol":"4.2-2":"co"
-                    }}</b
-                  ></span
-                >
+                  </button>
+                </span>
+
               </mat-form-field>
 
+<!--VALOR modificación-->
               <mat-form-field
                 class="mod-registration-input-item"
                 *ngIf="modTypeSelected"
@@ -110,17 +134,18 @@
                   type="text"
                   formControlName="value"
                 />
-              </mat-form-field>
 
+              </mat-form-field>
               <button
                 mat-button
-                class="mod-registration-input-item button-success"
+                class="mod-registration-input-item btn-success ng-start-insert btn-sm"
                 type="submit"
                 (click)="addModToList()"
                 [disabled]="!modValueForm.valid"
               >
                 {{ "GLOBAL.agregar" | translate }}
               </button>
+
             </form>
           </div>
           <div class="tree-view-item" *ngIf="showAprSelection">
@@ -135,6 +160,7 @@
       <nb-tab
         tabTitle="{{ 'GLOBAL.resumen' | translate }}"
         *ngIf="aprAfectation && aprAfectation.length > 0"
+        active="{{ localtabActived }}"
       >
         <ngx-show-modification-afectation
           [(afectationData)]="aprAfectation"
@@ -149,6 +175,7 @@
         </ngx-comprobacion-apropiacion-inicial>
       </nb-tab>
     </nb-tabset>
+   <!-- boton original*** 
     <button
       *ngIf="balanceado && aprAfectation && aprAfectation.length > 0"
       class="btn btn-success btn-sm next-button-item"
@@ -156,5 +183,33 @@
     >
       {{ "GLOBAL.siguiente" | translate }}
     </button>
+  -->
   </nb-card-body>
+
+  <nb-card-footer>
+
+    <div class="float-md-left">
+
+      <button *ngIf="!balanceado && aprAfectation && aprAfectation.length > 0"
+        (click)="returnToResume()"
+        class="btn btn-info btn-sm next-button-item"
+      >
+        <!--<i class="nb-arrow-dropright"></i>-->
+        {{ "GLOBAL.resumen" | translate }}
+      </button>-->r
+
+    </div>
+
+    <div class="float-md-right">
+      <button *ngIf="balanceado && aprAfectation && aprAfectation.length > 0"
+        class="btn btn-success btn-sm next-button-item"
+        (click)="getDataEvent(true)"
+      >
+        {{ "GLOBAL.siguiente" | translate }}
+
+      </button>-->s
+
+    </div>
+
+  </nb-card-footer>
 </nb-card>

@@ -39,6 +39,7 @@ export class SetModificacionApropiacionComponent implements OnInit {
     balanceado: boolean = false;
     vigenciaActual: number;
     selectedType: any;
+    localtabActived: boolean;//
 
     constructor(private modHelper: ModApropiacionHelper,
         private comnHelper: CommonHelper) {
@@ -143,6 +144,8 @@ export class SetModificacionApropiacionComponent implements OnInit {
     }
 
     async checkComprobacion(event: boolean) {
+        console.log("evento");
+        console.log(event);
         this.balanceado = event['balanceado'];
         if (event['clean'] && event['clean'] === true) {
             await this.cleanData();
@@ -153,4 +156,8 @@ export class SetModificacionApropiacionComponent implements OnInit {
             changeStep: false,
         });
     }
+
+    returnToResume() {//
+        this.localtabActived = true;//
+      }//
 }
