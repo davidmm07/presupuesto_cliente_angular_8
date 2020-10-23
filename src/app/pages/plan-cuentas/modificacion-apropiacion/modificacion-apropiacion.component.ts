@@ -111,26 +111,16 @@ export class ModificacionApropiacionComponent implements OnInit, OnDestroy {
 
             if ($event) {
                 this.checkAfectationFinalData = $event;
-                console.log("checkA");
                 if (this.checkAfectationFinalData['afectation']) {
                     this.modifiactionFinalData['afectation'] = this.checkAfectationFinalData['afectation'];
-                    console.log("modifiF");
-                    console.log(this.checkAfectationFinalData['afectation'].length > 0);
-                    console.log(this.checkAfectationFinalData['balanced']);
-                    console.log(this.checkAfectationFinalData['balanced'] === true);
                     if ((this.checkAfectationFinalData['afectation'].length > 0 && this.checkAfectationFinalData['balanced'] && this.checkAfectationFinalData['balanced'] === true)) {
-
                         this.setModValidationForm.patchValue({
                             valid: true
                         });
-                        console.log("ste")
-                        console.log(this.checkAfectationFinalData['changeStep']);
                         if (this.checkAfectationFinalData['changeStep']) {
                             this.stepper.next();
-                            console.log("stepper")
                         }
                     } else {
-                        console.log("modvali");
                         this.setModValidationForm.patchValue({
                             valid: null                                                       
                         });
