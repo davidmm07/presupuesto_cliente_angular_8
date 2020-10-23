@@ -1,18 +1,10 @@
 <nb-card>
   <nb-card-body class="global-container">
-
-    <!--  <legend align="center">
-            <small>Registro de movimientos de la modificación en la fuente</small>
-          </legend> sin esta parte... solo lo que sigue
-    <nb-alert status="warning">Modificación de fuentes</nb-alert>-->
-
-  <!--Cambio en el titulo, preguntar por aprobacion o dejar comentario arriba-->
   <legend align="center">
     <small>Registro de movimientos</small>
   </legend>
   <br>
-  <nb-alert status="warning">Modificación de Fuentes</nb-alert>
-<!--***************-->
+  <nb-alert status="warning">Modificación de la Fuente</nb-alert>
     <br>
     <nb-tabset *ngIf="!localtabActived || !movAfectation || movAfectation.length === 0" class="basic-op-item">
       <nb-tab tabTitle="{{ 'GLOBAL.registro' | translate }}">
