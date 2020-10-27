@@ -10,8 +10,9 @@ import { DocumentoPresupuestalHelper } from '../../../../@core/helpers/documento
 import { PopUpManager } from '../../../../@core/managers/popUpManager';
 import { Router } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
-import { switchMap, mergeMap } from 'rxjs/operators';
+import { switchMap, mergeMap, catchError } from 'rxjs/operators';
 import { ImplicitAutenticationService } from '../../../../@core/utils/implicit_autentication.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-ver-solicitud-cdp',
@@ -53,13 +54,15 @@ export class VerSolicitudCdpComponent implements OnInit {
     private popManager: PopUpManager,
     private router: Router,
     private implicitAutenticationService: ImplicitAutenticationService,
-    private admAmazonHelper: AdmAmazonHelper
+    private admAmazonHelper: AdmAmazonHelper,
+    private translate: TranslateService,
   ) {
     this.movimientosRp = [];
   }
 
   ngOnInit() {
     let trNecesidad: object;
+
     this.getInfoRp();
 
     this.cdpHelper.getFullNecesidad(this.solicitud['necesidad']).pipe(
@@ -105,13 +108,22 @@ export class VerSolicitudCdpComponent implements OnInit {
           }
         });
       }
-      this.TrNecesidad = trNecesidad;
 
-      this.admAmazonHelper.getProveedor(this.TrNecesidad['Necesidad']['DependenciaNecesidadId']['OrdenadorGastoId']).subscribe(res1 => {
+      this.TrNecesidad = trNecesidad;
+      this.admAmazonHelper.getProveedor(this.TrNecesidad['Necesidad']['DependenciaNecesidadId']['OrdenadorGastoId'])
+      .subscribe(res1 => {
+
         if (res1) {
           this.ordenadorGasto = res1['NomProveedor'];
         }
-      });
+      },
+        (error: any) => {
+          this.popManager.showErrorToast(this.translate.instant(`ERROR.${error['status']}`));
+        }
+      );
+    },
+    (error: any) => {
+      this.popManager.showErrorToast(this.translate.instant(`ERROR.${error['status']}`));
     });
 
 
