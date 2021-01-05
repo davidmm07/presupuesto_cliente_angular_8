@@ -108,11 +108,12 @@ export class ModificacionApropiacionComponent implements OnInit, OnDestroy {
 
     public setSteppValidator($event: object) {
         setTimeout(() => {
+
             if ($event) {
                 this.checkAfectationFinalData = $event;
                 if (this.checkAfectationFinalData['afectation']) {
                     this.modifiactionFinalData['afectation'] = this.checkAfectationFinalData['afectation'];
-                    if (this.checkAfectationFinalData['afectation'].length > 0 && this.checkAfectationFinalData['balanced'] && this.checkAfectationFinalData['balanced'] === true) {
+                    if ((this.checkAfectationFinalData['afectation'].length > 0 && this.checkAfectationFinalData['balanced'] && this.checkAfectationFinalData['balanced'] === true)) {
                         this.setModValidationForm.patchValue({
                             valid: true
                         });
@@ -121,7 +122,7 @@ export class ModificacionApropiacionComponent implements OnInit, OnDestroy {
                         }
                     } else {
                         this.setModValidationForm.patchValue({
-                            valid: null
+                            valid: null                                                       
                         });
 
                     }
