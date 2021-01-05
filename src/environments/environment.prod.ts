@@ -26,7 +26,7 @@ export const environment = {
   CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/',
   KNOWAGE: {
     PROTOCOL: 'https',
-    HOST: 'tuleap.udistrital.edu.co',
+    HOST: 'tuleap.portaloas.udistrital.edu.co',
     PORT: '',
     CONTEXTPATH: 'knowage',
     USER: 'bidev',
@@ -34,7 +34,7 @@ export const environment = {
 },
   TOKEN: {
     AUTORIZATION_URL: 'https://autenticacion.portaloas.udistrital.edu.co/oauth2/authorize',
-    CLIENTE_ID: 'aWFPYYJ5gP2JdDP390gFP7gU1dYa',
+    CLIENTE_ID: 'VdsSwcysvM39q0x3awKZd6iuKqwa',
     RESPONSE_TYPE: 'id_token token',
     SCOPE: 'openid email role',
     REDIRECT_URL: 'https://presupuesto.portaloas.udistrital.edu.co',
