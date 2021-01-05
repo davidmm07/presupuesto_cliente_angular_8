@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { LocalDataSource } from 'ng2-smart-table';
-import { CDPHelper } from '../../../../@core/helpers/cdp/cdpHelper';
-import { RequestManager } from '../../../../@core/managers/requestManager';
+// import { CDPHelper } from '../../../../@core/helpers/cdp/cdpHelper';
+// import { RequestManager } from '../../../../@core/managers/requestManager';
 import { TranslateService } from '@ngx-translate/core';
 import { CRPHelper } from '../../../../@core/helpers/crp/crpHelper';
 import { DocumentoPresupuestalHelper } from '../../../../@core/helpers/documentoPresupuestal/documentoPresupuestalHelper';
@@ -35,13 +35,13 @@ export class ListCrpComponent implements OnInit {
 
   constructor(
     private translate: TranslateService,
-    private cdpHelper: CDPHelper,
+    // private cdpHelper: CDPHelper,
     private documentoPresupuestalHelper: DocumentoPresupuestalHelper,
     private vigenciaHelper: VigenciaHelper,
     // tslint:disable-next-line
     private crpHelper: CRPHelper,
     // tslint:disable-next-line
-    private rqManager: RequestManager,
+    // private rqManager: RequestManager,
     private route: ActivatedRoute
   ) {}
 
@@ -52,6 +52,7 @@ export class ListCrpComponent implements OnInit {
 
     this.loadDataFunction = this.documentoPresupuestalHelper.GetAllDocumentoPresupuestalByTipo;
     this.vigenciaHelper.getFullVigencias().subscribe((res: any[]) => {
+      // console.log(res)
       this.vigencias = res.filter(element => element.areaFuncional === '1');
       this.onSelect(this.vigenciaUrl);
     });
@@ -127,8 +128,7 @@ export class ListCrpComponent implements OnInit {
       mode: 'external',
       columns: this.listColumns,
     };
-
-    this.loadData();
+    // this.loadData();
   }
 
   getParamRoute( paramURL: string ) {
@@ -152,6 +152,7 @@ export class ListCrpComponent implements OnInit {
         crp: this.crpHelper.getSolicitudesCRP('', 'vigencia:!$' + (vigencia ? vigencia : this.vigencias[0].valor))
       }
     ).subscribe(res => {
+      // console.log('que se diceeee, trayendo datos')
       res.documentos.forEach(documento => {
         console.info(documento.Data.solicitud_crp);
         documento.solicitudCrp = res.crp.filter(crp => crp._id === documento.Data.solicitud_crp)[0].consecutivo;
@@ -175,6 +176,12 @@ export class ListCrpComponent implements OnInit {
 
   onCambiotab(): void {
     this.cambiotab = !this.cambiotab ;
+  }
+
+  RefrescarTabla(event: any) {
+    // console.log('refrescando')
+    this.cambiotab = event;
+    this.onSelect(this.vigenciaUrl);
   }
 
 }

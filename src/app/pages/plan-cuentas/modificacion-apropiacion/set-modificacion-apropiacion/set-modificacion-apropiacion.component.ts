@@ -39,6 +39,7 @@ export class SetModificacionApropiacionComponent implements OnInit {
     balanceado: boolean = false;
     vigenciaActual: number;
     selectedType: any;
+    localtabActived: boolean;
 
     constructor(private modHelper: ModApropiacionHelper,
         private comnHelper: CommonHelper) {
@@ -153,4 +154,8 @@ export class SetModificacionApropiacionComponent implements OnInit {
             changeStep: false,
         });
     }
+
+    returnToResume() {
+        this.localtabActived = true;
+      }
 }

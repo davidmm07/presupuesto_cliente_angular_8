@@ -1,11 +1,11 @@
-import { Component, OnInit, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, SimpleChanges, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'ngx-show-modification-fuente',
   templateUrl: './show-modification-fuente.component.html',
   styleUrls: ['./show-modification-fuente.component.scss']
 })
-export class ShowModificationFuenteComponent implements OnInit {
+export class ShowModificationFuenteComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.afectationData = changes['afectationData'].currentValue;
 }

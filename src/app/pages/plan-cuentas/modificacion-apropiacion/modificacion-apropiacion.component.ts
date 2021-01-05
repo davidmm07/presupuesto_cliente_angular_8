@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { DETALLE_MODIFICACION_FORM } from './detalle_modificacion_form';
 import { FormManager } from '../../../@core/managers/formManager';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,7 +11,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
     templateUrl: './modificacion-apropiacion.component.html',
     styleUrls: ['./modificacion-apropiacion.component.scss'],
 })
-export class ModificacionApropiacionComponent implements OnInit {
+export class ModificacionApropiacionComponent implements OnInit, OnDestroy {
     @ViewChild('stepper', { static: true }) stepper: MatStepper;
     formDetalle: object;
     detalleMovimiento: any;
@@ -108,11 +108,12 @@ export class ModificacionApropiacionComponent implements OnInit {
 
     public setSteppValidator($event: object) {
         setTimeout(() => {
+
             if ($event) {
                 this.checkAfectationFinalData = $event;
                 if (this.checkAfectationFinalData['afectation']) {
                     this.modifiactionFinalData['afectation'] = this.checkAfectationFinalData['afectation'];
-                    if (this.checkAfectationFinalData['afectation'].length > 0 && this.checkAfectationFinalData['balanced'] && this.checkAfectationFinalData['balanced'] === true) {
+                    if ((this.checkAfectationFinalData['afectation'].length > 0 && this.checkAfectationFinalData['balanced'] && this.checkAfectationFinalData['balanced'] === true)) {
                         this.setModValidationForm.patchValue({
                             valid: true
                         });
@@ -121,7 +122,7 @@ export class ModificacionApropiacionComponent implements OnInit {
                         }
                     } else {
                         this.setModValidationForm.patchValue({
-                            valid: null
+                            valid: null                                                       
                         });
 
                     }

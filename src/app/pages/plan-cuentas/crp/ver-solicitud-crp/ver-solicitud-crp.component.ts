@@ -80,8 +80,8 @@ export class VerSolicitudCrpComponent implements OnInit {
             this.crpHelper.getInfoCDP(this.solicitudc['vigencia'], this.solicitudc['consecutivoCdp']).subscribe(resCdp => {
               this.cdpInfo = resCdp;
               if (this.cdpInfo) {
-                this.crpHelper.getInfoCdpPC(this.cdpInfo.Data.solicitud_cdp).subscribe(res => {
-                  this.solCdpInfo = res;
+                this.crpHelper.getInfoCdpPC(this.cdpInfo.Data.solicitud_cdp).subscribe(res3 => {
+                  this.solCdpInfo = res3;
                   this.area = this.areas.filter(i => {
                     return i.Id === this.solCdpInfo.centroGestor;
                   });
