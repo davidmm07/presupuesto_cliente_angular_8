@@ -14,7 +14,7 @@ import { CRPHelper } from '../../../../@core/helpers/crp/crpHelper';
 })
 export class ListSolicitudCrpComponent implements OnInit {
   uuidReadFieldName: string;
-  loadDataFunction: (...params) => Observable<any>;
+  
   formTittle: string;
   loadFormDataFunction: (...params) => Observable<any>;
   isOnlyCrud: boolean;
@@ -37,7 +37,7 @@ export class ListSolicitudCrpComponent implements OnInit {
 
   ngOnInit() {
     this.crpHelper.getInfoContrato(458, 2017);
-    this.loadDataFunction = this.crpHelper.getFullCRP;
+    // this.loadDataFunction = this.crpHelper.getFullCRP;
 
     const areasCopy = this.areas;
 
@@ -137,7 +137,7 @@ export class ListSolicitudCrpComponent implements OnInit {
 
 
   loadData(): void {
-    this.loadDataFunction('').subscribe(res => {
+    this.crpHelper.getFullCRP().subscribe(res => {
       if (res !== null) {
         const data = <Array<any>>res;
         this.source.load(data);
