@@ -26,7 +26,7 @@ export const environment = {
   CONF_MENU_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/configuracion_crud_api/v1/menu_opcion_padre/ArbolMenus/',
   KNOWAGE: {
     PROTOCOL: 'https',
-    HOST: 'tuleap.udistrital.edu.co',
+    HOST: 'autenticacion.portaloas.udistrital.edu.co',
     PORT: '',
     CONTEXTPATH: 'knowage',
     USER: 'bidev',
