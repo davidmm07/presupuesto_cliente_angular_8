@@ -14,7 +14,7 @@ import { CRPHelper } from '../../../../@core/helpers/crp/crpHelper';
 })
 export class ListSolicitudCrpComponent implements OnInit {
   uuidReadFieldName: string;
-  loadDataFunction: (...params) => Observable<any>;
+
   formTittle: string;
   loadFormDataFunction: (...params) => Observable<any>;
   isOnlyCrud: boolean;
@@ -26,18 +26,18 @@ export class ListSolicitudCrpComponent implements OnInit {
   source: LocalDataSource = new LocalDataSource();
 
   areas = { '1': 'Rector', '2': 'Convenios' };
-  centros = {'1': 'Universidad Distrital Francisco José de Caldas' };
+  centros = { '1': 'Universidad Distrital Francisco José de Caldas' };
 
   constructor(private translate: TranslateService,
     private crpHelper: CRPHelper,
     // private cdpHelper: CDPHelper,
     // tslint:disable-next-line
     // private rqManager: RequestManager
-    ) { }
+  ) { }
 
   ngOnInit() {
     this.crpHelper.getInfoContrato(458, 2017);
-    this.loadDataFunction = this.crpHelper.getFullCRP;
+    // this.loadDataFunction = this.crpHelper.getFullCRP;
 
     const areasCopy = this.areas;
 
@@ -99,7 +99,7 @@ export class ListSolicitudCrpComponent implements OnInit {
           },
         },
         valuePrepareFunction: value => {
-          if ( value === 1) {
+          if (value === 1) {
             return 'Inversión';
           } else {
             return 'Funcionamiento';
@@ -122,7 +122,7 @@ export class ListSolicitudCrpComponent implements OnInit {
         add: false,
         edit: false,
         delete: false,
-        custom:  [{ name: 'Ver', title: '<i title="Ver" class="fas fa-eye" (click)="ver($event)"></i>' }],
+        custom: [{ name: 'Ver', title: '<i title="Ver" class="fas fa-eye" (click)="ver($event)"></i>' }],
         position: 'right'
       },
       mode: 'external',
@@ -137,7 +137,7 @@ export class ListSolicitudCrpComponent implements OnInit {
 
 
   loadData(): void {
-    this.loadDataFunction('').subscribe(res => {
+    this.crpHelper.getFullCRP().subscribe(res => {
       if (res !== null) {
         const data = <Array<any>>res;
         this.source.load(data);
@@ -148,7 +148,7 @@ export class ListSolicitudCrpComponent implements OnInit {
   }
 
 
-  loadCRPData () {
+  loadCRPData() {
     // const a = this.crpHelper.getFullCRP();
 
   }
