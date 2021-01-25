@@ -10,7 +10,7 @@ import { DocumentoPresupuestalHelper } from '../../../../@core/helpers/documento
 import { PopUpManager } from '../../../../@core/managers/popUpManager';
 import { Router } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
-import { switchMap, mergeMap, catchError } from 'rxjs/operators';
+import { switchMap, mergeMap } from 'rxjs/operators';
 import { ImplicitAutenticationService } from '../../../../@core/utils/implicit_autentication.service';
 import { TranslateService } from '@ngx-translate/core';
 
