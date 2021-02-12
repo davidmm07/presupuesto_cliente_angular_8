@@ -146,7 +146,7 @@ export class SolicitudCrpComponent implements OnInit {
   }
 
   loadOptionsCompromisos(): void {
-    this.crpHelper.getCompromisos().subscribe(res => {
+    this.crpHelper.getCompromisos().subscribe(res => { 
       if (res != null) {
         this.tipoCompromisosData = res;
       }

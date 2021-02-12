@@ -156,11 +156,11 @@ export class CRPHelper {
 
 
     public getCompromisos() {
-        this.rqManager.setPath('CORE_SERVICE');
-        return this.rqManager.get('tipo_documento/').pipe(
+        this.rqManager.setPath('PARAMETROS_SERVICE');
+        return this.rqManager.get('parametro?query=TipoParametroId:16').pipe(
             map(
                 res_tCompromiso => {
-                    return res_tCompromiso.filter(n => n.DominioTipoDocumento !== null && n.DominioTipoDocumento.Id === 4);
+                    return res_tCompromiso.Data;
                 }
             )
         );
