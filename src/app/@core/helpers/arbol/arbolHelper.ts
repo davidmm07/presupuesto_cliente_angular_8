@@ -23,6 +23,35 @@ export class ArbolHelper {
         // call request manager for the tree's data.
         return this.rqManager.get(`arbol_rubro_apropiacion/arbol_apropiacion_valores/${unidadEjecutora}/${vigencia}`);
     }
+    /**
+      * Gets full arbol
+      *  returns full rubro's tree information (all nodes and branches).
+      * @returns  data with tree structure for the ndTree module.
+      */
+    public getFullArbolbyID(vigencia = '0', id: string , level = '-1') {
+        this.rqManager.setPath('PLAN_CUENTAS_MONGO_SERVICE');
+        // this.rqManager.setPath('DUMMY_SERVICE');
+        // Set the optional branch for the API request.
+        const unidadEjecutora = 1;
+        // const raiz = 3;
+        // call request manager for the tree's data.
+        return this.rqManager.get(`arbol_rubro_apropiacion/arbol_apropiacion_valores/${unidadEjecutora}/${vigencia}/${id}?nivel=${level}`);
+    }
+
+    /**
+      * Gets full nodo
+      *  returns full rubro's tree information (all nodes and branches).
+      * @returns  data with tree structure for the ndTree module.
+      */
+    public getFullNodobyID(vigencia = '0', id: string , level = '0') {
+        this.rqManager.setPath('PLAN_CUENTAS_MID_SERVICE');
+        // this.rqManager.setPath('DUMMY_SERVICE');
+        // Set the optional branch for the API request.
+        const unidadEjecutora = 1;
+        // const raiz = 3;
+        // call request manager for the tree's data.
+        return this.rqManager.get(`apropiacion/ArbolRubroApropiacion/${unidadEjecutora}/${vigencia}/${id}?nivel=${level}`);
+    }
 
     /**
       * Gets full arbol by Estado
