@@ -1,7 +1,9 @@
 <nb-card *ngIf="opcionSeleccionada=='Rubros'">
-    <nb-card [nbSpinner]="loading" nbSpinnerSize="tiny" nbSpinnerStatus="primary">
-      <nb-card-body *ngIf="loading">
+    <nb-card>
+      <nb-card-body *ngIf="loading" >
         Cargando arbol rubros (Por favor espere unos minutos).
+        <nb-progress-bar [value]="barra" [displayValue]="true">
+        </nb-progress-bar>
       </nb-card-body>
     </nb-card>
   <nb-card-body>
@@ -39,9 +41,11 @@
 </nb-card>
 <!-- ArbolApropiaciones -->
 <nb-card *ngIf="opcionSeleccionada=='Apropiaciones' || opcionSeleccionada=='ApropiacionesEstado' ">
-  <nb-card [nbSpinner]="loading" nbSpinnerSize="tiny" nbSpinnerStatus="primary">
-    <nb-card-body *ngIf="loading">
-      Cargando arbol apropiación (Por favor espere unos minutos).
+  <nb-card>
+    <nb-card-body *ngIf="loading" >
+      Cargando arbol rubros (Por favor espere unos minutos).
+      <nb-progress-bar [value]="barra" [displayValue]="true">
+      </nb-progress-bar>
     </nb-card-body>
   </nb-card>
   <nb-card-body>
