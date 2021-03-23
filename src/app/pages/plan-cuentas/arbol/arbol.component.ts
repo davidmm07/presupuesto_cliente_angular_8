@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnChanges, ViewChildren, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit ,Input, EventEmitter, Output, OnChanges, ViewChildren, ElementRef, Renderer2 } from '@angular/core';
 import {
   NbGetters,
   NbSortDirection,
@@ -40,7 +40,7 @@ interface EstructuraArbolRubrosApropiaciones {
   templateUrl: './arbol.component.html',
   styleUrls: ['./arbol.component.scss'],
 })
-export class ArbolComponent implements OnChanges {
+export class ArbolComponent implements OnInit, OnChanges {
   @Output() rubroSeleccionado = new EventEmitter();
   @Input() updateSignal: Observable<string[]>;
   @Input() optionSelect: string;
@@ -67,6 +67,7 @@ export class ArbolComponent implements OnChanges {
   isSelected: boolean;
   searchValue: string;
   nodo: any;
+  barra: any;
 
   loading = true;
 
@@ -78,6 +79,11 @@ export class ArbolComponent implements OnChanges {
     private rubroHelper: RubroHelper) {
 
   }
+
+  ngOnInit() {
+    this.barra = 0;
+  }
+
   ngOnChanges(changes) {
     if (changes.optionSelect !== undefined) {
       if (changes.optionSelect.currentValue !== undefined) {
@@ -123,31 +129,31 @@ export class ArbolComponent implements OnChanges {
       }
     ).
     subscribe((res) => {
-
       const hijos_2  = this.consultarHijos(res.root_2, '2');
       const hijos_3  = this.consultarHijos(res.root_3, '2');
+      this.barra = 30;
       const hijos = hijos_2.concat(hijos_3);
       const obs: any[] = [];
       for ( const hijo of hijos) {
         obs.push(this.rubroHelper.getArbolReducido(hijo, '-1'));
       }
-      zip(...obs).subscribe((resHijos) => {
+      this.barra = 60;
+      zip(...obs)
+      .subscribe((resHijos) => {
         res.root_2 = this.reconstruirArbol(res.root_2, resHijos, '2');
         res.root_3 = this.reconstruirArbol(res.root_3, resHijos.slice(hijos_2.length, hijos_2.length + hijos_3.length), '2');
-
+        this.barra = 90;        
         this.reduceData = res.root_2.concat(res.root_3);
         this.dataSource = this.dataSourceBuilder.create(this.reduceData, getters);
         this.loadedTreeRubros();
-
       });
-
     });
   }
 
   loadedTreeRubros() {
     this.loading = false;
+    this.barra = 0;
   }
-
 
   loadTreeApropiaciones() {
     const getters: NbGetters<EstructuraArbolRubrosApropiaciones, EstructuraArbolRubrosApropiaciones> = {
@@ -172,7 +178,6 @@ export class ArbolComponent implements OnChanges {
         }
       ).
       subscribe((res) => {
-
         const hijos_2  = this.consultarHijos(res.raiz_2, '2');
         hijos_2[0] = '2-01-001-02'; // evita consultar la raiz 2-00-991-00 ya que se realiza aparte
         const hijos_3  = this.consultarHijos(res.raiz_3, '2');
@@ -183,6 +188,7 @@ export class ArbolComponent implements OnChanges {
         hijos_3_1[3] = '3-00-991-00-00-01'; // evita consultar la raiz 3-00-991-00-00-29 ya que se realiza aparte
         const hijos = hijos_2.concat(hijos_3, hijos_2_1, hijos_3_1);
         const obs: any[] = [];
+        this.barra = 40;
         for ( const hijo of hijos) {
           obs.push(this.treeHelper.getFullArbolbyID(this.vigenciaSeleccionada, hijo, '-1'));
         }
@@ -196,6 +202,8 @@ export class ArbolComponent implements OnChanges {
           res.raiz_4[0].children[0].children[4] = res.raiz_6[0];
           res.raiz_5[0].children[0].children[3] = res.raiz_7[0];
 
+          this.barra = 80;
+          
           const childrenData2 = { children : []};
           childrenData2.children = childrenData2.children.concat(res.raiz_4);
           res.raiz_2[0].children[0].children[0].children[0] = Object.assign(res.raiz_2[0].children[0].children[0], childrenData2);
@@ -335,12 +343,10 @@ export class ArbolComponent implements OnChanges {
       this.updateHighlight(treegrid.elementRef, selectedItem.data);
       return true;
     }
-    return false;
+    return false; 
   }
 
 }
-
-
 
 @Component({
   selector: 'ngx-nb-fs-icon',

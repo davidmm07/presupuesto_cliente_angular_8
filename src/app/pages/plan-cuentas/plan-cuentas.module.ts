@@ -13,6 +13,7 @@ import {
   NbTooltipModule,
   NbRadioModule,
   NbSpinnerModule,
+  NbProgressBarModule,
   NbCheckboxModule } from '@nebular/theme';
 
 import { ProductosRubroComponent } from './rubros/productos-rubro/productos-rubro.component';
@@ -105,7 +106,8 @@ import { LinkSmartTableComponent } from '../ui-features/link-smart-table/link-sm
     ToasterModule,
     MatStepperModule,
     CurrencyMaskModule,
-    NbSpinnerModule
+    NbSpinnerModule,
+    NbProgressBarModule
   ],
   exports: [
   ],
