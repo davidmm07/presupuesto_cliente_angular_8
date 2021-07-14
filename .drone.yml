@@ -54,7 +54,12 @@ steps:
   - npm run lint
   when:
     branch:
+    - develop
+    - feature/*
+    - hotfix/*
     - unitest
+    event:
+    - push
 
 - name: run_sonar_scanner
   image: aosapps/drone-sonar-plugin
@@ -80,6 +85,8 @@ steps:
   - npm run build:test
   when:
     branch:
+    - develop
+    - feature/*
     - release/*
     event:
     - push
@@ -93,6 +100,7 @@ steps:
   when:
     branch:
     - master
+    - hotfix/*
     event:
     - push
 
