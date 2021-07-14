@@ -1,4 +1,4 @@
-import { Component, OnInit ,Input, EventEmitter, Output, OnChanges, ViewChildren, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit , Input, EventEmitter, Output, OnChanges, ViewChildren, ElementRef, Renderer2 } from '@angular/core';
 import {
   NbGetters,
   NbSortDirection,
@@ -142,7 +142,7 @@ export class ArbolComponent implements OnInit, OnChanges {
       .subscribe((resHijos) => {
         res.root_2 = this.reconstruirArbol(res.root_2, resHijos, '2');
         res.root_3 = this.reconstruirArbol(res.root_3, resHijos.slice(hijos_2.length, hijos_2.length + hijos_3.length), '2');
-        this.barra = 90;        
+        this.barra = 90;
         this.reduceData = res.root_2.concat(res.root_3);
         this.dataSource = this.dataSourceBuilder.create(this.reduceData, getters);
         this.loadedTreeRubros();
@@ -203,7 +203,7 @@ export class ArbolComponent implements OnInit, OnChanges {
           res.raiz_5[0].children[0].children[3] = res.raiz_7[0];
 
           this.barra = 80;
-          
+
           const childrenData2 = { children : []};
           childrenData2.children = childrenData2.children.concat(res.raiz_4);
           res.raiz_2[0].children[0].children[0].children[0] = Object.assign(res.raiz_2[0].children[0].children[0], childrenData2);
@@ -343,7 +343,7 @@ export class ArbolComponent implements OnInit, OnChanges {
       this.updateHighlight(treegrid.elementRef, selectedItem.data);
       return true;
     }
-    return false; 
+    return false;
   }
 
 }
