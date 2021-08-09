@@ -14,6 +14,7 @@ import { registerLocaleData } from '@angular/common';
 
 import locales from '@angular/common/locales/es-CO';
 import { zip } from 'rxjs';
+import { ConnectedOverlayPositionChange } from '@angular/cdk/overlay';
 
 registerLocaleData(locales, 'co');
 
@@ -116,12 +117,12 @@ export class ArbolComponent implements OnInit, OnChanges {
   // private data2: EstructuraArbolRubrosApropiaciones[];
   private reduceData: EstructuraArbolRubrosApropiaciones[];
   loadTreeRubros() {
+    
     const getters: NbGetters<EstructuraArbolRubrosApropiaciones, EstructuraArbolRubrosApropiaciones> = {
       dataGetter: (node: EstructuraArbolRubrosApropiaciones) => node.data || null ,
       childrenGetter: (node: EstructuraArbolRubrosApropiaciones) => !!node.children && !!node.children.length  ?  node.children : [] ,
       expandedGetter: (node: EstructuraArbolRubrosApropiaciones) => !!node.expanded ,
     };
-
     forkJoin(
       {
         root_2: this.rubroHelper.getArbolReducido('2', '2'),
@@ -221,54 +222,64 @@ export class ArbolComponent implements OnInit, OnChanges {
   }
 
   reconstruirArbol(raiz: any , hijos: any, nivel: string) {
+    //console.log(raiz, hijos, nivel);
     if (nivel === '2') {
       let contador: number = 0;
-      raiz[0].children.forEach((element, index)  => {
-        raiz[0].children[index].children.forEach((element2, index2)  => {
-          const childrenData2 = { children : []};
-          raiz[0].children[index].children[index2].Hijos.forEach((element3, index3) => {
-            childrenData2.children = childrenData2.children.concat(hijos[contador]);
-            raiz[0].children[index].children[index2] = Object.assign(raiz[0].children[index].children[index2], childrenData2);
-            contador += 1;
-         });
+      if(raiz[0].children != null) {
+        raiz[0].children.forEach((element, index)  => {
+          raiz[0].children[index].children.forEach((element2, index2)  => {
+            const childrenData2 = { children : []};
+            raiz[0].children[index].children[index2].Hijos.forEach((element3, index3) => {
+              childrenData2.children = childrenData2.children.concat(hijos[contador]);
+              raiz[0].children[index].children[index2] = Object.assign(raiz[0].children[index].children[index2], childrenData2);
+              contador += 1;
+          });
+          });
         });
-      });
+      }
       return raiz;
     } else {
       let contador: number = 0;
-      raiz[0].children.forEach((element, index)  => {
-        const childrenData2 = { children : []};
-        raiz[0].children[index].Hijos.forEach((element2, index2)  => {
-            childrenData2.children = childrenData2.children.concat(hijos[contador]);
-            raiz[0].children[index] = Object.assign(raiz[0].children[index], childrenData2);
-            contador += 1;
+      if(raiz[0].children != null){
+        raiz[0].children.forEach((element, index)  => {
+          const childrenData2 = { children : []};
+          raiz[0].children[index].Hijos.forEach((element2, index2)  => {
+              childrenData2.children = childrenData2.children.concat(hijos[contador]);
+              raiz[0].children[index] = Object.assign(raiz[0].children[index], childrenData2);
+              contador += 1;
 
+          });
         });
-      });
+      }
       return raiz;
     }
 
   }
 
   consultarHijos(raiz: any, nivel: string)  {
-
     if (nivel === '2') {
       const hijos: string[] = [];
-      raiz[0].children.forEach((element, index)  => {
-         raiz[0].children[index].children.forEach((element2, index2)  => {
-           raiz[0].children[index].children[index2].Hijos.forEach((element3, index3) => {
-            hijos.push(element3);
+      if(raiz[0].children != null) {
+        raiz[0].children.forEach((element, index)  => {
+          //raiz[0].children[index].children.forEach((element2, index2)  => {
+         element.children.forEach((element2, index2)  => {  
+            //raiz[0].children[index].children[index2].Hijos.forEach((element3, index3) => {
+            element2.Hijos.forEach((element3, index3) => {
+              hijos.push(element3);
+            });
           });
-         });
-      });
+        });
+      }
       return hijos;
     } else {
       const hijos: string[] = [];
-      raiz[0].children.forEach((element, index)  => {
-         raiz[0].children[index].Hijos.forEach((element2, index2)  => {
-            hijos.push(element2);
-         });
-      });
+      if(raiz[0].children != null){
+        raiz[0].children.forEach((element, index)  => {
+          raiz[0].children[index].Hijos.forEach((element2, index2)  => {
+              hijos.push(element2);
+          });
+        });
+      }
       return hijos;
     }
 
