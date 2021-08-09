@@ -51,7 +51,7 @@ steps:
   image: node:12.6.0
   commands:
   - npm i
-  - npm run lint
+  - npm run lint:ci
   when:
     branch:
     - develop
@@ -72,6 +72,8 @@ steps:
     branch:
     - develop
     - feature/*
+    - hotfix/*
+    - master
     - release/*
     event:
     - push
