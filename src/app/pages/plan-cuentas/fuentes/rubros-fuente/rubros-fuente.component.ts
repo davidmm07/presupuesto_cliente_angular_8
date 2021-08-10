@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { FuenteHelper } from '../../../../@core/helpers/fuentes/fuenteHelper';
 import { DependenciaHelper } from '../../../../@core/helpers/oikos/dependenciaHelper';
 import { ApropiacionHelper } from '../../../../@core/helpers/apropiaciones/apropiacionHelper';
@@ -115,7 +115,7 @@ export class RubrosFuenteComponent implements OnInit {
   }
 
   loadInfoFuente() {
-    if (parseInt(this.vigencia) > 0) {
+    if (parseInt(this.vigencia, 10) > 0) {
       this.loadInfoIncome();
       this.fuenteHelper.getPlanAdquisicionByFuente(this.vigencia, this.fuente_codigo).subscribe((res) => {
         if (res) {
@@ -123,14 +123,14 @@ export class RubrosFuenteComponent implements OnInit {
           this.planAdquisicionesFuente.totalPlanAdquisiciones = res.fuente_financiamiento.total_saldo_fuente;
           this.planAdquisicionesFuente.totalSaldoFuente = this.infoinput.ValorActual - this.planAdquisicionesFuente.totalPlanAdquisiciones;
           this.planAdquisicionesFuente.rubros.map((item) => {
-            this.dependenciaHelper.get(item.dependencia).subscribe((res) => {
-              if (res.Body !== null) {
-                item.dependencia = res.Nombre;
+            this.dependenciaHelper.get(item.dependencia).subscribe((res1) => {
+              if (res1.Body !== null) {
+                item.dependencia = res1.Nombre;
               }
             });
-            this.apHelper.getFullArbolByNode(item.rubro, this.vigencia).subscribe((res) => {
-              if (res) {
-                item.rubro = res[0].data;
+            this.apHelper.getFullArbolByNode(item.rubro, this.vigencia).subscribe((res2) => {
+              if (res2) {
+                item.rubro = res2[0].data;
               }
             });
           });
@@ -143,14 +143,16 @@ export class RubrosFuenteComponent implements OnInit {
   loadInfoIncome(Codigo?: string) {
     if (this.infoinput.Rubros && !Codigo) {
       for (const key in this.infoinput.Rubros) {
-        const element = this.infoinput.Rubros[key];
-        if (element.Tipo === 'INGRESO') {
-          this.apHelper.getFullArbolByNode(key, this.infoinput.Vigencia).subscribe((response) => {
-            if (response) {
-              this.rbIncome = response[0].data;
-              console.info(this.rbIncome);
-            }
-          });
+        if (true) {
+          const element = this.infoinput.Rubros[key];
+          if (element.Tipo === 'INGRESO') {
+            this.apHelper.getFullArbolByNode(key, this.infoinput.Vigencia).subscribe((response) => {
+              if (response) {
+                this.rbIncome = response[0].data;
+                console.info(this.rbIncome);
+              }
+            });
+          }
         }
       }
     } else {
@@ -172,9 +174,11 @@ export class RubrosFuenteComponent implements OnInit {
       this.incomeRubroAdd = $event;
       if (this.infoinput.Rubros) {
         for (const key in this.infoinput.Rubros) {
-          const element = this.infoinput.Rubros[key];
-          if (element.Tipo === 'INGRESO') {
-            delete this.infoinput.Rubros[key];
+          if (true) {
+            const element = this.infoinput.Rubros[key];
+            if (element.Tipo === 'INGRESO') {
+              delete this.infoinput.Rubros[key];
+            }
           }
         }
       }

@@ -29,6 +29,26 @@ export class RubroHelper {
         return this.rqManager.get(`arbol_rubro/arbol/${branch}`, params);
 
     }
+    /**
+     * Gets arbol reducido
+     *  returns one tree level at once.
+     * @param [branch] tree's branch to request info from the API
+     * @param [level] tree's level to request info from the API
+     * @returns  branch information.
+     */
+    public getArbolReducido(branch?: string, level?: string) {
+        this.rqManager.setPath('PLAN_CUENTAS_MONGO_SERVICE');
+        // this.rqManager.setPath('DUMMY_SERVICE');
+        // Set the optional branch for the API request.
+        // const unidadEjecutora = 1;
+        const params = {
+            rama: branch,
+            nivel: level,
+        };
+        // call request manager for the tree's data.
+        return this.rqManager.get(`arbol_rubro/arbol_reducido/${branch}?nivel=${level}`, params);
+
+    }
 
 
     public getRubro(codigo: string) {

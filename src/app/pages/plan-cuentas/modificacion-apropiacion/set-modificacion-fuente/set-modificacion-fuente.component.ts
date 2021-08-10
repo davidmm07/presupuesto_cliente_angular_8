@@ -128,14 +128,16 @@ export class SetModificacionFuenteComponent implements OnInit {
           console.info(this.movOrigen.Codigo);
           this.modValueForm.controls['movimientoOrigen'].patchValue(`${this.movOrigen.Codigo} / ${this.movOrigen.Nombre}`);
           for (const key in this.movOrigen.Rubros) {
-            const element = this.movOrigen.Rubros[key];
-            if (element.Tipo === 'INGRESO') {
-              this.apHelper.getFullArbolByNode(key, this.movOrigen.Vigencia).subscribe((response) => {
-                if (response) {
-                  this.cuentaCredito = response[0].data;
-                  this.modValueForm.controls['cuentaCredito'].patchValue(`${this.cuentaCredito.Codigo} / ${this.cuentaCredito.Nombre}`);
-                }
-              });
+            if (true) {
+              const element = this.movOrigen.Rubros[key];
+              if (element.Tipo === 'INGRESO') {
+                this.apHelper.getFullArbolByNode(key, this.movOrigen.Vigencia).subscribe((response) => {
+                  if (response) {
+                    this.cuentaCredito = response[0].data;
+                    this.modValueForm.controls['cuentaCredito'].patchValue(`${this.cuentaCredito.Codigo} / ${this.cuentaCredito.Nombre}`);
+                  }
+                });
+              }
             }
           }
           break;

@@ -3,10 +3,10 @@ import { FormControl } from '@angular/forms';
 import { ValidationService } from '../../../@core/data/validators.service';
 
 @Component({
-  selector: 'npx-control-messages',
+  selector: 'ngx-control-messages',
   template: `<div *ngIf="errorMessage !== null" class="alert alert-danger">{{errorMessage}}</div>`
 })
-export class ControlMessages {
+export class ControlMessagesComponent {
 
   @Input() control: FormControl;
   constructor() { }

@@ -113,8 +113,8 @@ export class ListarVigenciaComponent implements OnInit {
   }
 
   loadData(): void {
-    const vigencias = this.loadDataFunction(
-    ).subscribe(res => {
+    const vigencias = this.loadDataFunction();
+    vigencias.subscribe(res => {
       const data = <Array<any>>res;
       this.source.load(data);
     });

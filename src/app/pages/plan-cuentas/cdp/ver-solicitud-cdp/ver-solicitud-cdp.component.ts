@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
 import { switchMap, mergeMap } from 'rxjs/operators';
 import { ImplicitAutenticationService } from '../../../../@core/utils/implicit_autentication.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-ver-solicitud-cdp',
@@ -53,13 +54,15 @@ export class VerSolicitudCdpComponent implements OnInit {
     private popManager: PopUpManager,
     private router: Router,
     private implicitAutenticationService: ImplicitAutenticationService,
-    private admAmazonHelper: AdmAmazonHelper
+    private admAmazonHelper: AdmAmazonHelper,
+    private translate: TranslateService,
   ) {
     this.movimientosRp = [];
   }
 
   ngOnInit() {
     let trNecesidad: object;
+
     this.getInfoRp();
 
     this.cdpHelper.getFullNecesidad(this.solicitud['necesidad']).pipe(
@@ -105,13 +108,22 @@ export class VerSolicitudCdpComponent implements OnInit {
           }
         });
       }
-      this.TrNecesidad = trNecesidad;
 
-      this.admAmazonHelper.getProveedor(this.TrNecesidad['Necesidad']['DependenciaNecesidadId']['OrdenadorGastoId']).subscribe(res => {
-        if (res) {
-          this.ordenadorGasto = res['NomProveedor'];
+      this.TrNecesidad = trNecesidad;
+      this.admAmazonHelper.getProveedor(this.TrNecesidad['Necesidad']['DependenciaNecesidadId']['OrdenadorGastoId'])
+      .subscribe(res1 => {
+
+        if (res1) {
+          this.ordenadorGasto = res1['NomProveedor'];
         }
-      });
+      },
+        (error: any) => {
+          this.popManager.showErrorToast(this.translate.instant(`ERROR.${error['status']}`));
+        }
+      );
+    },
+    (error: any) => {
+      this.popManager.showErrorToast(this.translate.instant(`ERROR.${error['status']}`));
     });
 
 
@@ -138,8 +150,8 @@ export class VerSolicitudCdpComponent implements OnInit {
         res.forEach(element  => {
           movimientosRequest.push(this.movimientosHelper.getByMovimientoPadre(this.solicitud['Vigencia'], this.solicitud['CentroGestor'], element._id));
         });
-        forkJoin(movimientosRequest).subscribe(res => {
-          res.forEach(element => {
+        forkJoin(movimientosRequest).subscribe(res2 => {
+          res2.forEach(element => {
             if (element) {
               this.movimientosRp.push(element);
             }
