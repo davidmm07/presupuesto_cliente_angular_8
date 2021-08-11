@@ -15,7 +15,7 @@ import { switchMap } from 'rxjs/operators';
 @Component({
   selector: 'ngx-solicitud-crp',
   templateUrl: './solicitud-crp.component.html',
-  styleUrls: ['./solicitud-crp.component.scss']
+  styleUrls: ['./solicitud-crp.component.scss'],
 })
 export class SolicitudCrpComponent implements OnInit {
   info_solCrp: SolicitudCrp;
@@ -28,21 +28,41 @@ export class SolicitudCrpComponent implements OnInit {
   valorCrp: number;
 
   numeroCdp: number = null;
-  numDocBeneficiario =  '';
+  numDocBeneficiario = '';
   nomBeneficiario = '';
   validated = false;
   clean = false;
-  vigencias = [{ Id: 1, valor: '2017' }, { Id: 2, valor: '2018' }, { Id: 3, valor: '2019' }, { Id: 4, valor: '2020' }];
-  montos = [{ Id: 1, valor: 'Monto Parcial' }, { Id: 2, valor: 'Monto Total' }];
+  vigencias = [
+    { Id: 1, valor: '2017' },
+    { Id: 2, valor: '2018' },
+    { Id: 3, valor: '2019' },
+    { Id: 4, valor: '2020' },
+  ];
+  montos = [
+    { Id: 1, valor: 'Monto Parcial' },
+    { Id: 2, valor: 'Monto Total' },
+  ];
 
   formGroup = new FormGroup({
     tipoCompromiso: new FormControl(null, Validators.required),
     vigencia: new FormControl(null, Validators.required),
     numCompromiso: new FormControl(null, Validators.required),
-    fechaIniVigencia: new FormControl({value: new Date(), disabled: true}, Validators.required),
-    fechaFinVigencia: new FormControl({value: new Date(), disabled: true}, Validators.required),
-    tipoMonto: new FormControl({value: null, disabled: true}, Validators.required),
-    valorCrp: new FormControl({value: 0, disabled: true}, [Validators.required, Validators.min(1)])
+    fechaIniVigencia: new FormControl(
+      { value: new Date(), disabled: true },
+      Validators.required
+    ),
+    fechaFinVigencia: new FormControl(
+      { value: new Date(), disabled: true },
+      Validators.required
+    ),
+    tipoMonto: new FormControl(
+      { value: null, disabled: true },
+      Validators.required
+    ),
+    valorCrp: new FormControl({ value: 0, disabled: true }, [
+      Validators.required,
+      Validators.min(1),
+    ]),
   });
 
   constructor(
@@ -67,7 +87,9 @@ export class SolicitudCrpComponent implements OnInit {
   onChangeMonto() {
     if (this.formGroup.value.tipoMonto === 2) {
       this.formGroup.controls['valorCrp'].disable();
-      this.formGroup.controls['valorCrp'].setValue(this.docPresupuestalCdp.ValorActual);
+      this.formGroup.controls['valorCrp'].setValue(
+        this.docPresupuestalCdp.ValorActual
+      );
     } else {
       this.formGroup.controls['valorCrp'].enable();
       this.formGroup.controls['valorCrp'].setValue(0);
@@ -76,10 +98,11 @@ export class SolicitudCrpComponent implements OnInit {
 
   guardar() {
     if (this.formGroup.value.valorCrp === 0) {
-
     }
     if (this.formGroup.value.valorCrp > this.docPresupuestalCdp.ValorActual) {
-      this.popManager.showErrorAlert('El valor del CRP no debe ser mayor al saldo del CDP');
+      this.popManager.showErrorAlert(
+        'El valor del CRP no debe ser mayor al saldo del CDP'
+      );
     } else {
       this.solCrpData = {
         ConsecutivoCDP: this.numeroCdp,
@@ -92,12 +115,16 @@ export class SolicitudCrpComponent implements OnInit {
         },
         FechaCreacion: new Date(),
         FechaInicialVigencia: this.formGroup.value.fechaIniVigencia,
-        FechaFinalVigencia: this.formGroup.value.fechaFinVigencia
+        FechaFinalVigencia: this.formGroup.value.fechaFinVigencia,
       };
 
       this.crpHelper.solCrpRegister(this.solCrpData).subscribe((res) => {
         if (res) {
-          this.popManager.showSuccessAlert(this.translate.instant('CRP.Solicitud_efectuada'), 'La solicitud N° ' + res.consecutivo + ' ha sido registrada')
+          this.popManager
+            .showSuccessAlert(
+              this.translate.instant('CRP.Solicitud_efectuada'),
+              'La solicitud N° ' + res.consecutivo + ' ha sido registrada'
+            )
             .then((result) => {
               if (result.value) {
                 this.router.navigate(['/pages/plan-cuentas/solicitudcrp']);
@@ -109,44 +136,66 @@ export class SolicitudCrpComponent implements OnInit {
   }
 
   buscarCompromiso() {
-    this.crpHelper.getContratoSuscrito(this.formGroup.value.numCompromiso, this.formGroup.value.vigencia).pipe(
-      switchMap(resCS => this.crpHelper.getContratoDisponibilidad(resCS[0].NumeroContrato.Id))
-      ).pipe(
-        switchMap(resCD => {
+    this.crpHelper
+      .getContratoSuscrito(
+        this.formGroup.value.numCompromiso,
+        this.formGroup.value.vigencia
+      )
+      .pipe(
+        switchMap((resCS) =>
+          this.crpHelper.getContratoDisponibilidad(resCS[0].NumeroContrato.Id)
+        )
+      )
+      .pipe(
+        switchMap((resCD) => {
           this.numeroCdp = resCD[0].NumeroCdp;
-          return this.crpHelper.getContratoGeneral(resCD[0].NumeroContrato, resCD[0].Vigencia);
-        }),
-      ).pipe(
-        switchMap(resCG => this.crpHelper.getContratista(resCG[0].Contratista))
-      ).subscribe(resIP => {
+          return this.crpHelper.getContratoGeneral(
+            resCD[0].NumeroContrato,
+            resCD[0].Vigencia
+          );
+        })
+      )
+      .pipe(
+        switchMap((resCG) =>
+          this.crpHelper.getContratista(resCG[0].Contratista)
+        )
+      )
+      .subscribe((resIP) => {
         if (resIP) {
           this.numDocBeneficiario = resIP.NumDocumento;
           this.nomBeneficiario = resIP.NomProveedor;
         }
         const vigencia = this.formGroup.value.vigencia;
         const query = 'consecutivo:' + this.numeroCdp + ',tipo:cdp';
-        this.docPresupuestalHelper.get(vigencia, '1', query).pipe(
-          switchMap(res =>  {
-            this.docPresupuestalCdp = res[0];
-            return this.movimientosHelper.getByDocumentoPresupuestal(vigencia, '1', res[0]['_id']);
-          })
-        ).subscribe((res: Array<any>) => {
-          res.forEach(element => {
-            this.rubroHelper.getRubro(element.Padre).subscribe(res3 => {
-              element.InfoRubro = res3[0];
+        this.docPresupuestalHelper
+          .get(vigencia, '1', query)
+          .pipe(
+            switchMap((res) => {
+              this.docPresupuestalCdp = res[0];
+              return this.movimientosHelper.getByDocumentoPresupuestal(
+                vigencia,
+                '1',
+                res[0]['_id']
+              );
+            })
+          )
+          .subscribe((res: Array<any>) => {
+            res.forEach((element) => {
+              this.rubroHelper.getRubro(element.Padre).subscribe((res3) => {
+                element.InfoRubro = res3[0];
+              });
             });
+            console.info(res);
+            this.rubrosCdp = res;
+            this.formGroup.controls['tipoMonto'].enable();
+            this.formGroup.controls['fechaIniVigencia'].enable();
+            this.formGroup.controls['fechaFinVigencia'].enable();
           });
-          console.info(res);
-          this.rubrosCdp = res;
-          this.formGroup.controls['tipoMonto'].enable();
-          this.formGroup.controls['fechaIniVigencia'].enable();
-          this.formGroup.controls['fechaFinVigencia'].enable();
-        });
       });
   }
 
   loadOptionsCompromisos(): void {
-    this.crpHelper.getCompromisos().subscribe(res => {
+    this.crpHelper.getCompromisos().subscribe((res) => {
       if (res != null) {
         this.tipoCompromisosData = res;
       }
