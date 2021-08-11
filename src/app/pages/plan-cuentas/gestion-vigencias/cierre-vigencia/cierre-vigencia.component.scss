@@ -1,9 +1,9 @@
-
 :host /deep/ .moneyField {
     text-align: right;
 }
 
-:host ::ng-deep ng2-st-tbody-edit-delete {display: flex !important;
+:host ::ng-deep ng2-st-tbody-edit-delete {
+    display: flex !important;
     height: 0 !important;
   }
 
@@ -22,10 +22,10 @@
     background-color: #fff5cc;
   }
 
-  :host /deep/ .ng2-smart-sort-link{
+  :host /deep/ .ng2-smart-sort-link {
     font-weight: bold;
   }
 
   :host /deep/ .ng2-smart-title {
-    font-weight: bold
+    font-weight: bold;
   }
