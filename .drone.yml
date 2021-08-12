@@ -68,7 +68,7 @@ steps:
       from_secret: SONAR_HOST
     sonar_token:
       from_secret: SONAR_TOKEN
-    exclusions: **/node_modules/**,**/*.spec.ts,**/*.scss
+    exclusions: "**/node_modules/**,**/*.spec.ts,**/*.scss"
   when:
     branch:
     - develop
