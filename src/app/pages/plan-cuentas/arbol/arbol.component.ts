@@ -189,7 +189,6 @@ export class ArbolComponent implements OnInit, OnChanges {
     this.customColumn = 'Codigo';
     this.defaultColumns = ['Nombre', 'ValorInicial'];
     this.allColumns = [this.customColumn, ...this.defaultColumns];
-
     if (this.vigenciaSeleccionada) {
       forkJoin({
         raiz_2: this.treeHelper.getFullArbolbyID(
@@ -202,36 +201,10 @@ export class ArbolComponent implements OnInit, OnChanges {
           '3',
           '2'
         ),
-        raiz_4: this.treeHelper.getFullArbolbyID(
-          this.vigenciaSeleccionada,
-          '2-00-991-00',
-          '1'
-        ),
-        raiz_5: this.treeHelper.getFullArbolbyID(
-          this.vigenciaSeleccionada,
-          '3-00-991-00',
-          '1'
-        ),
-        raiz_6: this.treeHelper.getFullNodobyID(
-          this.vigenciaSeleccionada,
-          '2-00-991-00-00-29',
-          '0'
-        ),
-        raiz_7: this.treeHelper.getFullNodobyID(
-          this.vigenciaSeleccionada,
-          '3-00-991-00-00-29',
-          '0'
-        ),
       }).subscribe((res) => {
         const hijos_2 = this.consultarHijos(res.raiz_2, '2');
-        hijos_2[0] = '2-01-001-02'; // evita consultar la raiz 2-00-991-00 ya que se realiza aparte
         const hijos_3 = this.consultarHijos(res.raiz_3, '2');
-        hijos_3[0] = '3-01-001-01'; // evita consultar la raiz 3-00-991-00 ya que se realiza aparte
-        const hijos_2_1 = this.consultarHijos(res.raiz_4, '1');
-        hijos_2_1[4] = '2-00-991-00-00-00'; // evita consultar la raiz 2-00-991-00-00-29 ya que se realiza aparte
-        const hijos_3_1 = this.consultarHijos(res.raiz_5, '1');
-        hijos_3_1[3] = '3-00-991-00-00-01'; // evita consultar la raiz 3-00-991-00-00-29 ya que se realiza aparte
-        const hijos = hijos_2.concat(hijos_3, hijos_2_1, hijos_3_1);
+        const hijos = hijos_2.concat(hijos_3);
         const obs: any[] = [];
         this.barra = 40;
         for (const hijo of hijos) {
@@ -250,38 +223,8 @@ export class ArbolComponent implements OnInit, OnChanges {
             resHijos.slice(hijos_2.length, hijos_2.length + hijos_3.length),
             '2'
           );
-          res.raiz_4 = this.reconstruirArbol(
-            res.raiz_4,
-            resHijos.slice(
-              hijos_2.length + hijos_3.length,
-              hijos_2.length + hijos_3.length + hijos_2_1.length
-            ),
-            '1'
-          );
-          res.raiz_5 = this.reconstruirArbol(
-            res.raiz_5,
-            resHijos.slice(hijos_2.length + hijos_3.length + hijos_2_1.length),
-            '1'
-          );
-
-          res.raiz_4[0].children[0].children[4] = res.raiz_6[0];
-          res.raiz_5[0].children[0].children[3] = res.raiz_7[0];
 
           this.barra = 80;
-
-          const childrenData2 = { children: [] };
-          childrenData2.children = childrenData2.children.concat(res.raiz_4);
-          res.raiz_2[0].children[0].children[0].children[0] = Object.assign(
-            res.raiz_2[0].children[0].children[0],
-            childrenData2
-          );
-
-          const childrenData3 = { children: [] };
-          childrenData3.children = childrenData3.children.concat(res.raiz_5);
-          res.raiz_3[0].children[0].children[0].children[0] = Object.assign(
-            res.raiz_3[0].children[0].children[0],
-            childrenData3
-          );
 
           this.data = res.raiz_2.concat(res.raiz_3);
           this.dataSource2 = this.dataSourceBuilder2.create(this.data, getters);

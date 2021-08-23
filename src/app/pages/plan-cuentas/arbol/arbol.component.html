@@ -11,7 +11,7 @@
       "GLOBAL.buscar" | translate
     }}</label>
     <input nbInput [nbFilterInput]="dataSource" id="search" class="search-input" [(ngModel)]="searchValue"  />
-    <table  [nbTreeGrid]="dataSource" [nbSort]="dataSource" (sort)="updateSort($event)" >
+    <table  [nbTreeGrid]="dataSource" [nbSort]="dataSource" (sort)="updateSort($event)">
       <tr nbTreeGridHeaderRow *nbTreeGridHeaderRowDef="allColumns"></tr>
       <tr #nebularTree class="table-row" [class.highlight]="validHighlight(row, nebularTree)" (click)="onSelect(row, nebularTree);" nbTreeGridRow *nbTreeGridRowDef="let row; columns: allColumns" [attr.data-picker]="row.data.Codigo"></tr>
       <ng-container [nbTreeGridColumnDef]="customColumn" >
