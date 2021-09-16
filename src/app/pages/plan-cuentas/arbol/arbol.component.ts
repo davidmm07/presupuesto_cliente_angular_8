@@ -8,7 +8,7 @@ import {
   ViewChildren,
   ElementRef,
   Renderer2,
-} from "@angular/core";
+} from '@angular/core';
 import {
   NbGetters,
   NbSortDirection,
@@ -16,16 +16,16 @@ import {
   NbTreeGridDataSource,
   NbTreeGridDataSourceBuilder,
   NbSortRequest,
-} from "@nebular/theme";
-import { Observable, forkJoin } from "rxjs";
-import { ArbolHelper } from "../../../@core/helpers/arbol/arbolHelper";
-import { RubroHelper } from "../../../@core/helpers/rubros/rubroHelper";
-import { registerLocaleData } from "@angular/common";
+} from '@nebular/theme';
+import { Observable, forkJoin } from 'rxjs';
+import { ArbolHelper } from '../../../@core/helpers/arbol/arbolHelper';
+import { RubroHelper } from '../../../@core/helpers/rubros/rubroHelper';
+import { registerLocaleData } from '@angular/common';
 
-import locales from "@angular/common/locales/es-CO";
-import { zip } from "rxjs";
+import locales from '@angular/common/locales/es-CO';
+import { zip } from 'rxjs';
 
-registerLocaleData(locales, "co");
+registerLocaleData(locales, 'co');
 
 interface EstructuraArbolRubrosApropiaciones {
   Codigo: string;
@@ -44,9 +44,9 @@ interface EstructuraArbolRubrosApropiaciones {
 }
 
 @Component({
-  selector: "ngx-arbol",
-  templateUrl: "./arbol.component.html",
-  styleUrls: ["./arbol.component.scss"],
+  selector: 'ngx-arbol',
+  templateUrl: './arbol.component.html',
+  styleUrls: ['./arbol.component.scss'],
 })
 export class ArbolComponent implements OnInit, OnChanges {
   @Output() rubroSeleccionado = new EventEmitter();
@@ -54,15 +54,15 @@ export class ArbolComponent implements OnInit, OnChanges {
   @Input() optionSelect: string;
   @Input() vigencia: string;
   @Input() externalSearch: string;
-  @Input("paramsFieldsName") paramsFieldsName: object;
+  @Input('paramsFieldsName') paramsFieldsName: object;
   opcionSeleccionada: string;
   vigenciaSeleccionada: string;
   @ViewChildren(NbTreeGridRowComponent, { read: ElementRef })
   treeNodes: ElementRef[];
 
   update: any;
-  customColumn = "Codigo";
-  defaultColumns = ["Nombre"];
+  customColumn = 'Codigo';
+  defaultColumns = ['Nombre'];
   hasListener: any[] = [];
   oldHighlight: ElementRef;
 
@@ -105,19 +105,19 @@ export class ArbolComponent implements OnInit, OnChanges {
         this.loadTree();
       }
     }
-    if (changes["updateSignal"] && this.updateSignal) {
+    if (changes['updateSignal'] && this.updateSignal) {
       this.updateSignal.subscribe(() => {
         this.loadTree();
       });
     }
-    if (changes["externalSearch"] && changes["externalSearch"].currentValue) {
-      this.searchValue = changes["externalSearch"].currentValue;
+    if (changes['externalSearch'] && changes['externalSearch'].currentValue) {
+      this.searchValue = changes['externalSearch'].currentValue;
     }
     if (
-      changes["paramsFieldsName"] &&
-      changes["paramsFieldsName"].currentValue
+      changes['paramsFieldsName'] &&
+      changes['paramsFieldsName'].currentValue
     ) {
-      this.paramsFieldsName = changes["paramsFieldsName"].currentValue;
+      this.paramsFieldsName = changes['paramsFieldsName'].currentValue;
     }
   }
 
@@ -139,24 +139,24 @@ export class ArbolComponent implements OnInit, OnChanges {
         !!node.expanded,
     };
     forkJoin({
-      root_2: this.rubroHelper.getArbolReducido("2", "2"),
-      root_3: this.rubroHelper.getArbolReducido("3", "2"),
+      root_2: this.rubroHelper.getArbolReducido('2', '2'),
+      root_3: this.rubroHelper.getArbolReducido('3', '2'),
     }).subscribe((res) => {
-      const hijos_2 = this.consultarHijos(res.root_2, "2");
-      const hijos_3 = this.consultarHijos(res.root_3, "2");
+      const hijos_2 = this.consultarHijos(res.root_2, '2');
+      const hijos_3 = this.consultarHijos(res.root_3, '2');
       this.barra = 30;
       const hijos = hijos_2.concat(hijos_3);
       const obs: any[] = [];
       for (const hijo of hijos) {
-        obs.push(this.rubroHelper.getArbolReducido(hijo, "-1"));
+        obs.push(this.rubroHelper.getArbolReducido(hijo, '-1'));
       }
       this.barra = 60;
       zip(...obs).subscribe((resHijos) => {
-        res.root_2 = this.reconstruirArbol(res.root_2, resHijos, "2");
+        res.root_2 = this.reconstruirArbol(res.root_2, resHijos, '2');
         res.root_3 = this.reconstruirArbol(
           res.root_3,
           resHijos.slice(hijos_2.length, hijos_2.length + hijos_3.length),
-          "2"
+          '2'
         );
         this.barra = 90;
         this.reduceData = res.root_2.concat(res.root_3);
@@ -186,24 +186,24 @@ export class ArbolComponent implements OnInit, OnChanges {
       expandedGetter: (node: EstructuraArbolRubrosApropiaciones) =>
         !!node.expanded,
     };
-    this.customColumn = "Codigo";
-    this.defaultColumns = ["Nombre", "ValorInicial"];
+    this.customColumn = 'Codigo';
+    this.defaultColumns = ['Nombre', 'ValorInicial'];
     this.allColumns = [this.customColumn, ...this.defaultColumns];
     if (this.vigenciaSeleccionada) {
       forkJoin({
         raiz_2: this.treeHelper.getFullArbolbyID(
           this.vigenciaSeleccionada,
-          "2",
-          "2"
+          '2',
+          '2'
         ),
         raiz_3: this.treeHelper.getFullArbolbyID(
           this.vigenciaSeleccionada,
-          "3",
-          "2"
+          '3',
+          '2'
         ),
       }).subscribe((res) => {
-        const hijos_2 = this.consultarHijos(res.raiz_2, "2");
-        const hijos_3 = this.consultarHijos(res.raiz_3, "2");
+        const hijos_2 = this.consultarHijos(res.raiz_2, '2');
+        const hijos_3 = this.consultarHijos(res.raiz_3, '2');
         const hijos = hijos_2.concat(hijos_3);
         const obs: any[] = [];
         this.barra = 40;
@@ -212,16 +212,16 @@ export class ArbolComponent implements OnInit, OnChanges {
             this.treeHelper.getFullArbolbyID(
               this.vigenciaSeleccionada,
               hijo,
-              "-1"
+              '-1'
             )
           );
         }
         zip(...obs).subscribe((resHijos) => {
-          res.raiz_2 = this.reconstruirArbol(res.raiz_2, resHijos, "2");
+          res.raiz_2 = this.reconstruirArbol(res.raiz_2, resHijos, '2');
           res.raiz_3 = this.reconstruirArbol(
             res.raiz_3,
             resHijos.slice(hijos_2.length, hijos_2.length + hijos_3.length),
-            "2"
+            '2'
           );
 
           this.barra = 80;
@@ -235,7 +235,7 @@ export class ArbolComponent implements OnInit, OnChanges {
   }
 
   reconstruirArbol(raiz: any, hijos: any, nivel: string) {
-    if (nivel === "2") {
+    if (nivel === '2') {
       let contador: number = 0;
       if (raiz[0].children != null) {
         raiz[0].children.forEach((element, index) => {
@@ -281,7 +281,7 @@ export class ArbolComponent implements OnInit, OnChanges {
   }
 
   consultarHijos(raiz: any, nivel: string) {
-    if (nivel === "2") {
+    if (nivel === '2') {
       const hijos: string[] = [];
       if (raiz[0].children != null) {
         raiz[0].children.forEach((element, index) => {
@@ -320,15 +320,15 @@ export class ArbolComponent implements OnInit, OnChanges {
       expandedGetter: (node: EstructuraArbolRubrosApropiaciones) =>
         !!node.expanded,
     };
-    this.customColumn = "Codigo";
-    this.defaultColumns = ["Nombre", "ValorInicial", "ValorActual"];
+    this.customColumn = 'Codigo';
+    this.defaultColumns = ['Nombre', 'ValorInicial', 'ValorActual'];
     this.allColumns = [this.customColumn, ...this.defaultColumns];
     if (this.vigenciaSeleccionada) {
       this.treeHelper
         .getFullArbolEstado(
           this.vigenciaSeleccionada,
-          "aprobada",
-          this.paramsFieldsName ? this.paramsFieldsName : ""
+          'aprobada',
+          this.paramsFieldsName ? this.paramsFieldsName : ''
         )
         .subscribe((res) => {
           this.data = res;
@@ -339,11 +339,11 @@ export class ArbolComponent implements OnInit, OnChanges {
   }
 
   loadTree() {
-    if (this.opcionSeleccionada === "Rubros") {
+    if (this.opcionSeleccionada === 'Rubros') {
       this.loadTreeRubros();
-    } else if (this.opcionSeleccionada === "Apropiaciones") {
+    } else if (this.opcionSeleccionada === 'Apropiaciones') {
       this.loadTreeApropiaciones();
-    } else if (this.opcionSeleccionada === "ApropiacionesEstado") {
+    } else if (this.opcionSeleccionada === 'ApropiacionesEstado') {
       this.loadTreeApropiacionesEstado();
     }
   }
@@ -365,7 +365,7 @@ export class ArbolComponent implements OnInit, OnChanges {
 
   async onSelect(selectedItem: any, treegrid) {
     this.idHighlight =
-      treegrid.elementRef.nativeElement.getAttribute("data-picker");
+      treegrid.elementRef.nativeElement.getAttribute('data-picker');
     this.rubroSeleccionado.emit(selectedItem.data);
   }
 
@@ -379,14 +379,14 @@ export class ArbolComponent implements OnInit, OnChanges {
     this.oldHighlight &&
       this.renderer.setStyle(
         this.oldHighlight.nativeElement,
-        "background",
-        "white"
+        'background',
+        'white'
       );
     if (row.Codigo === this.idHighlight) {
       this.renderer.setStyle(
         newHighlight.nativeElement,
-        "background",
-        "lightblue"
+        'background',
+        'lightblue'
       );
     }
     this.oldHighlight = newHighlight;
@@ -402,11 +402,11 @@ export class ArbolComponent implements OnInit, OnChanges {
 }
 
 @Component({
-  selector: "ngx-nb-fs-icon",
+  selector: 'ngx-nb-fs-icon',
   template: `
     <nb-tree-grid-row-toggle
-      [expanded]="expanded"
-      *ngIf="isDir(); else fileIcon"
+      [expanded]='expanded'
+      *ngIf='isDir(); else fileIcon'
     >
     </nb-tree-grid-row-toggle>
     <ng-template #fileIcon> </ng-template>
@@ -418,6 +418,6 @@ export class FsIconAComponent {
   @Input() expanded: boolean;
 
   isDir(): boolean {
-    return this.kind === "dir";
+    return this.kind === 'dir';
   }
 }
