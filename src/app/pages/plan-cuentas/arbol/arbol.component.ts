@@ -239,21 +239,23 @@ export class ArbolComponent implements OnInit, OnChanges {
       let contador: number = 0;
       if (raiz[0].children != null) {
         raiz[0].children.forEach((element, index) => {
-          raiz[0].children[index].children.forEach((element2, index2) => {
-            const childrenData2 = { children: [] };
-            raiz[0].children[index].children[index2].Hijos.forEach(
-              (element3, index3) => {
-                childrenData2.children = childrenData2.children.concat(
-                  hijos[contador]
-                );
-                raiz[0].children[index].children[index2] = Object.assign(
-                  raiz[0].children[index].children[index2],
-                  childrenData2
-                );
-                contador += 1;
-              }
-            );
-          });
+          if (raiz[0].children[index].children != null) {
+            raiz[0].children[index].children.forEach((element2, index2) => {
+              const childrenData2 = { children: [] };
+              raiz[0].children[index].children[index2].Hijos.forEach(
+                (element3, index3) => {
+                  childrenData2.children = childrenData2.children.concat(
+                    hijos[contador]
+                  );
+                  raiz[0].children[index].children[index2] = Object.assign(
+                    raiz[0].children[index].children[index2],
+                    childrenData2
+                  );
+                  contador += 1;
+                }
+              );
+            });
+          }
         });
       }
       return raiz;
@@ -283,11 +285,13 @@ export class ArbolComponent implements OnInit, OnChanges {
       const hijos: string[] = [];
       if (raiz[0].children != null) {
         raiz[0].children.forEach((element, index) => {
-          element.children.forEach((element2, index2) => {
-            element2.Hijos.forEach((element3, index3) => {
-              hijos.push(element3);
+          if (element.children != null) {
+            element.children.forEach((element2, index2) => {
+              element2.Hijos.forEach((element3, index3) => {
+                hijos.push(element3);
+              });
             });
-          });
+          }
         });
       }
       return hijos;
