@@ -86,7 +86,7 @@ export class ArbolComponent implements OnInit, OnChanges {
     private dataSourceBuilder2: NbTreeGridDataSourceBuilder<EstructuraArbolRubrosApropiaciones>,
     private treeHelper: ArbolHelper,
     private rubroHelper: RubroHelper
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.barra = 0;
