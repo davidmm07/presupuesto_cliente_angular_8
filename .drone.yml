@@ -95,6 +95,7 @@ steps:
     - develop
     - feature/*
     - release/*
+    - feature/*
     event:
     - push
 
