@@ -142,7 +142,6 @@ export class MaterialModule {}
     AppRoutingModule,
     NgbModule,
     NbEvaIconsModule,
-
     ThemeModule.forRoot(),
 
     NbSidebarModule.forRoot(),
