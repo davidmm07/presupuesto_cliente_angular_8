@@ -14,4 +14,4 @@
   flex-basis: 25%;
 }
 
-:host /deep/ .customformat{ text-align: right; } 
+:host ::ng-deep .customformat{ text-align: right; } 
