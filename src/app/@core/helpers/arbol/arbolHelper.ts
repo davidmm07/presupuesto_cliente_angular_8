@@ -44,6 +44,7 @@ export class ArbolHelper {
       * @returns  data with tree structure for the ndTree module.
       */
     public getFullNodobyID(vigencia = '0', id: string , level = '-1') {
+        
         this.rqManager.setPath('PLAN_CUENTAS_MONGO_SERVICE');
         // this.rqManager.setPath('DUMMY_SERVICE');
         // Set the optional branch for the API request.
