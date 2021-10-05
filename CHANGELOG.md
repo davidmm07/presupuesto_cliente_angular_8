@@ -108,7 +108,6 @@ The following libraries were updated:
 - @agm/core
 - @ng-bootstrap/ng-bootstrap
 - @swimlane/ngx-charts
-- ng2-ckeditor
 - ngx-echarts
 * **icons:** Since this is a major package update we recommend looking through the upgrade guide https://fontawesome.com/how-to-use/on-the-web/setup/upgrading-from-version-4
 

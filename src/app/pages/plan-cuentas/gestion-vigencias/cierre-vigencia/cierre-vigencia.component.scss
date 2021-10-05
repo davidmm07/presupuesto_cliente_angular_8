@@ -1,4 +1,4 @@
-:host /deep/ .moneyField {
+:host ::ng-deep .moneyField {
     text-align: right;
 }
 
@@ -18,14 +18,14 @@
     color: #e3c45d;
   }
 
-  :host /deep/ .ng2-smart-titles th {
+  :host ::ng-deep .ng2-smart-titles th {
     background-color: #fff5cc;
   }
 
-  :host /deep/ .ng2-smart-sort-link {
+  :host ::ng-deep .ng2-smart-sort-link {
     font-weight: bold;
   }
 
-  :host /deep/ .ng2-smart-title {
+  :host ::ng-deep .ng2-smart-title {
     font-weight: bold;
   }

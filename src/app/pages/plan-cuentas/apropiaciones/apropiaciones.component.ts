@@ -202,7 +202,7 @@ export class ApropiacionesComponent implements OnInit {
 
   checkComprobacion(event: { balanceado: boolean, approved: boolean }) {
     this.balanceado = event.balanceado;
-    this.allApproved = event.approved;
+    this.allApproved = !event.approved;
   }
   cambioProductosAsignados(productosAsignados: any[]) {
     this.listaProductosAsignados = productosAsignados;
