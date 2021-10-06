@@ -12,9 +12,9 @@ export class PlanAdquisicionHelper {
         private pUpManager: PopUpManager,
       ) { }
 
-    public getPlanAdquisicionByRubro(query?: any) {
+    public getPlanAdquisicionByRubro(query?: string) {
         this.rqManager.setPath('PLAN_ADQUISICION_SERVICE');
-        return this.rqManager.get('plan_adquisiciones_rubro/' + query).pipe(
+        return this.rqManager.get('Registro_plan_adquisiciones?query=' + query).pipe(
             map(
                 (res) => {
                     if (res === 'error') {
@@ -47,7 +47,7 @@ export class PlanAdquisicionHelper {
     // getPlanAdquisicionByFuente obtiene la información del plan de adquisiciones con una vigencia y una fuente
     public getPlanAdquisicionByFuente(vigencia: string, fuente: string) {
         this.rqManager.setPath('PLAN_ADQUISICION_SERVICE');
-        return this.rqManager.get('plan_adquisiciones_rubros_fuente/' + vigencia + '/' + fuente).pipe(
+        return this.rqManager.get('Registro_plan_adquisiciones?query=PlanAdquisicionesId__Vigencia%3A' + vigencia + '%2CFuenteFinanciamientoId%3A' + fuente + '&limit=-1').pipe(
             map(
                 (res) => {
                     if (res === 'error') {
