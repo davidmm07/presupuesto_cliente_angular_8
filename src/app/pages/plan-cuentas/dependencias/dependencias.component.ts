@@ -10,6 +10,7 @@ import { PopUpManager } from '../../../@core/managers/popUpManager';
 import { FuenteHelper } from '../../../@core/helpers/fuentes/fuenteHelper';
 // tslint:disable-next-line
 import { debug } from 'util';
+import { ApropiacionHelper } from '../../../@core/helpers/apropiaciones/apropiacionHelper';
 @Component({
   selector: 'ngx-dependencias',
   templateUrl: './dependencias.component.html',
@@ -38,7 +39,8 @@ export class DependenciasComponent implements OnInit, OnChanges {
   formValueFuente: any;
   constructor(
     private fuenteHelper: FuenteHelper,
-    private popManager: PopUpManager, ) {
+    private popManager: PopUpManager,
+    private apHelper: ApropiacionHelper,) {
     this.editValueFF = false;
     this.vigenciaSel = '2020';
     this.entrarEditar = false;
@@ -81,7 +83,7 @@ export class DependenciasComponent implements OnInit, OnChanges {
   guardarValorFuenteRubro() {
     this.infoinput.Rubros[this.rubroSeleccionado.Codigo].ValorTotal =
       typeof this.rubroSeleccionado.ValorFuenteRubro === 'undefined' ? undefined : this.rubroSeleccionado.ValorFuenteRubro;
-      this.infoinput.ValorInicial = this.infoinput.ValorInicial === 'undefined' ? undefined : this.infoinput.ValorInicial - this.rubroSeleccionado.ValorFuenteRubro;
+    this.infoinput.ValorInicial = this.infoinput.ValorInicial === 'undefined' ? undefined : this.infoinput.ValorInicial - this.rubroSeleccionado.ValorFuenteRubro;
     this.fuenteHelper.fuenteUpdate(this.infoinput).subscribe((res) => {
       if (res) {
         this.popManager.showSuccessAlert('Se actualizo la Fuente correctamente!');
@@ -124,7 +126,7 @@ export class DependenciasComponent implements OnInit, OnChanges {
     console.info(event);
     console.info(this.infoinput);
     if (event.valid) {
-      this.infoinput.Vigencia = event.data.FuenteFinanciamiento.Vigencia.vigencia === 'undefined' ? undefined : event.data.FuenteFinanciamiento.Vigencia.vigencia;
+      this.infoinput.Vigencia = event.data.FuenteFinanciamiento.Vigencia.valor === 'undefined' ? undefined : event.data.FuenteFinanciamiento.Vigencia.valor;
       this.infoinput.ValorInicial = typeof event.data.FuenteFinanciamiento.ValorInicial === 'undefined' ? undefined : event.data.FuenteFinanciamiento.ValorInicial;
       this.infoinput.ValorActual = typeof event.data.FuenteFinanciamiento.ValorInicial === 'undefined' ? undefined : event.data.FuenteFinanciamiento.ValorInicial;
       this.infoinput.UnidadEjecutora = typeof this.infoinput.UnidadEjecutora === 'undefined' ? undefined : this.infoinput.UnidadEjecutora;
@@ -151,17 +153,26 @@ export class DependenciasComponent implements OnInit, OnChanges {
   }
 
   loadOptionsVigencia(): void {
-    const aplicacion: Array<any> = [
-      { Id: 1, vigencia: 2018 },
-      { Id: 2, vigencia: 2019 },
-      { Id: 3, vigencia: 2020 }];
-      this.formValueFuente.campos[this.getIndexForm('Vigencia')].opciones = aplicacion;
-    }
-    getIndexForm(nombre: String): number {
-      for (let index = 0; index < this.formValueFuente.campos.length; index++) {
-        const element = this.formValueFuente.campos[index];
-        if (element.nombre === nombre) {
-          return index;
+    this.apHelper.getVigenciasList().subscribe(res => {
+      // console.log(res)
+      if (res) {
+        const vigencias = [];
+        res.forEach((item) => {
+          if (item.areaFuncional === '1') {
+            return vigencias.push(item);
+          }
+        }
+        );
+        this.formValueFuente.campos[this.getIndexForm('Vigencia')].opciones = vigencias;
+      }
+    });
+  }
+
+  getIndexForm(nombre: String): number {
+    for (let index = 0; index < this.formValueFuente.campos.length; index++) {
+      const element = this.formValueFuente.campos[index];
+      if (element.nombre === nombre) {
+        return index;
       }
     }
     return 0;
@@ -173,6 +184,12 @@ export class DependenciasComponent implements OnInit, OnChanges {
       this.formValueFuente.campos[i].label = this.formValueFuente.campos[i].label_i18n;
       this.formValueFuente.campos[i].placeholder = this.formValueFuente.campos[i].label_i18n;
     }
+  }
+
+  selectVigenciasArea(objectVig) {
+    return objectVig.filter((vigencia) => {
+      if (vigencia.areaFuncional === '1') { return vigencia.valor; }
+    });
   }
 }
 

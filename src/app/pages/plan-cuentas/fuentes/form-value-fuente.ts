@@ -27,7 +27,7 @@ export let FORM_VALUE_FUENTE = {
             placeholder_i18n: 'vigencia',
             requerido: true,
             tipo: 'Vigencia',
-            key: 'vigencia',
+            key: 'valor',
             opciones: [
             ],
         },
