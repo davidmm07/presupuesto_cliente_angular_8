@@ -40,7 +40,8 @@ export class DependenciasComponent implements OnInit, OnChanges {
   constructor(
     private fuenteHelper: FuenteHelper,
     private popManager: PopUpManager,
-    private apHelper: ApropiacionHelper,) {
+    private apHelper: ApropiacionHelper,
+    ) {
     this.editValueFF = false;
     this.vigenciaSel = '2020';
     this.entrarEditar = false;
