@@ -6,6 +6,7 @@ import { DocumentoPresupuestalHelper } from '../../../../@core/helpers/documento
 import { TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 import { RequestManager } from '../../../../@core/managers/requestManager';
+import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelper';
 
 @Component({
   selector: 'ngx-list-cdp',
@@ -25,6 +26,7 @@ export class ListCdpComponent implements OnInit {
   cambiotab: boolean = false;
   anularTab: boolean = false;
   modPresupuestal: boolean; // Modificación presupuestal
+  vigencia: any;
 
   areas = { '1': 'Rector', '2': 'Convenios' };
   centros = { '1': 'Universidad Distrital Francisco José de Caldas' };
@@ -36,7 +38,8 @@ export class ListCdpComponent implements OnInit {
     private cdpHelper: CDPHelper,
     private documentoPresupuestal: DocumentoPresupuestalHelper,
     // tslint:disable-next-line
-    private rqManager: RequestManager
+    private rqManager: RequestManager,
+    private vigenciaHelper: VigenciaHelper,
   ) { }
 
   ngOnInit() {
@@ -49,7 +52,10 @@ export class ListCdpComponent implements OnInit {
         title: this.translate.instant('GLOBAL.vigencia'),
         filter: true,
         valuePrepareFunction: value => {
-          return 2019;
+          this.vigenciaHelper.getCurrentVigencia().subscribe(res => {
+            this.vigencia = res;
+          });
+          return this.vigencia;
         }
       },
       CentroGestor: {
@@ -132,7 +138,7 @@ export class ListCdpComponent implements OnInit {
 
   loadData(): void {
     forkJoin({
-      documentos: this.loadDataFunction('2019', '1', 'cdp'),
+      documentos: this.loadDataFunction(this.vigencia, '1', 'cdp'),
       cdp: this.cdpHelper.getListaCDP()
     }).subscribe(res => {
       if (res.cdp) {

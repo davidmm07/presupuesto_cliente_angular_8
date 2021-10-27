@@ -3,7 +3,7 @@
     <nb-card-header>
       {{ "APROPIACION.title_gestion_preasignacion" | translate }} -
       <strong
-        >{{ "GLOBAL.vigencia" | translate }}: {{ VigenciaProxima }}</strong
+        >{{ "GLOBAL.vigencia" | translate }}: {{ vigenciaSel }}</strong
       >
     </nb-card-header>
     <div class="row">
@@ -35,7 +35,7 @@
                 style="margin-bottom: 3%"
                 class="btn btn-success btn-block"
                 (click)="aprobarApropiacion()"
-                [hidden]="allApproved"
+                [disabled]="allApproved"
               >
                 {{ "GLOBAL.aprobar-apropiacion-inicial" | translate }}
               </button>

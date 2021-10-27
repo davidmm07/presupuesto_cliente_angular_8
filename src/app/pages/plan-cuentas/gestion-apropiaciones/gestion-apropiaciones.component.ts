@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { VigenciaHelper } from '../../../@core/helpers/vigencia/vigenciaHelper';
 
 @Component({
   selector: 'ngx-gestion-apropiaciones',
@@ -16,6 +17,7 @@ export class GestionApropiacionesComponent implements OnInit {
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
     private route: ActivatedRoute,
+    private vigenciaHelper: VigenciaHelper,
   ) {
     this.matIconRegistry.addSvgIcon(
       'consulta_apropiacion',
@@ -31,11 +33,12 @@ export class GestionApropiacionesComponent implements OnInit {
     );
     this.opcionSeleccionada = false;
     this.opcion = '';
-    /* TODO: Call vigencia by endpoint*/
-    this.vigencia = 2020;
   }
 
   ngOnInit() {
+    this.vigenciaHelper.getCurrentVigencia().subscribe(res => {
+      this.vigencia = res;
+    });
     this.route.paramMap.subscribe(params => {
       if (params.get('vista') !== null ) {
         this.opcion = params.get('vista');

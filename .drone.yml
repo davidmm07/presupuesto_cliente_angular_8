@@ -1,8 +1,14 @@
 kind: pipeline
 name: oas_cliente_ci
 
+trigger:
+  event:
+    exclude:
+      - tag
+
 steps:
 - name: check_readme
+  failure: ignore
   image: jjvargass/qa_develoment:latest
   commands:
   - python /app/check_readme.py
@@ -15,6 +21,7 @@ steps:
     - push
 
 - name: check_branch
+  failure: ignore
   image: jjvargass/qa_develoment:latest
   commands:
   - python /app/check_branch.py -H ${DRONE_GIT_HTTP_URL}
@@ -27,6 +34,7 @@ steps:
     - push
 
 - name: check_commits
+  failure: ignore
   image: jjvargass/qa_develoment:latest
   commands:
   - python /app/check_commits.py
@@ -39,12 +47,17 @@ steps:
     - push
 
 - name: prueba-unitarias
+  failure: ignore
   image: node:12.6.0
   commands:
   - npm i
   - npm run test
   when:
     branch:
+    - develop
+    - feature/*
+    - hotfix/*
+    - release/*
     - unitest
 
 - name:  pruebas-linter
@@ -87,6 +100,7 @@ steps:
   - npm run build:test
   when:
     branch:
+    - dependabot/**
     - develop
     - feature/*
     - release/*

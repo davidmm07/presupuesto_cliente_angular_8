@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FORM_INFO_EXPEDIR_CRP } from './form-expedir_crp';
 import { MovimientosHelper } from '../../../../@core/helpers/movimientos/movimientosHelper';
+import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelper';
 
 @Component({
     selector: 'ngx-expedir-crp',
@@ -25,13 +26,18 @@ export class ExpedirCrpComponent implements OnInit {
     valorRubro: number;
     formError = false;
     formMessage = '';
+    vigencia: string;
 
     constructor(
-        private movimientosHelper: MovimientosHelper
+        private movimientosHelper: MovimientosHelper,
+        private vigenciaHelper: VigenciaHelper,
     ) {}
 
     ngOnInit() {
         console.info(this.rubros);
+        this.vigenciaHelper.getCurrentVigencia().subscribe(res => {
+            this.vigencia = res;
+        });
         const vigencia = String(this.docPresupuestalCdp.Vigencia);
         const centroGestor = this.docPresupuestalCdp.CentroGestor;
         const idDoc = this.docPresupuestalCdp._id;
@@ -93,7 +99,7 @@ export class ExpedirCrpComponent implements OnInit {
         this.movimiento = {
           Data: { 'solicitud_crp': this.solicitudCrp['_id'] },
           Tipo: 'rp',
-          Vigencia: 2019,
+          Vigencia: this.vigencia,
           CentroGestor: this.solicitudCdp['centroGestor'],
           AfectacionMovimiento: []
         };
