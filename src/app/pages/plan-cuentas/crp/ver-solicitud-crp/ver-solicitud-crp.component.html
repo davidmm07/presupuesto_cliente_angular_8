@@ -160,7 +160,7 @@
                             [solicitudCrp]="solicitudc" [docPresupuestalCdp]="cdpInfo"
                             (buildMovimiento)="onMovimientoBuiled($event)" *ngIf="formRubros">
                         </ngx-expedir-crp>
-        
+
                         <button [disabled]="movimiento === null" (click)="expedirCRP()" class="btn btn-success col-md-4">
                             {{ 'CRP.expedir' | translate}}</button>
                     </div>

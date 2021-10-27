@@ -4,11 +4,10 @@ import { ApropiacionHelper } from '../../../@core/helpers/apropiaciones/apropiac
 // import { FuenteHelper } from '../../../@core/helpers/fuentes/fuenteHelper';
 import { PopUpManager } from '../../../@core/managers/popUpManager';
 import { ArbolApropiacion } from '../../../@core/data/models/arbol_apropiacion';
-import { CommonHelper } from '../../../@core/helpers/commonHelper';
-// import { VigenciaHelper } from '../../../@core/helpers/vigencia/vigenciaHelper';
 // import { DependenciaHelper } from '../../../@core/helpers/oikos/dependenciaHelper';
 import { registerLocaleData } from '@angular/common';
 import locales from '@angular/common/locales/es-CO';
+import { VigenciaHelper } from '../../../@core/helpers/vigencia/vigenciaHelper';
 registerLocaleData(locales, 'co');
 
 @Component({
@@ -29,18 +28,9 @@ export class ApropiacionesComponent implements OnInit {
   vigenciaSel: any;
   clean = false;
   opcion:            string;
-  VigenciaActual:    string; // TODO: traer del endpoint vigencia_actual
-  VigenciaProxima:   string;
   optionView:        string;
   productos: boolean = false;
   listaProductosAsignados = [];
-  vigencias: any[] = [
-    { vigencia: 2020 },
-    { vigencia: 2019 },
-    { vigencia: 2018 },
-    { vigencia: 2017 },
-    { vigencia: 2016 },
-  ];  // TODO: traer del endpoint vigencias_afuncional
   balanceado: boolean;
   allApproved: boolean;
   AreaFuncional: string;
@@ -54,13 +44,9 @@ export class ApropiacionesComponent implements OnInit {
 
   constructor(
     private apHelper:          ApropiacionHelper,
-    // private fuenteHelper:      FuenteHelper,
-    private commonHelper:      CommonHelper,
     private popManager:        PopUpManager,
-    // private dependenciaHelper: DependenciaHelper,
-    // private vigenciaHelper:    VigenciaHelper
+    private vigenciaHelper:    VigenciaHelper
   ) {
-    this.vigenciaSel = '2020';    // TODO: traer del endpoint vigencia_actual +1
     this.optionView = 'Apropiaciones';
 
     this.rubroSeleccionado = {
@@ -94,15 +80,9 @@ export class ApropiacionesComponent implements OnInit {
 
 
   ngOnInit() {
-    this.commonHelper.geCurrentVigencia(1).subscribe(res => {
-      if (res) {
-        const proxVigenciaInt  = Number(res) + 1;
-        this.VigenciaProxima = proxVigenciaInt.toString();
-        this.vigenciaSel     = this.VigenciaProxima;
-        this.VigenciaActual  = res;
-      }
+    this.vigenciaHelper.getCurrentVigencia().subscribe(res => {
+      this.vigenciaSel = res;
     });
-    this.paramsFieldsName = { Vigencia: this.vigenciaSel, UnidadEjecutora: 1 };
   }
 
   receiveMessage($event) {

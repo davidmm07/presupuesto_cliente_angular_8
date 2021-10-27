@@ -13,6 +13,7 @@ import { Observable, forkJoin } from 'rxjs';
 import { switchMap, mergeMap } from 'rxjs/operators';
 import { ImplicitAutenticationService } from '../../../../@core/utils/implicit_autentication.service';
 import { TranslateService } from '@ngx-translate/core';
+import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelper';
 
 @Component({
   selector: 'ngx-ver-solicitud-cdp',
@@ -37,6 +38,7 @@ export class VerSolicitudCdpComponent implements OnInit {
   centroGestor: object;
   estadoNecesidadRechazada: object;
   movimientosRp: any[];
+  vigencia: string;
 
   mostrandoPDF: boolean = false;
   areas = { '1': 'Rector', '2': 'Convenios' };
@@ -56,12 +58,16 @@ export class VerSolicitudCdpComponent implements OnInit {
     private implicitAutenticationService: ImplicitAutenticationService,
     private admAmazonHelper: AdmAmazonHelper,
     private translate: TranslateService,
+    private vigenciaHelper: VigenciaHelper,
   ) {
     this.movimientosRp = [];
   }
 
   ngOnInit() {
     let trNecesidad: object;
+    this.vigenciaHelper.getCurrentVigencia().subscribe(res => {
+      this.vigencia = res;
+    });
 
     this.getInfoRp();
 
@@ -219,7 +225,7 @@ export class VerSolicitudCdpComponent implements OnInit {
     const movimiento = {
       Data: { 'solicitud_cdp': this.solicitud['_id'] },
       Tipo: 'cdp',
-      Vigencia: 2019,
+      Vigencia: this.vigencia,
       CentroGestor: String(this.solicitud['centroGestor']),
       AfectacionMovimiento: []
     };

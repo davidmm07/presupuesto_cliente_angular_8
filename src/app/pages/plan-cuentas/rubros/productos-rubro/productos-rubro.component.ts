@@ -4,6 +4,7 @@ import { ApropiacionHelper } from '../../../../@core/helpers/apropiaciones/aprop
 import { ProductoHelper } from '../../../../@core/helpers/productos/productoHelper';
 import { Producto } from '../../../../@core/data/models/producto';
 import { PopUpManager } from '../../../../@core/managers/popUpManager';
+import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelper';
 
 
 @Component({
@@ -42,9 +43,14 @@ export class ProductosRubroComponent implements OnInit {
 
   producto = new Producto();
 
-  constructor(private formBuilder: FormBuilder, private apHelper: ApropiacionHelper, private prodHelper: ProductoHelper, private popUpManager: PopUpManager) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private apHelper: ApropiacionHelper,
+    private prodHelper: ProductoHelper,
+    private popUpManager: PopUpManager,
+    private vigenciaHelper: VigenciaHelper,
+    ) {
     this.editando = false;
-    this.vigenciaSel = '2020';
     this.entrarEditar = false;
     this.cargarProductos();
     this.productoSeleccionado = {
@@ -53,9 +59,10 @@ export class ProductosRubroComponent implements OnInit {
     };
   }
 
-
   ngOnInit() {
-
+    this.vigenciaHelper.getCurrentVigencia().subscribe(res => {
+      this.vigenciaSel = res;
+    });
   }
 
   getProductByRubro() {
