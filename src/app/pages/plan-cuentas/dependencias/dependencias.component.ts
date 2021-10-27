@@ -11,6 +11,7 @@ import { FuenteHelper } from '../../../@core/helpers/fuentes/fuenteHelper';
 // tslint:disable-next-line
 import { debug } from 'util';
 import { ApropiacionHelper } from '../../../@core/helpers/apropiaciones/apropiacionHelper';
+import { VigenciaHelper } from '../../../@core/helpers/vigencia/vigenciaHelper';
 @Component({
   selector: 'ngx-dependencias',
   templateUrl: './dependencias.component.html',
@@ -34,16 +35,16 @@ export class DependenciasComponent implements OnInit, OnChanges {
   showProduct: boolean;
   rubrosAsociados: any = {};
   productosExample: any = [];
-  vigenciaSel: any;
+  vigenciaSel: string;
   editValueFF: boolean;
   formValueFuente: any;
   constructor(
     private fuenteHelper: FuenteHelper,
     private popManager: PopUpManager,
     private apHelper: ApropiacionHelper,
+    private vigenciaHelper: VigenciaHelper,
     ) {
     this.editValueFF = false;
-    this.vigenciaSel = '2020';
     this.entrarEditar = false;
     this.totalPermitido = true;
     this.entrarAddProductos = false;
@@ -53,6 +54,11 @@ export class DependenciasComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+
+    this.vigenciaHelper.getCurrentVigencia().subscribe(res => {
+      this.vigenciaSel = res;
+    });
+
     this.formValueFuente = FORM_VALUE_FUENTE;
     this.construirForm();
     console.info(this.infoinput);

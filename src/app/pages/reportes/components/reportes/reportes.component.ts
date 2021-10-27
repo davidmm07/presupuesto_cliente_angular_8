@@ -4,6 +4,7 @@ import { KnowageHelper } from '../../../../@core/helpers/knowage/knowage.helper'
 // import { spago } from '../../dependences/SpagoBIAPI/*' ;
 import { spagoBIService } from '../../dependences/SpagoBIAPI/spagoBiService.js';
 import { ImplicitAutenticationService } from '../../../../@core/utils/implicit_autentication.service';
+import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelper';
 
 @Component({
   selector: 'ngx-reportes',
@@ -18,7 +19,7 @@ export class ReportesComponent implements OnInit {
 
   reporte: any;
   reportes: object[];
-  vigencias = [2020, 2019];
+  vigencias: any[];
   areas = [
     { label: 'Rector', value: 1 },
     { label: 'Convenios', value: 2 }
@@ -34,7 +35,7 @@ export class ReportesComponent implements OnInit {
     iframe: { style: string; height: string; width: string };
   };
 
-  constructor(private autenticacion: ImplicitAutenticationService) {
+  constructor(private autenticacion: ImplicitAutenticationService, private vigenciaHelper: VigenciaHelper) {
     this.reportes = [
       { name: 'Certificado de disponibilidad presupuestal', label: 'cdp' },
       { name: 'Certificado de registro presupuestal', label: 'crp' },
@@ -92,6 +93,9 @@ export class ReportesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.vigenciaHelper.getNotRepeatedVigencias().subscribe(res => {
+      this.vigencias = res;
+    });
     this.username = this.autenticacion.getPayload().sub;
   }
 

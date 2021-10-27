@@ -23,12 +23,6 @@ export class RubrosComponent implements OnInit {
   formInfoRubro: any;
   rubroData: NodoRubro;
   editandoRubro: boolean;
-
-  vigencias: any[] = [
-    { vigencia: 2019 },
-    { vigencia: 2017 },
-    { vigencia: 2016 },
-  ];
   AreaFuncional: any;
   CentroGestor: any;
   VigenciaActual = 0;

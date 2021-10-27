@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
+import { VigenciaHelper } from '../../../@core/helpers/vigencia/vigenciaHelper';
 
 @Component({
 
@@ -25,23 +26,23 @@ export class GestionPlanCuentasComponent implements OnInit {
 
 
   selectedOption: any;
-  vigencias: any[] = [
-    {vigencia: 2019},
-    {vigencia: 2017},
-    {vigencia: 2016},
-  ];
+  vigencias: any[];
   VigenciaActual: any;
   op_plan_cuentas: any[] = [
     { option: 'Rubros' },
     { option: 'Apropiaciones' },
     { option: 'Fuentes de Financiamiento' }];
-  constructor(private translate: TranslateService) {
+  constructor(private translate: TranslateService, private vigenciaHelper: VigenciaHelper) {
     this.selectedOption = '';
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
     });
    }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.vigenciaHelper.getNotRepeatedVigencias().subscribe(res => {
+      this.vigencias = res;
+    });
+  }
 
   useLanguage(language: string) {
     this.translate.use(language);
