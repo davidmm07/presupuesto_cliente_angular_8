@@ -46,8 +46,9 @@ export class PlanAdquisicionesRubroComponent implements OnInit, OnChanges {
   }
 
   showPlanAdquisicion(vigenciaaux, rubroaux) {
-    this.planAdHelper.getPlanAdquisicionByRubro(vigenciaaux + '/' + rubroaux).subscribe((res) => {
-      if (res.metas.actividades) {
+    this.planAdHelper.getPlanAdquisicionByRubro('PlanAdquisicionesId__Vigencia%3A' + vigenciaaux + '%2CRubroId%3A' + rubroaux).subscribe((data) => {
+      const res = data[0];
+      if (res && res.metas && res.metas.actividades) {
         this.planAdquisicionesRubro = res.metas.actividades;
         this.isPlanAdquisiciones(true);
         this.planAdquisicionesRubro.map((item) => {
