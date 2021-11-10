@@ -138,7 +138,10 @@ export class ListCdpComponent implements OnInit {
 
   loadData(): void {
     forkJoin({
-      documentos: this.loadDataFunction(this.vigencia, '1', 'cdp'),
+      // TODO: Revisar:
+      // - se está sobreescribiendo la vigencia que viene
+      // - this.vigencia llegando undefined por lo que se colocó 2019 como fallback
+      documentos: this.loadDataFunction(this.vigencia || '2019', '1', 'cdp'),
       cdp: this.cdpHelper.getListaCDP()
     }).subscribe(res => {
       if (res.cdp) {
