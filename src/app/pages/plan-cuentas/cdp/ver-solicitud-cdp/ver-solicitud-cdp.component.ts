@@ -74,7 +74,7 @@ export class VerSolicitudCdpComponent implements OnInit {
     this.cdpHelper.getFullNecesidad(this.solicitud['necesidad']).pipe(
       mergeMap(res => {
         trNecesidad = res;
-
+        // console.log("trNecesidad: ", trNecesidad);
         this.areaFuncional = this.areas[trNecesidad['Necesidad']['AreaFuncional']];
         this.centroGestor = this.solicitud['centroGestor'] ? this.entidades[this.solicitud['centroGestor']] : this.entidades[this.solicitud['CentroGestor']];
         return this.getInfoJefeDepdencia(trNecesidad['Necesidad']['DependenciaNecesidadId']['JefeDepSolicitanteId']);
@@ -84,12 +84,17 @@ export class VerSolicitudCdpComponent implements OnInit {
     ).pipe(
       mergeMap(res => {
         trNecesidad['Necesidad']['DependenciaNecesidadId']['DependenciaSolicitante'] = res;
-        return this.getInfoMeta(trNecesidad['Necesidad']['Vigencia'], res['Id']);
+        // return this.getInfoMeta(trNecesidad['Necesidad']['Vigencia'], res['Id']);
+        return this.getInfoMeta(trNecesidad['Necesidad']['PlanAnualAdquisicionesId']);
       })
     ).subscribe(res => {
       const actividades = res;
 
+      // console.log("res: ", res);
+      // console.log("trNecesidad: ", trNecesidad);
+
       if (trNecesidad['Rubros']) {
+        // console.log("trNecesidad['Rubros']: ", trNecesidad['Rubros']);
         trNecesidad['Rubros'].forEach((rubro: any) => {
           rubro.MontoParcial = 0;
           if (rubro.Metas) {
@@ -167,8 +172,9 @@ export class VerSolicitudCdpComponent implements OnInit {
     }
   }
 
-  getInfoMeta(vigencia: Number, dependencia: Number): Observable<any> {
-    return this.planAdquisicionHelper.getPlanAdquisicionByDependencia(vigencia.toString(), dependencia.toString());
+  getInfoMeta(planAdquisicionesId: Number): Observable<any> {
+    // console.log("Entro en getInfoMeta")
+    return this.planAdquisicionHelper.getPlanAdquisicionByDependencia(planAdquisicionesId.toString());
   }
 
   getInfoJefeDepdencia(jefe_dependencia_id: Number): Observable<any> {
