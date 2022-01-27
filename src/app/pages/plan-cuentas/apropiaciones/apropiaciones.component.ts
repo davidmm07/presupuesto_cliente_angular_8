@@ -111,7 +111,7 @@ export class ApropiacionesComponent implements OnInit {
   }
 
   aprobarApropiacion() {
-    this.popManager.showAlert('warning', 'Aprobar Apropiación', 'esta seguro?')
+    this.popManager.showAlert('warning', 'Aprobar Apropiación', '¿Está seguro?')
       .then((result) => {
         if (result.value) {
           this.apHelper.apropiacionApprove({ UnidadEjecutora: '1', Vigencia: this.vigenciaSel }).subscribe((res) => {

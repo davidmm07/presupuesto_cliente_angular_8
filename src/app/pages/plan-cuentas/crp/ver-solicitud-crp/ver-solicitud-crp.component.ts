@@ -99,7 +99,7 @@ export class VerSolicitudCrpComponent implements OnInit {
                     this.TrNecesidad = res2;
                     if (this.TrNecesidad) {
                       this.objetoNecesidad = this.TrNecesidad.Necesidad.Objeto;
-                      await this.getInfoMeta(this.TrNecesidad['Necesidad'].Vigencia, 122).toPromise().then(resMeta => { this.actividades = resMeta; });
+                      await this.getInfoMeta(this.TrNecesidad['Necesidad'].PlanAnualAdquisicionesId).toPromise().then(resMeta => { this.actividades = resMeta; });
                       if (this.TrNecesidad.Rubros) {
                         this.TrNecesidad.Rubros.forEach(rubro => {
                           rubro.MontoParcial = 0;
@@ -141,8 +141,8 @@ export class VerSolicitudCrpComponent implements OnInit {
     });
   }
 
-  getInfoMeta(vigencia: Number, dependencia: Number): Observable<any> {
-    return this.planAdquisicionHelper.getPlanAdquisicionByDependencia(vigencia.toString(), dependencia.toString());
+  getInfoMeta(planAdquisicionesId: Number): Observable<any> {
+    return this.planAdquisicionHelper.getPlanAdquisicionByDependencia(planAdquisicionesId.toString());
   }
 
   cambioTab() {
