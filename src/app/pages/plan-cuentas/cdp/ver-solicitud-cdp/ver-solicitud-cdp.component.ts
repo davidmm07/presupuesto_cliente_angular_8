@@ -14,6 +14,7 @@ import { switchMap, mergeMap } from 'rxjs/operators';
 import { ImplicitAutenticationService } from '../../../../@core/utils/implicit_autentication.service';
 import { TranslateService } from '@ngx-translate/core';
 import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelper';
+import { LastVersionPlanHelper } from '../../../../@core/helpers/plan_adquisicion/last-version-plan';
 
 @Component({
   selector: 'ngx-ver-solicitud-cdp',
@@ -59,6 +60,7 @@ export class VerSolicitudCdpComponent implements OnInit {
     private admAmazonHelper: AdmAmazonHelper,
     private translate: TranslateService,
     private vigenciaHelper: VigenciaHelper,
+    private lastVersionPlan: LastVersionPlanHelper,
   ) {
     this.movimientosRp = [];
   }
@@ -84,13 +86,12 @@ export class VerSolicitudCdpComponent implements OnInit {
     ).pipe(
       mergeMap(res => {
         trNecesidad['Necesidad']['DependenciaNecesidadId']['DependenciaSolicitante'] = res;
-        // return this.getInfoMeta(trNecesidad['Necesidad']['Vigencia'], res['Id']);
-        return this.getInfoMeta(trNecesidad['Necesidad']['PlanAnualAdquisicionesId']);
+        return this.lastVersionPlan.lastVersionPlan(trNecesidad['Necesidad']['PlanAnualAdquisicionesId']);
       })
     ).subscribe(res => {
       const actividades = res;
 
-      // console.log("res: ", res);
+      console.log("res: ", res.registroplanadquisiciones);
       // console.log("trNecesidad: ", trNecesidad);
 
       if (trNecesidad['Rubros']) {
@@ -173,7 +174,6 @@ export class VerSolicitudCdpComponent implements OnInit {
   }
 
   getInfoMeta(planAdquisicionesId: Number): Observable<any> {
-    // console.log("Entro en getInfoMeta")
     return this.planAdquisicionHelper.getPlanAdquisicionByDependencia(planAdquisicionesId.toString());
   }
 
