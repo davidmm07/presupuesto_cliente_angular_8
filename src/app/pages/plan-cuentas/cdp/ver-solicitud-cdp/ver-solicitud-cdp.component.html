@@ -78,7 +78,7 @@
                         </tr>
                         <tr *ngFor="let act of rubro.Metas[0].Actividades">
                             <td (rowspan)="act.FuentesActividad.length">{{act.ActividadId}} -
-                                {{act.InfoActividad[0].actividad}}</td>
+                                {{act.InfoActividad[0].actividad.Nombre}}</td>
                             <ul *ngFor="let f of act.FuentesActividad">
                                 <li><a>{{f.FuenteId}}</a>-<a *ngIf="f.InfoFuente">{{f.InfoFuente.Nombre}}</a><br>
                                     <p class="moneyField">{{'GLOBAL.valor' | translate}}: {{f.MontoParcial | currency: COP }}</p>

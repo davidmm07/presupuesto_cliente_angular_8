@@ -31,9 +31,8 @@ export class PlanAdquisicionHelper {
     // getPlanAdquisicionByDependencia obtiene la información del plan de adquisiciones con una vigencia y una dependencia
     public getPlanAdquisicionByDependencia(planAdquisicionesId: string) {
         this.rqManager.setPath('PLAN_ADQUISICION_SERVICE');
-        // console.log("Entre en petición");
-        return this.rqManager.get('Plan_adquisiciones/' + planAdquisicionesId).pipe(
-        // return this.rqManager.get('Registro_plan_adquisiciones?limit=1&sortby=FechaModificacion&order=desc&query=PlanAdquisicionesId__Id:' + planAdquisicionesId).pipe(
+        // return this.rqManager.get('Plan_adquisiciones/' + planAdquisicionesId).pipe(
+        return this.rqManager.get('Plan_adquisiciones_mongo?query={\"id\":' + planAdquisicionesId + '}').pipe(
             map(
                 (res) => {
                     if (res === 'error') {

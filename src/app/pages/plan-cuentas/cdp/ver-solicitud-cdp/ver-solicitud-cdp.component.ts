@@ -14,6 +14,7 @@ import { switchMap, mergeMap } from 'rxjs/operators';
 import { ImplicitAutenticationService } from '../../../../@core/utils/implicit_autentication.service';
 import { TranslateService } from '@ngx-translate/core';
 import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelper';
+import { LastVersionPlanHelper } from '../../../../@core/helpers/plan_adquisicion/last-version-plan';
 
 @Component({
   selector: 'ngx-ver-solicitud-cdp',
@@ -59,6 +60,7 @@ export class VerSolicitudCdpComponent implements OnInit {
     private admAmazonHelper: AdmAmazonHelper,
     private translate: TranslateService,
     private vigenciaHelper: VigenciaHelper,
+    private lastVersionPlan: LastVersionPlanHelper,
   ) {
     this.movimientosRp = [];
   }
@@ -84,14 +86,11 @@ export class VerSolicitudCdpComponent implements OnInit {
     ).pipe(
       mergeMap(res => {
         trNecesidad['Necesidad']['DependenciaNecesidadId']['DependenciaSolicitante'] = res;
-        // return this.getInfoMeta(trNecesidad['Necesidad']['Vigencia'], res['Id']);
-        return this.getInfoMeta(trNecesidad['Necesidad']['PlanAnualAdquisicionesId']);
+        return this.lastVersionPlan.lastVersionPlan(trNecesidad['Necesidad']['PlanAnualAdquisicionesId']);
       })
     ).subscribe(res => {
-      const actividades = res;
-
-      // console.log("res: ", res);
-      // console.log("trNecesidad: ", trNecesidad);
+      // Se elige la posición 1 porque es la de rubros de Inversión
+      const actividades = res.registroplanadquisiciones[1].datos;
 
       if (trNecesidad['Rubros']) {
         // console.log("trNecesidad['Rubros']: ", trNecesidad['Rubros']);
@@ -99,10 +98,12 @@ export class VerSolicitudCdpComponent implements OnInit {
           rubro.MontoParcial = 0;
           if (rubro.Metas) {
             rubro.Metas.forEach((meta: any) => {
-              meta['InfoMeta'] = actividades['metas']['actividades'].filter(actividad => actividad['meta_id'] === meta['MetaId']);
+              const actividadesTemp1: object = actividades.filter(rubroActividad => rubroActividad.Rubro === rubro.RubroId)[0].datos[0];
+              const actividadesTemp2 = actividadesTemp1['registro_plan_adquisiciones-actividad'];
+              meta['InfoMeta'] = actividadesTemp2.filter(actividad => actividad['actividad']['MetaId']['Id'].toString() === meta['MetaId']);
               if (meta.Actividades) {
                 meta.Actividades.forEach((act: any) => {
-                  act['InfoActividad'] = actividades['metas']['actividades'].filter(actividad => actividad['actividad_id'] === act['ActividadId']);
+                  act['InfoActividad'] = actividadesTemp2.filter(actividad => actividad['actividad']['Id'].toString() === act['ActividadId']);
                   if (act.FuentesActividad) {
                     act.FuentesActividad.forEach((fuente: any) => {
                       rubro.MontoParcial += fuente.MontoParcial;
@@ -173,7 +174,6 @@ export class VerSolicitudCdpComponent implements OnInit {
   }
 
   getInfoMeta(planAdquisicionesId: Number): Observable<any> {
-    // console.log("Entro en getInfoMeta")
     return this.planAdquisicionHelper.getPlanAdquisicionByDependencia(planAdquisicionesId.toString());
   }
 
