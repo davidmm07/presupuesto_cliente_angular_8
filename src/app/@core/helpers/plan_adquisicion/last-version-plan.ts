@@ -1,10 +1,9 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { map, tap } from "rxjs/operators";
-import { PlanAdquisicionHelper } from "./planAdquisicionHelper";
+import { Injectable } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { PlanAdquisicionHelper } from './planAdquisicionHelper';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class LastVersionPlanHelper {
   constructor(private planAdquisicionHelper: PlanAdquisicionHelper) {}
@@ -13,13 +12,13 @@ export class LastVersionPlanHelper {
     return this.planAdquisicionHelper
       .getPlanAdquisicionByDependencia(planAdquisicionesId.toString())
       .pipe(
-        map(res => {
+        map((res) => {
           if (res.length > 1) {
             return res.sort(this.compareFunction)[0];
           }
           return res[0];
         })
-      )
+      );
   }
 
   compareFunction(lastPlan: any, nextPlan: any) {

@@ -89,10 +89,8 @@ export class VerSolicitudCdpComponent implements OnInit {
         return this.lastVersionPlan.lastVersionPlan(trNecesidad['Necesidad']['PlanAnualAdquisicionesId']);
       })
     ).subscribe(res => {
-      const actividades = res;
-
-      console.log("res: ", res.registroplanadquisiciones);
-      // console.log("trNecesidad: ", trNecesidad);
+      // Se elige la posición 1 porque es la de rubros de Inversión
+      const actividades = res.registroplanadquisiciones[1].datos;
 
       if (trNecesidad['Rubros']) {
         // console.log("trNecesidad['Rubros']: ", trNecesidad['Rubros']);
@@ -100,10 +98,12 @@ export class VerSolicitudCdpComponent implements OnInit {
           rubro.MontoParcial = 0;
           if (rubro.Metas) {
             rubro.Metas.forEach((meta: any) => {
-              meta['InfoMeta'] = actividades['metas']['actividades'].filter(actividad => actividad['meta_id'] === meta['MetaId']);
+              const actividadesTemp1: object = actividades.filter(rubroActividad => rubroActividad.Rubro === rubro.RubroId)[0].datos[0];
+              const actividadesTemp2 = actividadesTemp1['registro_plan_adquisiciones-actividad'];
+              meta['InfoMeta'] = actividadesTemp2.filter(actividad => actividad['actividad']['MetaId']['Id'].toString() === meta['MetaId']);
               if (meta.Actividades) {
                 meta.Actividades.forEach((act: any) => {
-                  act['InfoActividad'] = actividades['metas']['actividades'].filter(actividad => actividad['actividad_id'] === act['ActividadId']);
+                  act['InfoActividad'] = actividadesTemp2.filter(actividad => actividad['actividad']['Id'].toString() === act['ActividadId']);
                   if (act.FuentesActividad) {
                     act.FuentesActividad.forEach((fuente: any) => {
                       rubro.MontoParcial += fuente.MontoParcial;
