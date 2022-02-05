@@ -11,10 +11,9 @@ import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelpe
 @Component({
   selector: 'ngx-list-cdp',
   templateUrl: './list-cdp.component.html',
-  styleUrls: ['./list-cdp.component.scss']
+  styleUrls: ['./list-cdp.component.scss'],
 })
 export class ListCdpComponent implements OnInit {
-
   loadDataFunction: (...params) => Observable<any>;
   loadFormDataFunction: (...params) => Observable<any>;
   uuidReadFieldName: string;
@@ -39,11 +38,16 @@ export class ListCdpComponent implements OnInit {
     private documentoPresupuestal: DocumentoPresupuestalHelper,
     // tslint:disable-next-line
     private rqManager: RequestManager,
-    private vigenciaHelper: VigenciaHelper,
-  ) { }
+    private vigenciaHelper: VigenciaHelper
+  ) {}
 
   ngOnInit() {
-    this.loadDataFunction = this.documentoPresupuestal.GetAllDocumentoPresupuestalByTipo;
+    this.vigenciaHelper.getCurrentVigencia().subscribe((res) => {
+      this.vigencia = res;
+    });
+
+    this.loadDataFunction =
+      this.documentoPresupuestal.GetAllDocumentoPresupuestalByTipo;
     const centrosCopy = this.centros;
     const areasCopy = this.areas;
 
@@ -51,12 +55,9 @@ export class ListCdpComponent implements OnInit {
       vigencia: {
         title: this.translate.instant('GLOBAL.vigencia'),
         filter: true,
-        valuePrepareFunction: value => {
-          this.vigenciaHelper.getCurrentVigencia().subscribe(res => {
-            this.vigencia = res;
-          });
+        valuePrepareFunction: (value) => {
           return this.vigencia;
-        }
+        },
       },
       CentroGestor: {
         title: this.translate.instant('GLOBAL.centro_gestor'),
@@ -67,7 +68,7 @@ export class ListCdpComponent implements OnInit {
             list: [
               { value: 'Rector', title: 'Rector' },
               { value: 'Convenios', title: 'Convenios' },
-            ]
+            ],
           },
         },
         valuePrepareFunction: (value: string) => {
@@ -79,7 +80,7 @@ export class ListCdpComponent implements OnInit {
           } else {
             return false;
           }
-        }
+        },
       },
       entidad: {
         title: this.translate.instant('GLOBAL.area_funcional'),
@@ -91,28 +92,28 @@ export class ListCdpComponent implements OnInit {
           } else {
             return false;
           }
-        }
+        },
       },
       Consecutivo: {
         title: this.translate.instant('CDP.n_cdp'),
         filter: true,
-        valuePrepareFunction: value => {
+        valuePrepareFunction: (value) => {
           return value;
-        }
+        },
       },
       Tipo: {
         title: this.translate.instant('GLOBAL.tipo'),
         filter: true,
         valuePrepareFunction: (value: string) => {
           return this.translate.instant('CDP.' + value);
-        }
+        },
       },
       Estado: {
         title: this.translate.instant('CDP.estado_cdp'),
         filter: true,
         valuePrepareFunction: (value: string) => {
           return this.translate.instant('CDP.' + value);
-        }
+        },
       },
     };
 
@@ -123,30 +124,39 @@ export class ListCdpComponent implements OnInit {
         edit: false,
         delete: false,
         custom: [
-          { name: 'ver', title: '<i class="fas fa-eye" title="Ver" (click)="ver($event)"></i>' },
-          // { name: 'anular', title: '<i class="fas fa-ban" title="Anular" (click)="anular($event)"></i>' },
+          {
+            name: 'ver',
+            title:
+              '<i class="fas fa-eye" title="Ver" (click)="ver($event)"></i>',
+          },
+          // { name: 'anular', title: '<i class='fas fa-ban' title='Anular' (click)='anular($event)'></i>' },
         ],
-        position: 'right'
+        position: 'right',
       },
       mode: 'external',
       columns: this.listColumns,
     };
 
     this.loadData();
-
   }
 
   loadData(): void {
+    this.vigenciaHelper.getCurrentVigencia().subscribe((res) => {
+      this.vigencia = res;
+    });
     forkJoin({
       // TODO: Revisar:
       // - se está sobreescribiendo la vigencia que viene
       // - this.vigencia llegando undefined por lo que se colocó 2019 como fallback
-      documentos: this.loadDataFunction(this.vigencia || '2019', '1', 'cdp'),
-      cdp: this.cdpHelper.getListaCDP()
-    }).subscribe(res => {
+
+      documentos: this.loadDataFunction(this.vigencia || '2021', '1', 'cdp'),
+      cdp: this.cdpHelper.getListaCDP(),
+    }).subscribe((res) => {
       if (res.cdp) {
         res.documentos.forEach((documento: any) => {
-          const solCdp = res.cdp.filter((cdp: object) => cdp['_id'] === documento.Data.solicitud_cdp)[0];
+          const solCdp = res.cdp.filter(
+            (cdp: object) => cdp['_id'] === documento.Data.solicitud_cdp
+          )[0];
           documento.necesidad = solCdp ? solCdp.necesidad : undefined;
         });
       }
@@ -195,5 +205,4 @@ export class ListCdpComponent implements OnInit {
     this.cambiotab = false;
     this.loadData();
   }
-
 }
