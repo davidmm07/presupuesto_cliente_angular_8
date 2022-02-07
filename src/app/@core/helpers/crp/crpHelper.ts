@@ -309,7 +309,7 @@ export class CRPHelper {
       */
     public getContratoSuscrito(contrato, vigencia) {
         this.rqManager.setPath('ADMINISTRATIVA_PRUEBAS_SERVICE');
-        return this.rqManager.get('contrato_suscrito/?query=Vigencia:' + vigencia + ',NumeroContrato.Id:' + contrato).pipe(
+        return this.rqManager.get('contrato_suscrito/?query=Vigencia:' + vigencia + ',NumeroContratoSuscrito:' + contrato).pipe(
             map(
                 (res) => {
                     if (res === 'error') {
