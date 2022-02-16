@@ -150,7 +150,7 @@ export class ListSolicitudCdpComponent implements OnInit {
     this.loadDataFunction('').subscribe(res => {
       if (res) {
         const data = <Array<any>>res;
-        this.cdpHelper.getAllNecesidades('limit=-1&sortby=Id&order=desc&fields=Id,TipoFinanciacionNecesidadId,ConsecutivoNecesidad&query=EstadoNecesidadId.CodigoAbreviacionn:CS')
+        this.cdpHelper.getAllNecesidades('limit=-1&sortby=Id&order=desc&fields=Id,TipoFinanciacionNecesidadId,Consecutivo&query=EstadoNecesidadId.CodigoAbreviacionn:CS')
         .subscribe(resNecesidades => {
           const necesidades: object = {};
           if (resNecesidades) {
