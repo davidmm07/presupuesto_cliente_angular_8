@@ -47,6 +47,7 @@ export class ListCrpComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.rqManager;
     this.vigenciaUrl  = this.getParamRoute('vigencia');
     const centrosCopy = this.centros;
     const areasCopy = this.areas;
