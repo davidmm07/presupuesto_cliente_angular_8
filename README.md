@@ -108,9 +108,9 @@ Los siguientes mockups representan la estructura general de la aplicación, mód
 
 ## Estado CI
 
-| Develop | Relese 0.1.7 | Master |
+| Develop | Relese 1.0.0 | Master |
 | -- | -- | -- |
-| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/presupuesto_cliente/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/presupuesto_cliente) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/presupuesto_cliente/status.svg?ref=refs/heads/release/0.1.7)](https://hubci.portaloas.udistrital.edu.co/udistrital/presupuesto_cliente) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/presupuesto_cliente/status.svg?ref=refs/heads/master)](https://hubci.portaloas.udistrital.edu.co/udistrital/presupuesto_cliente) |
+| [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/presupuesto_cliente/status.svg?ref=refs/heads/develop)](https://hubci.portaloas.udistrital.edu.co/udistrital/presupuesto_cliente) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/presupuesto_cliente/status.svg?ref=refs/heads/release/1.0.0)](https://hubci.portaloas.udistrital.edu.co/udistrital/presupuesto_cliente) | [![Build Status](https://hubci.portaloas.udistrital.edu.co/api/badges/udistrital/presupuesto_cliente/status.svg?ref=refs/heads/master)](https://hubci.portaloas.udistrital.edu.co/udistrital/presupuesto_cliente) |
 
 ## Licencia
 
