@@ -24,7 +24,7 @@ interface EstructuraArbolRubrosApropiaciones {
   templateUrl: './arbol-dinamico.component.html',
   styleUrls: ['./arbol-dinamico.component.scss']
 })
-export class ArbolDinamicoComponent implements OnChanges{
+export class ArbolDinamicoComponent implements OnChanges {
   @Output() rubroSeleccionado = new EventEmitter<EstructuraArbolRubrosApropiaciones>();
   @Input() vigencia: string;
   idHighlight: any;
@@ -44,12 +44,12 @@ export class ArbolDinamicoComponent implements OnChanges{
     }
   }
 
-  loadTree(){
+  loadTree() {
     forkJoin({
-      raiz2:this.database.initialData(this.vigenciaSeleccionada,"2","0"),
-      raiz3:this.database.initialData(this.vigenciaSeleccionada,"3","0")
+      raiz2: this.database.initialData(this.vigenciaSeleccionada, '2', '0'),
+      raiz3: this.database.initialData(this.vigenciaSeleccionada, '3', '0')
     }).subscribe(res => {
-      const respuesta = res.raiz2.concat(res.raiz3)
+      const respuesta = res.raiz2.concat(res.raiz3);
       this.dataSource.data = respuesta;
     });
   }
