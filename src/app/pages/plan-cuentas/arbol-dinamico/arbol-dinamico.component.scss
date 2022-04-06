@@ -1,0 +1,96 @@
+button[nbTreeGridRowToggle] {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.search-label {
+  display: block;
+}
+.search-input {
+  margin-bottom: 1rem;
+}
+
+.nb-column-name {
+  width: 100%;
+}
+
+@media screen and (min-width: 400px) {
+  .nb-column-name,
+  .nb-column-size {
+    width: 50%;
+  }
+}
+
+@media screen and (min-width: 500px) {
+  .nb-column-name,
+  .nb-column-size,
+  .nb-column-kind {
+    width: 33.333%;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .nb-column-name {
+    width: 31%;
+  }
+  .nb-column-size,
+  .nb-column-kind,
+  .nb-column-items {
+    width: 23%;
+  }
+}
+
+:host ::ng-deep table thead th {
+  text-align: center;
+}
+
+:host ::ng-deep table tr:hover td {
+  background: #e6e6e6;
+}
+
+.dialogo {
+  min-width: 55vw;
+  max-width: 95vw;
+  min-height: 55vh;
+  max-height: 95vh;
+}
+
+.dialogo nb-card-header {
+  text-align: center;
+}
+
+.file {
+  margin: 1px solid !important;
+}
+
+.indent {
+  width: 10px;
+}
+
+table {
+  width: 100%;
+}
+
+th.mat-header-cell {
+    border: 0;
+    text-align: left;
+}
+
+.mat-header-row {
+  background-color: rgba(128, 128, 128, 0.1);
+  height: 5em;
+}
+
+.fila {
+  display: flex;
+  align-items: center;
+  div, th {
+    flex: 1;
+  }
+}
+
+.fila-centrado {
+  display: flex;
+  justify-content: center;
+}

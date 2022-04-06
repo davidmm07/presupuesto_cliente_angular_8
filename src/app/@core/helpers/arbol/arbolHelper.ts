@@ -64,7 +64,6 @@ export class DynamicDataSource implements DataSource<DynamicFlatNode> {
    */
   async toggleNode(node: DynamicFlatNode, expand: boolean) {
     node.isLoading = true;
-    let children1 = [];
     if(expand && node.item.Hijos.length){
       await this._database.getChildren("2022",node.item.Codigo).then(res => {
         this.children = res[0].children;
@@ -72,7 +71,7 @@ export class DynamicDataSource implements DataSource<DynamicFlatNode> {
     }
 
     const index = this.data.indexOf(node);
-    if (!children1 || index < 0) {
+    if (!this.children || index < 0) {
       node.isLoading = false;
       // If no children, or cannot find the node, no op
       return;
@@ -82,6 +81,7 @@ export class DynamicDataSource implements DataSource<DynamicFlatNode> {
       const nodes = this.children.map(
         name => new DynamicFlatNode(name.data, node.level + 1, !!name.Hijos.length),
       );
+      this.children = [];
       this.data.splice(index + 1, 0, ...nodes);
     } else {
       let count = 0;
@@ -109,7 +109,7 @@ export class ArbolHelper {
         map(
           (res) => {
             return res.map(
-              node => new DynamicFlatNode(node.data, 0, true),
+              node => new DynamicFlatNode(node.data, 0, !!node.data.Hijos.length),
             );
           },
         ),

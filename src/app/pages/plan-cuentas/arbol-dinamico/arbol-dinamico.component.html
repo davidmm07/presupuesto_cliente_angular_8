@@ -1,18 +1,34 @@
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-      <button mat-icon-button disabled></button>
-      {{node.item.Codigo}}
-    </mat-tree-node>
-    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-      <button mat-icon-button
-              [attr.aria-label]="'Toggle ' + node.item" matTreeNodeToggle>
-        <mat-icon class="mat-icon-rtl-mirror">
-          {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-        </mat-icon>
-      </button>
-      {{node.item.Codigo}}
-      <mat-progress-bar *ngIf="node.isLoading"
-                        mode="indeterminate"
-                        class="example-tree-progress-bar"></mat-progress-bar>
-    </mat-tree-node>
-  </mat-tree>
+<div style="overflow-y: scroll; min-width: 900px; max-height: 900px;">
+    <table class="mat-table">
+        <thead class="mat-header-row fila">
+            <th class="mat-header-cell">
+                {{"GLOBAL.codigo-rubro"| translate}}
+            </th>
+            <th class="mat-header-cell">
+                {{"GLOBAL.descripcion"| translate}}
+            </th>
+            <th class="mat-header-cell">
+                {{"CDP.valor_inicial"| translate}}
+            </th>
+        </thead>
+    </table>
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding class="border-bottom fila"
+            (click)="getSelectedRow(node.item)">
+            <div class="fila">
+                <button *ngIf="node.expandable" mat-icon-button [attr.aria-label]="'Toggle ' + node.item" matTreeNodeToggle>
+                    <mat-icon class="mat-icon-rtl-mirror">
+                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                </button>
+                {{node.item.Codigo}}
+            </div>
+            <div>{{node.item.Nombre}}</div>
+            <div>{{node.item.ValorInicial | currency:'COP':'symbol':'4.2-2':'co'}}</div>
+            <mat-progress-bar *ngIf="node.isLoading"
+                              mode="indeterminate"
+                              class="example-tree-progress-bar">
+            </mat-progress-bar>
+        </mat-tree-node>
+    </mat-tree>
+</div>

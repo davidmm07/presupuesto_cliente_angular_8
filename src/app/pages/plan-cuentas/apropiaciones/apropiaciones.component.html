@@ -11,14 +11,10 @@
         <div class="row">
           <div class="col-md-8 col-lg-8 col-xxxl-8">
             <!-- Arbol de apropiaciones -->
-            <ngx-arbol
+            <ngx-arbol-dinamico
               (rubroSeleccionado)="receiveMessage($event)"
-              [updateSignal]="eventChange"
-              [vigencia]="vigenciaSel"
-              [optionSelect]="optionView"
-            >
-            </ngx-arbol>
-            <ngx-arbol-dinamico></ngx-arbol-dinamico>
+              [vigencia]="vigenciaSel">
+            </ngx-arbol-dinamico>
             <!-- Fin Arbol de apropiaciones -->
             <!-- Componente comprobación inicial -->
             <ngx-comprobacion-apropiacion-inicial
