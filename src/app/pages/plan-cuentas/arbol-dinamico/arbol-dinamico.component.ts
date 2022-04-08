@@ -39,7 +39,6 @@ export class ArbolDinamicoComponent implements OnInit, OnChanges {
     this.dataSource = new DynamicDataSource(this.treeControl, this.database);
     if (this.updateSignal) {
       this.updateSignal.subscribe((res) => {
-        debugger
         this.dataSource.updateNode(res.item, res.item.Padre);
       });
     }
