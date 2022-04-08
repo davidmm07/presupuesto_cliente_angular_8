@@ -93,6 +93,25 @@ export class DynamicDataSource implements DataSource<DynamicFlatNode> {
     this.dataChange.next(this.data);
     node.isLoading = false;
   }
+
+  updateNode(node: any, parentId: string) {
+    if (parentId == "") {
+        const index = this.data.map(e => e.item.Id.toString() + (e.item.TipoNivelId ? e.item.TipoNivelId.Id.toString() : 'el')).
+            indexOf(node.Id.toString() + (node.TipoNivelId ? node.TipoNivelId.Id.toString() : 'el'));
+        this.data[index].item = node;
+    } else {
+        const parent = this.data.find(e => e.item.Id === parentId);
+        const parentIndex = this.data.map(e => e.item.Id).indexOf(parentId);
+        this.data[parentIndex].expandable = true;
+        const nodes = <DynamicFlatNode>{ item: node, level: parent.level + 1, expandable: false };
+        const expanded = parentIndex < this.data.length - 1 && this.data[parentIndex].expandable &&
+            parent.level === this.data[parentIndex + 1].level - 1;
+        if (expanded) {
+            this.data.splice(parentIndex + 1, 0, nodes);
+        }
+    }
+    this.dataChange.next(this.data);
+  }
 }
 
 @Injectable({

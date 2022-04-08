@@ -1,6 +1,6 @@
 import {FlatTreeControl} from '@angular/cdk/tree';
-import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
-import { forkJoin } from 'rxjs';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import { forkJoin, Observable } from 'rxjs';
 import { ArbolHelper, DynamicDataSource, DynamicFlatNode } from '../../../@core/helpers/arbol/arbolHelper';
 
 interface EstructuraArbolRubrosApropiaciones {
@@ -24,15 +24,25 @@ interface EstructuraArbolRubrosApropiaciones {
   templateUrl: './arbol-dinamico.component.html',
   styleUrls: ['./arbol-dinamico.component.scss']
 })
-export class ArbolDinamicoComponent implements OnChanges {
+export class ArbolDinamicoComponent implements OnInit, OnChanges {
   @Output() rubroSeleccionado = new EventEmitter<EstructuraArbolRubrosApropiaciones>();
   @Input() vigencia: string;
+  @Input() updateSignal: Observable<DynamicFlatNode>;
   idHighlight: any;
   vigenciaSeleccionada: string;
 
   constructor(private database: ArbolHelper) {
     this.treeControl = new FlatTreeControl<DynamicFlatNode>(this.getLevel, this.isExpandable);
-    this.dataSource = new DynamicDataSource(this.treeControl, database);
+  }
+
+  ngOnInit() {
+    this.dataSource = new DynamicDataSource(this.treeControl, this.database);
+    if (this.updateSignal) {
+      this.updateSignal.subscribe((res) => {
+        debugger
+        this.dataSource.updateNode(res.item, res.item.Padre);
+      });
+    }
   }
 
   ngOnChanges(changes) {
