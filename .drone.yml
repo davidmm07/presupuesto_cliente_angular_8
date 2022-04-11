@@ -158,6 +158,7 @@ steps:
     - push
 
 - name: notify_telegram
+  failure: ignore
   image: appleboy/drone-telegram
   settings:
     token:
