@@ -68,13 +68,13 @@ export class DynamicDataSource implements DataSource<DynamicFlatNode> {
    */
   async toggleNode(node: DynamicFlatNode, expand: boolean) {
     node.isLoading = true;
-      if( this._arbolType === 'Apropiaciones' ){
+      if ( this._arbolType === 'Apropiaciones' ) {
         if ( expand && node.item.Hijos.length ) {
           await this._database.getChildren('2022', node.item.Codigo).then(res => {
             this.children = res[0].children;
           });
         }
-      } else if ( this._arbolType === 'Rubros' ){
+      } else if ( this._arbolType === 'Rubros' ) {
         if ( expand ) {
           await this._rubro.getArbolReducidoChild(node.item.Codigo, '1').then(res => {
             this.children = res[0].children;
