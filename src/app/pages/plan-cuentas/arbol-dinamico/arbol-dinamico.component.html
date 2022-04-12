@@ -1,4 +1,4 @@
-<div style="overflow-y: scroll; min-width: 900px; max-height: 900px;">
+<div style="overflow-y: scroll;">
     <table class="mat-table">
         <thead class="mat-header-row fila">
             <th class="mat-header-cell">
@@ -7,7 +7,7 @@
             <th class="mat-header-cell">
                 {{"GLOBAL.descripcion"| translate}}
             </th>
-            <th class="mat-header-cell">
+            <th *ngIf="campos" class="mat-header-cell">
                 {{"CDP.valor_inicial"| translate}}
             </th>
         </thead>
@@ -24,7 +24,7 @@
                 {{node.item.Codigo}}
             </div>
             <div>{{node.item.Nombre}}</div>
-            <div>{{node.item.ValorInicial | currency:'COP':'symbol':'4.2-2':'co'}}</div>
+            <div *ngIf="campos">{{node.item.ValorInicial | currency:'COP':'symbol':'4.2-2':'co'}}</div>
             <mat-progress-bar *ngIf="node.isLoading"
                               mode="indeterminate"
                               class="example-tree-progress-bar">

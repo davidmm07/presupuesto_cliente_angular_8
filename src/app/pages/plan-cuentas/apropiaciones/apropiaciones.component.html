@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" style="min-width: 80vw;">
   <nb-card>
     <nb-card-header>
       {{ "APROPIACION.title_gestion_preasignacion" | translate }} -
@@ -14,7 +14,8 @@
             <ngx-arbol-dinamico
             (rubroSeleccionado)="receiveMessage($event)"
             [updateSignal]="eventChange"
-            [vigencia]="vigenciaSel">
+            [vigencia]="vigenciaSel"
+            [optionSelect]="optionView">
             </ngx-arbol-dinamico>
             <!-- Fin Arbol de apropiaciones -->
             <!-- Componente comprobación inicial -->

@@ -4,6 +4,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { RequestManager } from '../../managers/requestManager';
+import { RubroHelper } from '../rubros/rubroHelper';
 
 export class DynamicFlatNode {
   constructor(
@@ -18,18 +19,21 @@ export class DynamicDataSource implements DataSource<DynamicFlatNode> {
   children: any;
   dataChange = new BehaviorSubject<DynamicFlatNode[]>([]);
 
+  constructor(
+    private _treeControl: FlatTreeControl<DynamicFlatNode>,
+    private _database: ArbolHelper,
+    private _rubro: RubroHelper,
+    private _arbolType: string
+  ) {}
+
   get data(): DynamicFlatNode[] {
     return this.dataChange.value;
   }
+
   set data(value: DynamicFlatNode[]) {
     this._treeControl.dataNodes = value;
     this.dataChange.next(value);
   }
-
-  constructor(
-    private _treeControl: FlatTreeControl<DynamicFlatNode>,
-    private _database: ArbolHelper,
-  ) {}
 
   connect(collectionViewer: CollectionViewer): Observable<DynamicFlatNode[]> {
     this._treeControl.expansionModel.changed.subscribe(change => {
@@ -64,11 +68,19 @@ export class DynamicDataSource implements DataSource<DynamicFlatNode> {
    */
   async toggleNode(node: DynamicFlatNode, expand: boolean) {
     node.isLoading = true;
-    if ( expand && node.item.Hijos.length ) {
-      await this._database.getChildren('2022', node.item.Codigo).then(res => {
-        this.children = res[0].children;
-      });
-    }
+      if(this._arbolType === 'Apropiaciones'){
+        if ( expand && node.item.Hijos.length ) {
+          await this._database.getChildren('2022', node.item.Codigo).then(res => {
+            this.children = res[0].children;
+          });
+        }
+      }else if(this._arbolType === 'Rubros'){
+        if ( expand ) {
+          await this._rubro.getArbolReducidoChild(node.item.Codigo, '1').then(res => {
+            this.children = res[0].children;
+          });
+        }
+      }
 
     const index = this.data.indexOf(node);
     if (!this.children || index < 0) {
@@ -121,7 +133,7 @@ export class ArbolHelper {
 
     constructor(private rqManager: RequestManager) { }
 
-    initialData(vigencia = '0', id: string , level = '0') {
+    public initialData(vigencia = '0', id: string , level = '0') {
       this.rqManager.setPath('PLAN_CUENTAS_MONGO_SERVICE');
       const unidadEjecutora = 1;
       return this.rqManager.get(`arbol_rubro_apropiacion/arbol_apropiacion_valores/${unidadEjecutora}/${vigencia}/${id}?nivel=${level}`).pipe(
@@ -135,7 +147,7 @@ export class ArbolHelper {
       );
     }
 
-    getChildren(vigencia = '0', id: string , level = '1') {
+    public getChildren(vigencia = '0', id: string , level = '1') {
       this.rqManager.setPath('PLAN_CUENTAS_MONGO_SERVICE');
       const unidadEjecutora = 1;
       return new Promise<any>(resolve => {

@@ -2,6 +2,7 @@ import { RequestManager } from '../../managers/requestManager';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { PopUpManager } from '../../managers/popUpManager';
+import { DynamicFlatNode } from '../arbol/arbolHelper';
 
 @Injectable({
     providedIn: 'root',
@@ -46,8 +47,29 @@ export class RubroHelper {
             nivel: level,
         };
         // call request manager for the tree's data.
-        return this.rqManager.get(`arbol_rubro/arbol_reducido/${branch}?nivel=${level}`, params);
+        return this.rqManager.get(`arbol_rubro/arbol_reducido/${branch}?nivel=${level}`, params).pipe(
+          map(
+            (res) => {
+              return res.map(
+                node => new DynamicFlatNode(node.data, 0, !!node.children.length),
+              );
+            },
+          ),
+        );
+    }
 
+     public getArbolReducidoChild(branch?: string, level?: string) {
+        this.rqManager.setPath('PLAN_CUENTAS_MONGO_SERVICE');
+        const params = {
+            rama: branch,
+            nivel: level,
+        };
+        return new Promise<any>(resolve => {
+            this.rqManager.get(`arbol_rubro/arbol_reducido/${branch}?nivel=${level}`, params).toPromise().then(res => {
+              resolve(res);
+            },
+            );
+        });
     }
 
 
