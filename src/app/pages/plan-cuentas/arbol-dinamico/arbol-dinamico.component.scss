@@ -94,3 +94,8 @@ th.mat-header-cell {
   display: flex;
   justify-content: center;
 }
+
+.dynamicTab {
+  max-height: 40vw;
+  overflow-y: scroll;
+}
