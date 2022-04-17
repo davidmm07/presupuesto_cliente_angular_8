@@ -48,7 +48,7 @@ export class ListarVigenciaComponent implements OnInit {
     this.listColumns = {
       _id: {
         title: this.translate.instant('VIGENCIA.anio_vigencia'),
-        filter: false,
+        filter: true,
         valuePrepareFunction: (value: any) => {
           return value;
         }

@@ -23,7 +23,7 @@
     <br>
     <label>Vigencia</label>
     <select [(ngModel)]="vigencia">
-        <option *ngFor="let vigencia of vigencias" [ngValue]="vigencia">{{vigencia}}</option>
+        <option *ngFor="let vigencia of vigencias" [ngValue]="vigencia.valor">{{vigencia.valor}}</option>
     </select>
     <br>
     <label>Consecutivo: </label>
