@@ -25,6 +25,10 @@ export class CierreVigenciaComponent implements OnInit {
   lista_pasivos: any = [];
   mostrarCierre = false;
   cerrada = '0';
+  currencyCode = 'COP';
+  displayMode = 'symbol';
+  digitsInfo = '4.2-2';
+  localeCode = 'co';
 
   source_fuentes: LocalDataSource = new LocalDataSource();
   source_reservas: LocalDataSource = new LocalDataSource();
@@ -50,7 +54,7 @@ export class CierreVigenciaComponent implements OnInit {
     private CVHelper: CierreVigenciaHelper,
     private vigenciaHelper: VigenciaHelper,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     // this.formCierreVigencia = FORM_CIERRE_VIGENCIA; // TODO: falta por implemntar ya que aun no se valida el cierre con el usuario
     // this.construirForm();
@@ -93,10 +97,10 @@ export class CierreVigenciaComponent implements OnInit {
             '<p class="moneyField">' +
             new CurrencyPipe('co').transform(
               value,
-              'COP',
-              'symbol',
-              '4.2-2',
-              'co'
+              this.currencyCode,
+              this.displayMode,
+              this.digitsInfo,
+              this.localeCode
             ) +
             ' </p>'
           );
@@ -121,10 +125,10 @@ export class CierreVigenciaComponent implements OnInit {
             '<p class="moneyField">' +
             new CurrencyPipe('co').transform(
               value,
-              'COP',
-              'symbol',
-              '4.2-2',
-              'co'
+              this.currencyCode,
+              this.displayMode,
+              this.digitsInfo,
+              this.localeCode
             ) +
             ' </p>'
           );
@@ -149,10 +153,10 @@ export class CierreVigenciaComponent implements OnInit {
             '<p class="moneyField">' +
             new CurrencyPipe('co').transform(
               value,
-              'COP',
-              'symbol',
-              '4.2-2',
-              'co'
+              this.currencyCode,
+              this.displayMode,
+              this.digitsInfo,
+              this.localeCode
             ) +
             ' </p>'
           );

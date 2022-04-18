@@ -35,9 +35,9 @@ export class FuenteHelper {
                         this.pUpManager.showErrorAlert('No se pudo consultar las fuentes');
                         return undefined;
                     } else if (!id || this.query_params === '0/1') {
-                        if (res && res.length > 0) {
+                        if (res && res.length) {
                             res.forEach(element => {
-                                element.Vigencia === 0 ? element.Vigencia = 'sin vigencia asignada' : element.Vigencia;
+                                element.Vigencia = element.Vigencia ? element.Vigencia : 'Sin vigencia asignada';
                             });
                         }
                     }

@@ -100,7 +100,7 @@
     "nombre-rubro": "Nombre del rubro",
     "codigo-rubro": "Código del rubro",
     "codigo": "Código",
-    "unidad-ejecutora": "Area funcional",
+    "unidad_ejecutora": "Área funcional",
     "descripcion": "Descripción",
     "vigencia": "Vigencia",
     "volver_registro": "Volver a Registro",
@@ -201,7 +201,8 @@
     "cdp_suspension": "CDP suspensión",
     "cdp_traslado": "CDP traslado",
     "cdp_reduccion": "CDP reducción",
-    "anulation_not_allowed": "Anulación para este documento no permitida."
+    "anulation_not_allowed": "Anulación para este documento no permitida.",
+    "usuario": "Usuario"
   },
   "RUBRO": {
     "asignar_rubro": "Asignar Rubro",
@@ -386,6 +387,7 @@
     "saldo": "Saldo del CRP"
   },
   "VIGENCIA" : {
+    "titulo" : "Vigencia",
     "cierre_vigencia_titulo" : "Cierre de vigencia.",
     "precierre_button": "Ver información de precierre",
     "ejecucion": "Resumen ejecución presupuestal",
@@ -414,6 +416,10 @@
     "piso": "Piso 1",
     "correo": "computo@udistrital.edu.co",
     "oficina": "Oficina Asesora de Sistemas"
+  },
+  "REPORTES": {
+    "reportes_cdp_parametros": "Reporte CDP con parámetros",
+    "generar_reporte": "Generar Reporte"
   },
   "_id": "ID",
   "Nombre": "Nombre",
