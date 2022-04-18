@@ -13,30 +13,34 @@ import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelpe
 @Component({
   selector: 'ngx-cierre-vigencia',
   templateUrl: './cierre-vigencia.component.html',
-  styleUrls: ['./cierre-vigencia.component.scss']
+  styleUrls: ['./cierre-vigencia.component.scss'],
 })
 export class CierreVigenciaComponent implements OnInit {
   info_cierre_vig: any;
   clean = false;
   formCierreVigencia: any;
   cierreVigenciaData: any;
-  lista_fuentes:  any = [];
+  lista_fuentes: any = [];
   lista_reservas: any = [];
-  lista_pasivos:  any = [];
+  lista_pasivos: any = [];
   mostrarCierre = false;
   cerrada = '0';
+  currencyCode = 'COP';
+  displayMode = 'symbol';
+  digitsInfo = '4.2-2';
+  localeCode = 'co';
 
-  source_fuentes:  LocalDataSource  = new LocalDataSource();
-  source_reservas: LocalDataSource  = new LocalDataSource();
-  source_pasivos:  LocalDataSource  = new LocalDataSource();
+  source_fuentes: LocalDataSource = new LocalDataSource();
+  source_reservas: LocalDataSource = new LocalDataSource();
+  source_pasivos: LocalDataSource = new LocalDataSource();
 
-  settings_fuentes:  object;
+  settings_fuentes: object;
   settings_reservas: object;
-  settings_pasivos:  object;
+  settings_pasivos: object;
 
-  listColumns_fuentes:  object;
+  listColumns_fuentes: object;
   listColumns_reservas: object;
-  listColumns_pasivos:  object;
+  listColumns_pasivos: object;
 
   fecha_cierre: any;
 
@@ -45,27 +49,29 @@ export class CierreVigenciaComponent implements OnInit {
   fuenteInfo: any;
 
   constructor(
-    private translate:      TranslateService,
-    private popManager:     PopUpManager,
-    private CVHelper:       CierreVigenciaHelper,
+    private translate: TranslateService,
+    private popManager: PopUpManager,
+    private CVHelper: CierreVigenciaHelper,
     private vigenciaHelper: VigenciaHelper,
-    private router:         Router,
-    private route:          ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
   ) {
     // this.formCierreVigencia = FORM_CIERRE_VIGENCIA; // TODO: falta por implemntar ya que aun no se valida el cierre con el usuario
     // this.construirForm();
   }
 
   ngOnInit() {
-    this.info_cierre_vig    = {};
+    this.info_cierre_vig = {};
     this.cierreVigenciaData = {};
 
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       this.cierreVigenciaData.AreaFuncional = params.get('areaf');
-      this.cierreVigenciaData.Vigencia      = params.get('vigencia');
-      this.verCierre(this.cierreVigenciaData.Vigencia, this.cierreVigenciaData.AreaFuncional);
+      this.cierreVigenciaData.Vigencia = params.get('vigencia');
+      this.verCierre(
+        this.cierreVigenciaData.Vigencia,
+        this.cierreVigenciaData.AreaFuncional
+      );
     });
-
 
     this.listColumns_fuentes = {
       Codigo: {
@@ -73,23 +79,33 @@ export class CierreVigenciaComponent implements OnInit {
         filter: true,
         valuePrepareFunction: (value: any) => {
           return value;
-        }
+        },
       },
       Nombre: {
         title: this.translate.instant('GLOBAL.nombre'),
         filter: true,
         valuePrepareFunction: (value: any) => {
           return value;
-        }
+        },
       },
       ValorActual: {
         type: 'html',
         title: this.translate.instant('GLOBAL.valor'),
         filter: true,
         valuePrepareFunction: (value: any) => {
-          return '<p class="moneyField">' + new CurrencyPipe('co').transform(value, 'COP', 'symbol', '4.2-2', 'co') + ' </p>';
-        }
-      }
+          return (
+            '<p class="moneyField">' +
+            new CurrencyPipe('co').transform(
+              value,
+              this.currencyCode,
+              this.displayMode,
+              this.digitsInfo,
+              this.localeCode
+            ) +
+            ' </p>'
+          );
+        },
+      },
     };
 
     this.listColumns_reservas = {
@@ -98,16 +114,26 @@ export class CierreVigenciaComponent implements OnInit {
         filter: true,
         valuePrepareFunction: (value: any) => {
           return value;
-        }
+        },
       },
       ValorActual: {
         type: 'html',
         title: this.translate.instant('GLOBAL.valor'),
         filter: true,
         valuePrepareFunction: (value: any) => {
-          return '<p class="moneyField">' + new CurrencyPipe('co').transform(value, 'COP', 'symbol', '4.2-2', 'co') + ' </p>';
-        }
-      }
+          return (
+            '<p class="moneyField">' +
+            new CurrencyPipe('co').transform(
+              value,
+              this.currencyCode,
+              this.displayMode,
+              this.digitsInfo,
+              this.localeCode
+            ) +
+            ' </p>'
+          );
+        },
+      },
     };
 
     this.listColumns_pasivos = {
@@ -116,16 +142,26 @@ export class CierreVigenciaComponent implements OnInit {
         filter: true,
         valuePrepareFunction: (value: any) => {
           return value;
-        }
+        },
       },
       ValorActual: {
         type: 'html',
         title: this.translate.instant('GLOBAL.valor'),
         filter: true,
         valuePrepareFunction: (value: any) => {
-          return '<p class="moneyField">' + new CurrencyPipe('co').transform(value, 'COP', 'symbol', '4.2-2', 'co') + ' </p>';
-        }
-      }
+          return (
+            '<p class="moneyField">' +
+            new CurrencyPipe('co').transform(
+              value,
+              this.currencyCode,
+              this.displayMode,
+              this.digitsInfo,
+              this.localeCode
+            ) +
+            ' </p>'
+          );
+        },
+      },
     };
 
     this.settings_fuentes = {
@@ -134,8 +170,13 @@ export class CierreVigenciaComponent implements OnInit {
         edit: false,
         delete: false,
         columnTitle: 'Ver',
-        custom: [{ name: 'ver_fuente', title: '<i class="fas fa-eye" (click)="ver($event)"></i>' }],
-        position: 'right'
+        custom: [
+          {
+            name: 'ver_fuente',
+            title: '<i class="fas fa-eye" (click)="ver($event)"></i>',
+          },
+        ],
+        position: 'right',
       },
       noDataMessage: 'No hay registros.',
       mode: 'external',
@@ -148,8 +189,13 @@ export class CierreVigenciaComponent implements OnInit {
         edit: false,
         delete: false,
         columnTitle: 'Ver',
-        custom: [{ name: 'ver_crp', title: '<i class="fas fa-eye" (click)="ver($event)"></i>' }],
-        position: 'right'
+        custom: [
+          {
+            name: 'ver_crp',
+            title: '<i class="fas fa-eye" (click)="ver($event)"></i>',
+          },
+        ],
+        position: 'right',
       },
       noDataMessage: 'No hay registros.',
       mode: 'external',
@@ -162,14 +208,18 @@ export class CierreVigenciaComponent implements OnInit {
         edit: false,
         delete: false,
         columnTitle: 'Ver',
-        custom: [{ name: 'ver_crp', title: '<i class="fas fa-eye" (click)="ver($event)"></i>' }],
-        position: 'right'
+        custom: [
+          {
+            name: 'ver_crp',
+            title: '<i class="fas fa-eye" (click)="ver($event)"></i>',
+          },
+        ],
+        position: 'right',
       },
       noDataMessage: 'No hay registros.',
       mode: 'external',
       columns: this.listColumns_pasivos,
     };
-
   }
 
   //  descomentar si alguna vez les da por decir que si tocaba en un formulario :v XD
@@ -180,7 +230,6 @@ export class CierreVigenciaComponent implements OnInit {
   //     this.formCierreVigencia.campos[i].placeholder = this.formCierreVigencia.campos[i].label_i18n;
   //   }
   // }
-
 
   // validarForm(event) {
   //   if (event.valid) {
@@ -193,14 +242,16 @@ export class CierreVigenciaComponent implements OnInit {
   // }
 
   verCierre(vigencia, areaf) {
-    this.vigenciaHelper.getFullVigencias(vigencia, areaf).pipe(
-      switchMap((res) => {
-        this.mostrarCierre =  (res[0].estado === 'Actual');
-        this.cerrada = this.mostrarCierre ? '1' : '0' ;
-        return this.CVHelper.getInfoCierre(vigencia, areaf, this.cerrada);
-      }
+    this.vigenciaHelper
+      .getFullVigencias(vigencia, areaf)
+      .pipe(
+        switchMap((res) => {
+          this.mostrarCierre = res[0].estado === 'Actual';
+          this.cerrada = this.mostrarCierre ? '1' : '0';
+          return this.CVHelper.getInfoCierre(vigencia, areaf, this.cerrada);
+        })
       )
-    ).subscribe(res => {
+      .subscribe((res) => {
         this.lista_fuentes = res.Fuentes;
         this.source_fuentes.load(this.lista_fuentes);
         this.lista_reservas = res.Reservas;
@@ -231,7 +282,11 @@ export class CierreVigenciaComponent implements OnInit {
   onCustom(event: any) {
     switch (event.action) {
       case 'ver_fuente':
-        this.router.navigate(['/pages/plan-cuentas/fuentes', this.cierreVigenciaData.Vigencia, event.data.Codigo]);
+        this.router.navigate([
+          '/pages/plan-cuentas/fuentes',
+          this.cierreVigenciaData.Vigencia,
+          event.data.Codigo,
+        ]);
         break;
       case 'ver_crp':
         this.router.navigate(['/pages/plan-cuentas/crp/', event.data.Vigencia]);
@@ -240,13 +295,42 @@ export class CierreVigenciaComponent implements OnInit {
   }
 
   ejecutarCierre() {
-    this.CVHelper.ejecutarCierre(this.cierreVigenciaData.Vigencia, this.cierreVigenciaData.AreaFuncional).subscribe(res => {
-      if (res) {
-        this.popManager.showSuccessAlert(`Se generó el cierre de la vigencia ${this.cierreVigenciaData.Vigencia}.`);
-        this.router.navigate(['/pages/plan-cuentas/listar-vigencias']);
-      } else {
-        this.popManager.showErrorAlert('Error al generar el cierre');
-      }
-    });
+    this.popManager
+      .showAlert(
+        'warning',
+        `¿Desea ejecutar el cierre?`,
+        `Vigencia: ${this.cierreVigenciaData.Vigencia} - Área Funcional: ${this.cierreVigenciaData.AreaFuncional}. ¿Continuar?`
+      )
+      .then((firstResult) => {
+        if (firstResult.value) {
+          this.popManager
+            .showAlert(
+              'warning',
+              `¿Está seguro de ejecutar el cierre?`,
+              `Vigencia: ${this.cierreVigenciaData.Vigencia} - Área Funcional: ${this.cierreVigenciaData.AreaFuncional}. ¿Continuar?`
+            )
+            .then((secondResult) => {
+              if (secondResult.value) {
+                this.CVHelper.ejecutarCierre(
+                  this.cierreVigenciaData.Vigencia,
+                  this.cierreVigenciaData.AreaFuncional
+                ).subscribe((res) => {
+                  if (res) {
+                    this.popManager.showSuccessAlert(
+                      `Se generó el cierre de la vigencia ${this.cierreVigenciaData.Vigencia}.`
+                    );
+                    this.router.navigate([
+                      '/pages/plan-cuentas/listar-vigencias',
+                    ]);
+                  } else {
+                    this.popManager.showErrorAlert(
+                      'Error al generar el cierre'
+                    );
+                  }
+                });
+              }
+            });
+        }
+      });
   }
 }
