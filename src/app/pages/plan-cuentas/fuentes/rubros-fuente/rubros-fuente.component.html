@@ -11,8 +11,8 @@
         </div>
         <div class="ml-auto" *ngIf="planAdquisicionesFuente && !rbIncome">
             <div *ngIf="openViewAddIncome">
-                <ngx-arbol [paramsFieldsName] ="paramsFieldsName" (rubroSeleccionado)="selectRubroElemntEvent($event)" [vigencia]="infoinput.Vigencia"
-                    [optionSelect]="'ApropiacionesEstado'"></ngx-arbol>
+                <ngx-arbol-dinamico [paramsFieldsName] ="paramsFieldsName" (rubroSeleccionado)="selectRubroElemntEvent($event)" [vigencia]="infoinput.Vigencia"
+                    [optionSelect]="'ApropiacionesEstado'"></ngx-arbol-dinamico>
             </div>
             <div *ngIf="!openViewAddIncome" class="spacingAddIngreso">
                 <button type="submit" class="btn btn-info btn-block" (click)="openAddIncome()">
@@ -28,8 +28,8 @@
                     </label>
                 </div>
             <div *ngIf="openViewAddIncome">
-                <ngx-arbol [paramsFieldsName] ="paramsFieldsName" (rubroSeleccionado)="selectRubroElemntEvent($event)" [vigencia]="infoinput.Vigencia"
-                    [optionSelect]="'ApropiacionesEstado'"></ngx-arbol>
+                <ngx-arbol-dinamico [paramsFieldsName] ="paramsFieldsName" (rubroSeleccionado)="selectRubroElemntEvent($event)" [vigencia]="infoinput.Vigencia"
+                    [optionSelect]="'ApropiacionesEstado'"></ngx-arbol-dinamico>
             </div>
             <div *ngIf="!openViewAddIncome" class="spacingAddIngreso">
                 <button type="submit" class="btn btn-info btn-block" (click)="openAddIncome()">
