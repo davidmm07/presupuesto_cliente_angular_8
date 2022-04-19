@@ -51,6 +51,7 @@ import { ShowModificationApropiacionDataComponent } from './consulta-modificacio
 import { ReportesComponent } from '../reportes/components/reportes/reportes.component';
 import { LinkSmartTableComponent } from '../ui-features/link-smart-table/link-smart-table.component';
 import { ArbolDinamicoComponent } from './arbol-dinamico/arbol-dinamico.component';
+import { WelcomeComponent } from './inicio/welcome/welcome.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +85,8 @@ import { ArbolDinamicoComponent } from './arbol-dinamico/arbol-dinamico.componen
     DetalleCrpComponent,
     ReportesComponent,
     LinkSmartTableComponent,
-    ArbolDinamicoComponent
+    ArbolDinamicoComponent,
+    WelcomeComponent
   ],
   providers: [
     ConfiguracionService,
