@@ -6,9 +6,10 @@
     <!-- Descripcion consulta apropiacion por vigencia -->
     <div class="div-descripcion">
       {{ "APROPIACION.selecciona-ano-consulta" | translate }}
-      <nb-select
+      <mat-progress-bar mode="indeterminate" *ngIf="strVigenciaActual === '' || !vigencias || (vigencias && vigencias.length === 0)"></mat-progress-bar>
+      <nb-select *ngIf="strVigenciaActual !== '' && vigencias && vigencias.length > 0"
       id="select_vigencia"
-      placeholder="{{ vigenciaSel }}"
+      placeholder="{{ strVigenciaActual }}"
       hero
       status="info"
       [(ngModel)]="VigenciaActual"

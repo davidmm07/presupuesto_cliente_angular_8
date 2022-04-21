@@ -5,16 +5,13 @@
         <div *ngIf="!disabledVigencia">
 
           <div align="right">
-            {{
-              "GLOBAL.vigencia" | translate
-            }}
-            <nb-select nbTooltip="seleccione la vigencia" nbTooltipPlacement="top" id="select_vigencia" placeholder={{vigenciaSel}} [(selected)]="vigenciaSel" hero status="info">
+            {{ "GLOBAL.vigencia" | translate }}
+            <mat-progress-bar mode="indeterminate" *ngIf="vigenciaSel === '' || !vigencias || (vigencias && vigencias.length === 0)"></mat-progress-bar>
+            <nb-select *ngIf="vigenciaSel !== '' || vigencias.length > 0" nbTooltip="seleccione la vigencia" nbTooltipPlacement="top" id="select_vigencia" placeholder={{vigenciaSel}} [(selected)]="vigenciaSel" hero status="info">
               <!-- <nb-option value="vigenciaSel" (click)="onSelect('all')">Todas</nb-option> -->
               <nb-option *ngFor="let v of vigencias" value={{vigenciaSel}} (click)="onSelect(v.valor)">{{ v.valor }}</nb-option>
             </nb-select>
-            {{
-              "GLOBAL.tipo" | translate
-            }}
+            {{ "GLOBAL.tipo" | translate }}
             <nb-select nbTooltip="seleccione el tipo de modificación" nbTooltipPlacement="top" id="select_tipo_mod" placeholder={{tipoModSel?tipoModSel.label:undefined}} [(selected)]="tipoModSel" hero status="info">
               <nb-option *ngFor="let v of tipoModificaciones" value={{tipoModSel}} (click)="onSelectTipoMod(v)">{{ v.label }}</nb-option>
             </nb-select>

@@ -384,7 +384,8 @@
     "pasivo": "Expedido",
     "parcial_comprometido": "Parcialmente comprometido",
     "total_comprometido": "Totalmente comprometido",
-    "saldo": "Saldo del CRP"
+    "saldo": "Saldo del CRP",
+    "expedido": "CRP Expedido"
   },
   "VIGENCIA" : {
     "titulo" : "Vigencia",
