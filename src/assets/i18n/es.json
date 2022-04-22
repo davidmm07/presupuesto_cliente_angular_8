@@ -422,6 +422,9 @@
     "reportes_cdp_parametros": "Reporte CDP con parámetros",
     "generar_reporte": "Generar Reporte"
   },
+  "VIGENCIAS": {
+    "todas": "Todas"
+  },
   "_id": "ID",
   "Nombre": "Nombre",
   "ApropiacionInicial": "Valor Apropiación Inicial",
