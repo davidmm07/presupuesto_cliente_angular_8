@@ -384,7 +384,8 @@
     "pasivo": "Expedido",
     "parcial_comprometido": "Parcialmente comprometido",
     "total_comprometido": "Totalmente comprometido",
-    "saldo": "Saldo del CRP"
+    "saldo": "Saldo del CRP",
+    "expedido": "CRP Expedido"
   },
   "VIGENCIA" : {
     "titulo" : "Vigencia",
@@ -420,6 +421,9 @@
   "REPORTES": {
     "reportes_cdp_parametros": "Reporte CDP con parámetros",
     "generar_reporte": "Generar Reporte"
+  },
+  "VIGENCIAS": {
+    "todas": "Todas"
   },
   "_id": "ID",
   "Nombre": "Nombre",
