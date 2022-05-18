@@ -40,6 +40,9 @@ export class VerSolicitudCdpComponent implements OnInit {
   movimientosRp: any[];
   vigencia: string;
 
+  carga1:boolean;
+  carga2:boolean;
+
   mostrandoPDF: boolean = false;
   areas = { '1': 'Rector', '2': 'Convenios' };
   entidades = { '1': 'Universidad Distrital Francisco José de Caldas' };
@@ -72,64 +75,46 @@ export class VerSolicitudCdpComponent implements OnInit {
 
     this.getInfoRp();
 
-    this.cdpHelper
-      .getFullNecesidad(this.solicitud['necesidad'])
-      .pipe(
-        mergeMap((res) => {
-          trNecesidad = res;
-          // console.log('trNecesidad: ', trNecesidad);
-          this.areaFuncional =
-            this.areas[trNecesidad['Necesidad']['AreaFuncional']];
-          this.centroGestor = this.solicitud['centroGestor']
-            ? this.entidades[this.solicitud['centroGestor']]
-            : this.entidades[this.solicitud['CentroGestor']];
-          return this.getInfoJefeDepdencia(
-            trNecesidad['Necesidad']['DependenciaNecesidadId'][
-              'JefeDepSolicitanteId'
-            ]
-          );
-        })
-      )
-      .pipe(mergeMap((res) => this.getInfoDependencia(res['DependenciaId'])))
-      .pipe(
-        mergeMap((res) => {
-          trNecesidad['Necesidad']['DependenciaNecesidadId'][
-            'DependenciaSolicitante'
-          ] = res;
-          return this.lastVersionPlan.lastVersionPlan(
-            trNecesidad['Necesidad']['PlanAnualAdquisicionesId']
-          );
-        })
-      )
-      .subscribe(
-        (res) => {
-
+    this.carga1 = false;
+    this.cdpHelper.getFullNecesidad(this.solicitud['necesidad'])
+    .pipe(mergeMap((res) => {
+      trNecesidad = res;
+      this.areaFuncional = this.areas[trNecesidad['Necesidad']['AreaFuncional']];
+      this.centroGestor = this.solicitud['centroGestor'] ? this.entidades[this.solicitud['centroGestor']] : this.entidades[this.solicitud['CentroGestor']];
+      return this.getInfoJefeDepdencia(trNecesidad['Necesidad']['DependenciaNecesidadId']['JefeDepSolicitanteId']);
+    }))
+    .pipe(mergeMap((res) =>
+      this.getInfoDependencia(res['DependenciaId'])
+    ))
+    .pipe(mergeMap((res) => {
+      trNecesidad['Necesidad']['DependenciaNecesidadId']['DependenciaSolicitante'] = res;
+      return this.lastVersionPlan.lastVersionPlan(trNecesidad['Necesidad']['PlanAnualAdquisicionesId']);
+    }))
+    .subscribe(
+      (res) => {
+        if(res && res.registroplanadquisiciones && res.registroplanadquisiciones.length){
           res.registroplanadquisiciones.forEach((registro) => {
-
             const actividades = registro.datos;
-
             if (trNecesidad['Rubros']) {
-              // console.log('trNecesidad['Rubros']: ', trNecesidad['Rubros']);
               trNecesidad['Rubros'].forEach((rubro: any) => {
                 rubro.MontoParcial = 0;
                 if (rubro.Metas) {
                   rubro.Metas.forEach((meta: any) => {
-                    const actividadesTemp1: object = actividades.filter(
+                    const actividadesTemp0 = actividades.find(
                       (rubroActividad) => rubroActividad.Rubro === rubro.RubroId
-                    )[0].datos[0];
-                    const actividadesTemp2 =
-                      actividadesTemp1['registro_plan_adquisiciones-actividad'];
-                    meta['InfoMeta'] = actividadesTemp2.filter(
-                      (actividad) =>
-                        actividad['actividad']['MetaId']['Id'].toString() ===
-                        meta['MetaId']
+                    );
+                    if(!actividadesTemp0){
+                      return;
+                    }
+                    const actividadesTemp1 = actividadesTemp0.datos[0];
+                    const actividadesTemp2 = actividadesTemp1['registro_plan_adquisiciones-actividad'];
+                    meta['InfoMeta'] = actividadesTemp2.filter((actividad) =>
+                      actividad['actividad']['MetaId']['Id'].toString() === meta['MetaId']
                     );
                     if (meta.Actividades) {
                       meta.Actividades.forEach((act: any) => {
                         act['InfoActividad'] = actividadesTemp2.filter(
-                          (actividad) =>
-                            actividad['actividad']['Id'].toString() ===
-                            act['ActividadId']
+                          (actividad) => actividad['actividad']['Id'].toString() === act['ActividadId']
                         );
                         if (act.FuentesActividad) {
                           act.FuentesActividad.forEach((fuente: any) => {
@@ -148,34 +133,36 @@ export class VerSolicitudCdpComponent implements OnInit {
               });
             }
           });
-
-          this.TrNecesidad = trNecesidad;
-          this.admAmazonHelper
-            .getProveedor(
-              this.TrNecesidad['Necesidad']['DependenciaNecesidadId'][
-                'OrdenadorGastoId'
-              ]
-            )
-            .subscribe(
-              (res1) => {
-                if (res1) {
-                  this.ordenadorGasto = res1['NomProveedor'];
-                }
-              },
-              (error: any) => {
-                this.popManager.showErrorToast(
-                  this.translate.instant(`ERROR.${error['status']}`)
-                );
-              }
-            );
-        },
-        (error: any) => {
-          this.popManager.showErrorToast(
-            this.translate.instant(`ERROR.${error['status']}`)
-          );
         }
-      );
+        this.TrNecesidad = trNecesidad;
+        this.admAmazonHelper
+          .getProveedor(
+            this.TrNecesidad['Necesidad']['DependenciaNecesidadId']['OrdenadorGastoId']
+          )
+          .subscribe(
+            (res1) => {
+              if (res1) {
+                this.ordenadorGasto = res1['NomProveedor'];
+              }
+              this.carga1 = true;
+            },
+            (error: any) => {
+              this.popManager.showErrorToast(
+                this.translate.instant(`ERROR.${error['status']}`)
+              );
+              //this.carga1 = true;
+            },
+          );
+      },
+      (error: any) => {
+        this.popManager.showErrorToast(
+          this.translate.instant(`ERROR.${error['status']}`)
+        );
+        //this.carga1 = true;
+      },
+    );
 
+    this.carga2 = false;
     this.dependenciaHelper
       .get('', 'query=Nombre__contains:PRESUPUESTO')
       .pipe(
@@ -197,6 +184,7 @@ export class VerSolicitudCdpComponent implements OnInit {
           res['PrimerApellido'] +
           ' ' +
           res['SegundoApellido'];
+        this.carga2 = true;
       });
 
     if (this.implicitAutenticationService.live()) {

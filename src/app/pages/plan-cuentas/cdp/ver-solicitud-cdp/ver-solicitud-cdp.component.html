@@ -11,8 +11,7 @@
             <legend *ngIf="solicitud && expedido">{{ 'CDP.detalle_cdp' | translate }}: {{solicitud.Consecutivo}}
             </legend>
         </nb-card-header>
-        <nb-card-body *ngIf="TrNecesidad">
-            <div class="container-fluid">
+        <nb-card-body *ngIf="TrNecesidad && carga1 && carga2" class="container-fluid">
                 <table class="table table-hover table-bordered">
                     <thead class="bg-kronos">
                         <th width="15%">{{'GLOBAL.vigencia' | translate}}</th>
@@ -63,31 +62,34 @@
                         </tr>
                     </tbody>
                     <!-- metas y actividades si es de inversion -->
-                    <thead *ngIf="TrNecesidad.Necesidad.TipoFinanciacionNecesidadId.CodigoAbreviacion==='I'"
-                        class="bg-kronos">
-                        <th colspan="2">{{'GLOBAL.meta' | translate}}</th>
-                    </thead>
-                    <tbody *ngIf="TrNecesidad.Necesidad.TipoFinanciacionNecesidadId.CodigoAbreviacion==='I'">
-                        <tr colspan="2">
-                            <td>{{rubro.Metas[0].MetaId}} </td>
-                            <td>{{rubro.Metas[0].InfoMeta[0].meta}}</td>
-                        </tr>
-                        <tr class="bg-kronos">
-                            <th>{{'GLOBAL.actividades' | translate}}</th>
-                            <th>{{'GLOBAL.fuentes' | translate}}</th>
-                        </tr>
-                        <tr *ngFor="let act of rubro.Metas[0].Actividades">
-                            <td (rowspan)="act.FuentesActividad.length">{{act.ActividadId}} -
-                                {{act.InfoActividad[0].actividad.Nombre}}</td>
-                            <ul *ngFor="let f of act.FuentesActividad">
-                                <li><a>{{f.FuenteId}}</a>-<a *ngIf="f.InfoFuente">{{f.InfoFuente.Nombre}}</a><br>
-                                    <p class="moneyField">{{'GLOBAL.valor' | translate}}: {{f.MontoParcial | currency: COP }}</p>
-                                </li>
-                                <hr>
-                            </ul>
-                        </tr>
-
-                    </tbody>
+                    <ng-container *ngIf="TrNecesidad.Necesidad.TipoFinanciacionNecesidadId.CodigoAbreviacion==='I' && rubro && rubro.Metas && rubro.Metas.length">
+                        <thead class="bg-kronos">
+                            <th colspan="2">{{'GLOBAL.meta' | translate}}</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{(rubro.Metas[0].MetaId) ? rubro.Metas[0].MetaId : "error"}} </td>
+                                <td>{{(rubro.Metas[0].InfoMeta && rubro.Metas[0].InfoMeta.length && rubro.Metas[0].InfoMeta[0].meta) ? rubro.Metas[0].InfoMeta[0].meta : "error"}}</td>
+                            </tr>
+                            <tr class="bg-kronos">
+                                <th>{{'GLOBAL.actividades' | translate}}</th>
+                                <th>{{'GLOBAL.fuentes' | translate}}</th>
+                            </tr>
+                            <tr *ngFor="let act of rubro.Metas[0].Actividades;let k=index;">
+                                <td  *ngIf="k===0" [attr.rowspan]="act.FuentesActividad.length">
+                                    {{( act && act.ActividadId ) ? act.ActividadId : "error"}} -
+                                    {{act.InfoActividad[0].actividad.Nombre}}
+                                </td>
+                                <td><ul>
+                                    <li *ngFor="let f of act.FuentesActividad">
+                                        <a>{{f.FuenteId}}</a>-<a *ngIf="f.InfoFuente">{{f.InfoFuente.Nombre}}</a>
+                                        <br>
+                                        <p class="moneyField">{{'GLOBAL.valor' | translate}}: {{f.MontoParcial | currency: COP }}</p>
+                                    </li>
+                                </ul></td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
                     <!-- fuentes -->
                     <thead *ngIf="TrNecesidad.Necesidad.TipoFinanciacionNecesidadId.CodigoAbreviacion==='F'"
                         class="bg-kronos">
@@ -160,7 +162,6 @@
                     <!-- <button *ngIf="expedido" (click)="anularCdp()" class="btn btn-danger">
                             {{ 'CDP.anular_cdp' | translate}}</button> -->
                 </div>
-            </div>
         </nb-card-body>
     </nb-card>
     <ngx-pdfviewer *ngIf="mostrandoPDF===true" [tituloPDF]="tituloPDF" [enlacePDF]="enlacePDF"
