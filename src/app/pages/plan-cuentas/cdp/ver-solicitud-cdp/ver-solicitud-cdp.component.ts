@@ -40,8 +40,8 @@ export class VerSolicitudCdpComponent implements OnInit {
   movimientosRp: any[];
   vigencia: string;
 
-  carga1:boolean;
-  carga2:boolean;
+  carga1: boolean;
+  carga2: boolean;
 
   mostrandoPDF: boolean = false;
   areas = { '1': 'Rector', '2': 'Convenios' };
@@ -92,7 +92,7 @@ export class VerSolicitudCdpComponent implements OnInit {
     }))
     .subscribe(
       (res) => {
-        if(res && res.registroplanadquisiciones && res.registroplanadquisiciones.length){
+        if (res && res.registroplanadquisiciones && res.registroplanadquisiciones.length) {
           res.registroplanadquisiciones.forEach((registro) => {
             const actividades = registro.datos;
             if (trNecesidad['Rubros']) {
@@ -103,7 +103,7 @@ export class VerSolicitudCdpComponent implements OnInit {
                     const actividadesTemp0 = actividades.find(
                       (rubroActividad) => rubroActividad.Rubro === rubro.RubroId
                     );
-                    if(!actividadesTemp0){
+                    if (!actividadesTemp0) {
                       this.popManager.showErrorAlert('No se encontro actividades del plan actual de adquisiciones');
                       return;
                     }
@@ -112,7 +112,7 @@ export class VerSolicitudCdpComponent implements OnInit {
                     meta['InfoMeta'] = actividadesTemp2.filter((metatemp) =>
                       metatemp['MetaId']['Numero'].toString() === meta['MetaId']
                     )[0]['MetaId'];
-                    if(!meta['InfoMeta']){
+                    if (!meta['InfoMeta']) {
                       this.popManager.showErrorAlert('No se encontro la Meta asociada a la necesidad');
                       return;
                     }
@@ -122,7 +122,7 @@ export class VerSolicitudCdpComponent implements OnInit {
                         act['InfoActividad'] = actividadesTemp3.filter(
                           (actividad) => actividad['actividad']['Id'].toString() === act['ActividadId']
                         );
-                        if(!act['InfoActividad']){
+                        if (!act['InfoActividad']) {
                           this.popManager.showErrorAlert('No se encontraron las actividades asociados a la necesidad');
                           return;
                         }
@@ -134,7 +134,7 @@ export class VerSolicitudCdpComponent implements OnInit {
                       });
                     }
                   });
-                }else{
+                } else {
                   this.popManager.showErrorAlert('No se encontraron Metas en este CDP');
                   return;
                 }
@@ -144,13 +144,13 @@ export class VerSolicitudCdpComponent implements OnInit {
                   });
                 }
               });
-            }else{
+            } else {
               this.popManager.showErrorAlert('No se encontraron Rubros en este CDP');
               return;
             }
           });
-        }else{
-          this.popManager.showErrorAlert('No se encontraron registros de plan de adquisiciones, No se puede consultar con vigencia '+trNecesidad['Necesidad'].Vigencia);
+        } else {
+          this.popManager.showErrorAlert('No se encontraron registros de plan de adquisiciones, No se puede consultar con vigencia ' + trNecesidad['Necesidad'].Vigencia);
           return;
         }
         this.TrNecesidad = trNecesidad;
@@ -169,7 +169,6 @@ export class VerSolicitudCdpComponent implements OnInit {
               this.popManager.showErrorToast(
                 this.translate.instant(`ERROR.${error['status']}`)
               );
-              //this.carga1 = true;
             },
           );
       },
@@ -177,7 +176,6 @@ export class VerSolicitudCdpComponent implements OnInit {
         this.popManager.showErrorToast(
           this.translate.instant(`ERROR.${error['status']}`)
         );
-        //this.carga1 = true;
       },
     );
 
