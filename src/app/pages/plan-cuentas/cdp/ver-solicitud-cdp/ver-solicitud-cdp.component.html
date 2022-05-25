@@ -38,7 +38,7 @@
                         <tr>
                             <td *ngIf="!expedido">{{solicitud.consecutivo}}</td>
                             <td *ngIf="expedido">{{solicitud.Consecutivo}}</td>
-                            <td>{{TrNecesidad.Necesidad.ConsecutivoNecesidad}}</td>
+                            <td>{{TrNecesidad.Necesidad.Consecutivo}}</td>
                             <td>{{TrNecesidad.Necesidad.DependenciaNecesidadId.DependenciaSolicitante.Nombre}}</td>
                         </tr>
                         <tr>
@@ -68,8 +68,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{(rubro.Metas[0].MetaId) ? rubro.Metas[0].MetaId : "error"}} </td>
-                                <td>{{(rubro.Metas[0].InfoMeta && rubro.Metas[0].InfoMeta.length && rubro.Metas[0].InfoMeta[0].meta) ? rubro.Metas[0].InfoMeta[0].meta : "error"}}</td>
+                                <td>{{(rubro.Metas[0].MetaId) ? rubro.Metas[0].MetaId : "Sin Identificar"}} </td>
+                                <td>{{(rubro.Metas[0].InfoMeta && rubro.Metas[0].InfoMeta.Nombre) ? rubro.Metas[0].InfoMeta.Nombre : "Sin Identificar"}}</td>
                             </tr>
                             <tr class="bg-kronos">
                                 <th>{{'GLOBAL.actividades' | translate}}</th>

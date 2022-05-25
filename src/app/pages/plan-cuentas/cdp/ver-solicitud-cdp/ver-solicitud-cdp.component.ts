@@ -92,6 +92,7 @@ export class VerSolicitudCdpComponent implements OnInit {
     }))
     .subscribe(
       (res) => {
+        debugger
         if(res && res.registroplanadquisiciones && res.registroplanadquisiciones.length){
           res.registroplanadquisiciones.forEach((registro) => {
             const actividades = registro.datos;
@@ -104,18 +105,28 @@ export class VerSolicitudCdpComponent implements OnInit {
                       (rubroActividad) => rubroActividad.Rubro === rubro.RubroId
                     );
                     if(!actividadesTemp0){
+                      this.popManager.showErrorAlert('No se encontro actividades del plan actual de adquisiciones');
                       return;
                     }
                     const actividadesTemp1 = actividadesTemp0.datos[0];
-                    const actividadesTemp2 = actividadesTemp1['registro_plan_adquisiciones-actividad'];
-                    meta['InfoMeta'] = actividadesTemp2.filter((actividad) =>
-                      actividad['actividad']['MetaId']['Id'].toString() === meta['MetaId']
-                    );
+                    const actividadesTemp2 = actividadesTemp1['registro_funcionamiento-metas_asociadas'];
+                    meta['InfoMeta'] = actividadesTemp2.filter((metatemp) =>
+                      metatemp['MetaId']['Numero'].toString() === meta['MetaId']
+                    )[0]['MetaId'];
+                    if(!meta['InfoMeta']){
+                      this.popManager.showErrorAlert('No se encontro la Meta asociada a la necesidad');
+                      return;
+                    }
+                    const actividadesTemp3 = actividadesTemp1['registro_plan_adquisiciones-actividad'];
                     if (meta.Actividades) {
                       meta.Actividades.forEach((act: any) => {
-                        act['InfoActividad'] = actividadesTemp2.filter(
+                        act['InfoActividad'] = actividadesTemp3.filter(
                           (actividad) => actividad['actividad']['Id'].toString() === act['ActividadId']
                         );
+                        if(!act['InfoActividad']){
+                          this.popManager.showErrorAlert('No se encontraron las actividades asociados a la necesidad');
+                          return;
+                        }
                         if (act.FuentesActividad) {
                           act.FuentesActividad.forEach((fuente: any) => {
                             rubro.MontoParcial += fuente.MontoParcial;
@@ -124,6 +135,9 @@ export class VerSolicitudCdpComponent implements OnInit {
                       });
                     }
                   });
+                }else{
+                  this.popManager.showErrorAlert('No se encontraron Metas en este CDP');
+                  return;
                 }
                 if (rubro.Fuentes) {
                   rubro.Fuentes.forEach((fuente) => {
@@ -131,8 +145,14 @@ export class VerSolicitudCdpComponent implements OnInit {
                   });
                 }
               });
+            }else{
+              this.popManager.showErrorAlert('No se encontraron Rubros en este CDP');
+              return;
             }
           });
+        }else{
+          this.popManager.showErrorAlert('No se encontraron registros de plan de adquisiciones, No se puede consultar con vigencia '+trNecesidad['Necesidad'].Vigencia);
+          return;
         }
         this.TrNecesidad = trNecesidad;
         this.admAmazonHelper
