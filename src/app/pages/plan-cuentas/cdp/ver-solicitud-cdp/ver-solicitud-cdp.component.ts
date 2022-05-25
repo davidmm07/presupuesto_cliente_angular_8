@@ -92,7 +92,6 @@ export class VerSolicitudCdpComponent implements OnInit {
     }))
     .subscribe(
       (res) => {
-        debugger
         if(res && res.registroplanadquisiciones && res.registroplanadquisiciones.length){
           res.registroplanadquisiciones.forEach((registro) => {
             const actividades = registro.datos;
