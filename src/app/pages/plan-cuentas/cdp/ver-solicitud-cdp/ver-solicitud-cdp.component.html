@@ -11,7 +11,7 @@
             <legend *ngIf="solicitud && expedido">{{ 'CDP.detalle_cdp' | translate }}: {{solicitud.Consecutivo}}
             </legend>
         </nb-card-header>
-        <nb-card-body *ngIf="TrNecesidad && carga1 && carga2" class="container-fluid">
+        <nb-card-body *ngIf="TrNecesidad && cargaNecesidad && cargaDependencias" class="container-fluid">
                 <table class="table table-hover table-bordered">
                     <thead class="bg-kronos">
                         <th width="15%">{{'GLOBAL.vigencia' | translate}}</th>
@@ -68,8 +68,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{(rubro.Metas[0].MetaId) ? rubro.Metas[0].MetaId : "Sin Identificar"}} </td>
-                                <td>{{(rubro.Metas[0].InfoMeta && rubro.Metas[0].InfoMeta.Nombre) ? rubro.Metas[0].InfoMeta.Nombre : "Sin Identificar"}}</td>
+                                <td>{{(rubro.Metas[0].MetaId) ? rubro.Metas[0].MetaId : 'ERROR.404' | translate}} </td>
+                                <td>{{(rubro.Metas[0].InfoMeta && rubro.Metas[0].InfoMeta.Nombre) ? rubro.Metas[0].InfoMeta.Nombre : 'ERROR.404' | translate}}</td>
                             </tr>
                             <tr class="bg-kronos">
                                 <th>{{'GLOBAL.actividades' | translate}}</th>
@@ -77,7 +77,7 @@
                             </tr>
                             <tr *ngFor="let act of rubro.Metas[0].Actividades;let k=index;">
                                 <td  *ngIf="k===0" [attr.rowspan]="act.FuentesActividad.length">
-                                    {{( act && act.ActividadId ) ? act.ActividadId : "error"}} -
+                                    {{( act && act.ActividadId ) ? act.ActividadId : 'ERROR.404' | translate}} -
                                     {{act.InfoActividad[0].actividad.Nombre}}
                                 </td>
                                 <td><ul>

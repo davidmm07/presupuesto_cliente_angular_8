@@ -40,8 +40,8 @@ export class VerSolicitudCdpComponent implements OnInit {
   movimientosRp: any[];
   vigencia: string;
 
-  carga1: boolean;
-  carga2: boolean;
+  cargaNecesidad: boolean;
+  cargaDependencias: boolean;
 
   mostrandoPDF: boolean = false;
   areas = { '1': 'Rector', '2': 'Convenios' };
@@ -69,18 +69,20 @@ export class VerSolicitudCdpComponent implements OnInit {
 
   ngOnInit() {
     let trNecesidad: object;
-    let errorMensaje = [];
+    const errorMensaje = [];
     this.vigenciaHelper.getCurrentVigencia().subscribe((res) => {
       this.vigencia = res;
     });
 
     this.getInfoRp();
-    this.carga1 = false;
+    this.cargaNecesidad = false;
     this.cdpHelper.getFullNecesidad(this.solicitud['necesidad'])
     .pipe(mergeMap((res) => {
       trNecesidad = res;
       this.areaFuncional = this.areas[trNecesidad['Necesidad']['AreaFuncional']];
-      this.centroGestor = this.solicitud['centroGestor'] ? this.entidades[this.solicitud['centroGestor']] : this.entidades[this.solicitud['CentroGestor']];
+      this.centroGestor = this.solicitud['centroGestor'] ? 
+      this.entidades[this.solicitud['centroGestor']] : 
+      this.entidades[this.solicitud['CentroGestor']];
       return this.getInfoJefeDepdencia(trNecesidad['Necesidad']['DependenciaNecesidadId']['JefeDepSolicitanteId']);
     }))
     .pipe(mergeMap((res) =>
@@ -100,30 +102,30 @@ export class VerSolicitudCdpComponent implements OnInit {
                 rubro.MontoParcial = 0;
                 if (rubro.Metas) {
                   rubro.Metas.forEach((meta: any) => {
-                    const actividadesTemp0 = actividades.find(
+                    const actividadesRegistro = actividades.find(
                       (rubroActividad) => rubroActividad.Rubro === rubro.RubroId
                     );
-                    if (!actividadesTemp0) {
-                      errorMensaje.push('No se encontro actividades del plan actual de adquisiciones');
+                    if (!actividadesRegistro) {
+                      errorMensaje.push( this.translate.instant(`ERROR.404`) + ' actividades del plan actual de adquisiciones');
                       return;
                     }
-                    const actividadesTemp1 = actividadesTemp0.datos[0];
-                    const actividadesTemp2 = actividadesTemp1['registro_funcionamiento-metas_asociadas'];
-                    meta['InfoMeta'] = actividadesTemp2.filter((metatemp) =>
+                    const datosActividades = actividadesRegistro.datos[0];
+                    const actividadesMetas = datosActividades['registro_funcionamiento-metas_asociadas'];
+                    meta['InfoMeta'] = actividadesMetas.filter((metatemp) =>
                       metatemp['MetaId']['Numero'].toString() === meta['MetaId']
                     )[0]['MetaId'];
                     if (!meta['InfoMeta']) {
-                      errorMensaje.push('No se encontro la Meta asociada a la necesidad');
+                      errorMensaje.push( this.translate.instant(`ERROR.404`) + ' Meta asociada a la necesidad');
                       return;
                     }
-                    const actividadesTemp3 = actividadesTemp1['registro_plan_adquisiciones-actividad'];
+                    const actividadesPlan = datosActividades['registro_plan_adquisiciones-actividad'];
                     if (meta.Actividades) {
                       meta.Actividades.forEach((act: any) => {
-                        act['InfoActividad'] = actividadesTemp3.filter(
+                        act['InfoActividad'] = actividadesPlan.filter(
                           (actividad) => actividad['actividad']['Id'].toString() === act['ActividadId']
                         );
                         if (!act['InfoActividad']) {
-                          errorMensaje.push('No se encontraron las actividades asociados a la necesidad');
+                          errorMensaje.push( this.translate.instant(`ERROR.404`) + ' actividades asociados a la necesidad');
                           return;
                         }
                         if (act.FuentesActividad) {
@@ -135,7 +137,7 @@ export class VerSolicitudCdpComponent implements OnInit {
                     }
                   });
                 } else {
-                  errorMensaje.push('No se encontraron Metas en este CDP');
+                  errorMensaje.push( this.translate.instant(`ERROR.404`) + ' Metas en este CDP');
                   return;
                 }
                 if (rubro.Fuentes) {
@@ -145,16 +147,15 @@ export class VerSolicitudCdpComponent implements OnInit {
                 }
               });
             } else {
-              errorMensaje.push('No se encontraron Rubros en este CDP');
+              errorMensaje.push( this.translate.instant(`ERROR.404`) + ' Rubros en este CDP');
               return;
             }
           });
         } else {
-          this.popManager.showErrorAlert('No se encontraron registros de plan de adquisiciones, No se puede consultar con vigencia ' + trNecesidad['Necesidad'].Vigencia);
+          this.popManager.showErrorAlert(this.translate.instant(`ERROR.404`) + ' registros de plan de adquisiciones, No se puede consultar con vigencia ' + trNecesidad['Necesidad'].Vigencia);
           return;
         }
-        debugger
-        if(errorMensaje.length > 0){
+        if (errorMensaje.length > 0) {
           this.popManager.showErrorAlert(errorMensaje[0]);
           return;
         }
@@ -168,7 +169,7 @@ export class VerSolicitudCdpComponent implements OnInit {
               if (res1) {
                 this.ordenadorGasto = res1['NomProveedor'];
               }
-              this.carga1 = true;
+              this.cargaNecesidad = true;
             },
             (error: any) => {
               this.popManager.showErrorToast(
@@ -184,7 +185,7 @@ export class VerSolicitudCdpComponent implements OnInit {
       },
     );
 
-    this.carga2 = false;
+    this.cargaDependencias = false;
     this.dependenciaHelper
       .get('', 'query=Nombre__contains:PRESUPUESTO')
       .pipe(
@@ -206,7 +207,7 @@ export class VerSolicitudCdpComponent implements OnInit {
           res['PrimerApellido'] +
           ' ' +
           res['SegundoApellido'];
-        this.carga2 = true;
+        this.cargaDependencias = true;
       });
 
     if (this.implicitAutenticationService.live()) {
