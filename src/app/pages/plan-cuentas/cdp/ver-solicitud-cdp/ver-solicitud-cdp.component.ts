@@ -80,8 +80,8 @@ export class VerSolicitudCdpComponent implements OnInit {
     .pipe(mergeMap((res) => {
       trNecesidad = res;
       this.areaFuncional = this.areas[trNecesidad['Necesidad']['AreaFuncional']];
-      this.centroGestor = this.solicitud['centroGestor'] ? 
-      this.entidades[this.solicitud['centroGestor']] : 
+      this.centroGestor = this.solicitud['centroGestor'] ?
+      this.entidades[this.solicitud['centroGestor']] :
       this.entidades[this.solicitud['CentroGestor']];
       return this.getInfoJefeDepdencia(trNecesidad['Necesidad']['DependenciaNecesidadId']['JefeDepSolicitanteId']);
     }))
@@ -152,7 +152,9 @@ export class VerSolicitudCdpComponent implements OnInit {
             }
           });
         } else {
-          this.popManager.showErrorAlert(this.translate.instant(`ERROR.404`) + ' registros de plan de adquisiciones, No se puede consultar con vigencia ' + trNecesidad['Necesidad'].Vigencia);
+          this.popManager.showErrorAlert(this.translate.instant(`ERROR.404`) +
+          ' registros de plan de adquisiciones, No se puede consultar con vigencia ' +
+          trNecesidad['Necesidad'].Vigencia);
           return;
         }
         if (errorMensaje.length > 0) {
