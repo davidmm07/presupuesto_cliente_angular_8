@@ -69,12 +69,12 @@ export class VerSolicitudCdpComponent implements OnInit {
 
   ngOnInit() {
     let trNecesidad: object;
+    let errorMensaje = [];
     this.vigenciaHelper.getCurrentVigencia().subscribe((res) => {
       this.vigencia = res;
     });
 
     this.getInfoRp();
-
     this.carga1 = false;
     this.cdpHelper.getFullNecesidad(this.solicitud['necesidad'])
     .pipe(mergeMap((res) => {
@@ -104,7 +104,7 @@ export class VerSolicitudCdpComponent implements OnInit {
                       (rubroActividad) => rubroActividad.Rubro === rubro.RubroId
                     );
                     if (!actividadesTemp0) {
-                      this.popManager.showErrorAlert('No se encontro actividades del plan actual de adquisiciones');
+                      errorMensaje.push('No se encontro actividades del plan actual de adquisiciones');
                       return;
                     }
                     const actividadesTemp1 = actividadesTemp0.datos[0];
@@ -113,7 +113,7 @@ export class VerSolicitudCdpComponent implements OnInit {
                       metatemp['MetaId']['Numero'].toString() === meta['MetaId']
                     )[0]['MetaId'];
                     if (!meta['InfoMeta']) {
-                      this.popManager.showErrorAlert('No se encontro la Meta asociada a la necesidad');
+                      errorMensaje.push('No se encontro la Meta asociada a la necesidad');
                       return;
                     }
                     const actividadesTemp3 = actividadesTemp1['registro_plan_adquisiciones-actividad'];
@@ -123,7 +123,7 @@ export class VerSolicitudCdpComponent implements OnInit {
                           (actividad) => actividad['actividad']['Id'].toString() === act['ActividadId']
                         );
                         if (!act['InfoActividad']) {
-                          this.popManager.showErrorAlert('No se encontraron las actividades asociados a la necesidad');
+                          errorMensaje.push('No se encontraron las actividades asociados a la necesidad');
                           return;
                         }
                         if (act.FuentesActividad) {
@@ -135,7 +135,7 @@ export class VerSolicitudCdpComponent implements OnInit {
                     }
                   });
                 } else {
-                  this.popManager.showErrorAlert('No se encontraron Metas en este CDP');
+                  errorMensaje.push('No se encontraron Metas en este CDP');
                   return;
                 }
                 if (rubro.Fuentes) {
@@ -145,12 +145,17 @@ export class VerSolicitudCdpComponent implements OnInit {
                 }
               });
             } else {
-              this.popManager.showErrorAlert('No se encontraron Rubros en este CDP');
+              errorMensaje.push('No se encontraron Rubros en este CDP');
               return;
             }
           });
         } else {
           this.popManager.showErrorAlert('No se encontraron registros de plan de adquisiciones, No se puede consultar con vigencia ' + trNecesidad['Necesidad'].Vigencia);
+          return;
+        }
+        debugger
+        if(errorMensaje.length > 0){
+          this.popManager.showErrorAlert(errorMensaje[0]);
           return;
         }
         this.TrNecesidad = trNecesidad;
