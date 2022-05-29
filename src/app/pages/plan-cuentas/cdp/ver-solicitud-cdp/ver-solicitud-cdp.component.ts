@@ -40,6 +40,9 @@ export class VerSolicitudCdpComponent implements OnInit {
   movimientosRp: any[];
   vigencia: string;
 
+  cargaNecesidad: boolean;
+  cargaDependencias: boolean;
+
   mostrandoPDF: boolean = false;
   areas = { '1': 'Rector', '2': 'Convenios' };
   entidades = { '1': 'Universidad Distrital Francisco José de Caldas' };
@@ -66,71 +69,65 @@ export class VerSolicitudCdpComponent implements OnInit {
 
   ngOnInit() {
     let trNecesidad: object;
+    const errorMensaje = [];
     this.vigenciaHelper.getCurrentVigencia().subscribe((res) => {
       this.vigencia = res;
     });
 
     this.getInfoRp();
-
-    this.cdpHelper
-      .getFullNecesidad(this.solicitud['necesidad'])
-      .pipe(
-        mergeMap((res) => {
-          trNecesidad = res;
-          // console.log('trNecesidad: ', trNecesidad);
-          this.areaFuncional =
-            this.areas[trNecesidad['Necesidad']['AreaFuncional']];
-          this.centroGestor = this.solicitud['centroGestor']
-            ? this.entidades[this.solicitud['centroGestor']]
-            : this.entidades[this.solicitud['CentroGestor']];
-          return this.getInfoJefeDepdencia(
-            trNecesidad['Necesidad']['DependenciaNecesidadId'][
-              'JefeDepSolicitanteId'
-            ]
-          );
-        })
-      )
-      .pipe(mergeMap((res) => this.getInfoDependencia(res['DependenciaId'])))
-      .pipe(
-        mergeMap((res) => {
-          trNecesidad['Necesidad']['DependenciaNecesidadId'][
-            'DependenciaSolicitante'
-          ] = res;
-          return this.lastVersionPlan.lastVersionPlan(
-            trNecesidad['Necesidad']['PlanAnualAdquisicionesId']
-          );
-        })
-      )
-      .subscribe(
-        (res) => {
-
+    this.cargaNecesidad = false;
+    this.cdpHelper.getFullNecesidad(this.solicitud['necesidad'])
+    .pipe(mergeMap((res) => {
+      trNecesidad = res;
+      this.areaFuncional = this.areas[trNecesidad['Necesidad']['AreaFuncional']];
+      this.centroGestor = this.solicitud['centroGestor'] ?
+      this.entidades[this.solicitud['centroGestor']] :
+      this.entidades[this.solicitud['CentroGestor']];
+      return this.getInfoJefeDepdencia(trNecesidad['Necesidad']['DependenciaNecesidadId']['JefeDepSolicitanteId']);
+    }))
+    .pipe(mergeMap((res) =>
+      this.getInfoDependencia(res['DependenciaId'])
+    ))
+    .pipe(mergeMap((res) => {
+      trNecesidad['Necesidad']['DependenciaNecesidadId']['DependenciaSolicitante'] = res;
+      return this.lastVersionPlan.lastVersionPlan(trNecesidad['Necesidad']['PlanAnualAdquisicionesId']);
+    }))
+    .subscribe(
+      (res) => {
+        if (res && res.registroplanadquisiciones && res.registroplanadquisiciones.length) {
           res.registroplanadquisiciones.forEach((registro) => {
-
             const actividades = registro.datos;
-
             if (trNecesidad['Rubros']) {
-              // console.log('trNecesidad['Rubros']: ', trNecesidad['Rubros']);
               trNecesidad['Rubros'].forEach((rubro: any) => {
                 rubro.MontoParcial = 0;
                 if (rubro.Metas) {
                   rubro.Metas.forEach((meta: any) => {
-                    const actividadesTemp1: object = actividades.filter(
+                    const actividadesRegistro = actividades.find(
                       (rubroActividad) => rubroActividad.Rubro === rubro.RubroId
-                    )[0].datos[0];
-                    const actividadesTemp2 =
-                      actividadesTemp1['registro_plan_adquisiciones-actividad'];
-                    meta['InfoMeta'] = actividadesTemp2.filter(
-                      (actividad) =>
-                        actividad['actividad']['MetaId']['Id'].toString() ===
-                        meta['MetaId']
                     );
+                    if (!actividadesRegistro) {
+                      errorMensaje.push( this.translate.instant(`ERROR.404`) + ' actividades del plan actual de adquisiciones');
+                      return;
+                    }
+                    const datosActividades = actividadesRegistro.datos[0];
+                    const actividadesMetas = datosActividades['registro_funcionamiento-metas_asociadas'];
+                    meta['InfoMeta'] = actividadesMetas.filter((metatemp) =>
+                      metatemp['MetaId']['Numero'].toString() === meta['MetaId']
+                    )[0]['MetaId'];
+                    if (!meta['InfoMeta']) {
+                      errorMensaje.push( this.translate.instant(`ERROR.404`) + ' Meta asociada a la necesidad');
+                      return;
+                    }
+                    const actividadesPlan = datosActividades['registro_plan_adquisiciones-actividad'];
                     if (meta.Actividades) {
                       meta.Actividades.forEach((act: any) => {
-                        act['InfoActividad'] = actividadesTemp2.filter(
-                          (actividad) =>
-                            actividad['actividad']['Id'].toString() ===
-                            act['ActividadId']
+                        act['InfoActividad'] = actividadesPlan.filter(
+                          (actividad) => actividad['actividad']['Id'].toString() === act['ActividadId']
                         );
+                        if (!act['InfoActividad']) {
+                          errorMensaje.push( this.translate.instant(`ERROR.404`) + ' actividades asociados a la necesidad');
+                          return;
+                        }
                         if (act.FuentesActividad) {
                           act.FuentesActividad.forEach((fuente: any) => {
                             rubro.MontoParcial += fuente.MontoParcial;
@@ -139,6 +136,9 @@ export class VerSolicitudCdpComponent implements OnInit {
                       });
                     }
                   });
+                } else {
+                  errorMensaje.push( this.translate.instant(`ERROR.404`) + ' Metas en este CDP');
+                  return;
                 }
                 if (rubro.Fuentes) {
                   rubro.Fuentes.forEach((fuente) => {
@@ -146,36 +146,48 @@ export class VerSolicitudCdpComponent implements OnInit {
                   });
                 }
               });
+            } else {
+              errorMensaje.push( this.translate.instant(`ERROR.404`) + ' Rubros en este CDP');
+              return;
             }
           });
-
-          this.TrNecesidad = trNecesidad;
-          this.admAmazonHelper
-            .getProveedor(
-              this.TrNecesidad['Necesidad']['DependenciaNecesidadId'][
-                'OrdenadorGastoId'
-              ]
-            )
-            .subscribe(
-              (res1) => {
-                if (res1) {
-                  this.ordenadorGasto = res1['NomProveedor'];
-                }
-              },
-              (error: any) => {
-                this.popManager.showErrorToast(
-                  this.translate.instant(`ERROR.${error['status']}`)
-                );
-              }
-            );
-        },
-        (error: any) => {
-          this.popManager.showErrorToast(
-            this.translate.instant(`ERROR.${error['status']}`)
-          );
+        } else {
+          this.popManager.showErrorAlert(this.translate.instant(`ERROR.404`) +
+          ' registros de plan de adquisiciones, No se puede consultar con vigencia ' +
+          trNecesidad['Necesidad'].Vigencia);
+          return;
         }
-      );
+        if (errorMensaje.length > 0) {
+          this.popManager.showErrorAlert(errorMensaje[0]);
+          return;
+        }
+        this.TrNecesidad = trNecesidad;
+        this.admAmazonHelper
+          .getProveedor(
+            this.TrNecesidad['Necesidad']['DependenciaNecesidadId']['OrdenadorGastoId']
+          )
+          .subscribe(
+            (res1) => {
+              if (res1) {
+                this.ordenadorGasto = res1['NomProveedor'];
+              }
+              this.cargaNecesidad = true;
+            },
+            (error: any) => {
+              this.popManager.showErrorToast(
+                this.translate.instant(`ERROR.${error['status']}`)
+              );
+            },
+          );
+      },
+      (error: any) => {
+        this.popManager.showErrorToast(
+          this.translate.instant(`ERROR.${error['status']}`)
+        );
+      },
+    );
 
+    this.cargaDependencias = false;
     this.dependenciaHelper
       .get('', 'query=Nombre__contains:PRESUPUESTO')
       .pipe(
@@ -197,6 +209,7 @@ export class VerSolicitudCdpComponent implements OnInit {
           res['PrimerApellido'] +
           ' ' +
           res['SegundoApellido'];
+        this.cargaDependencias = true;
       });
 
     if (this.implicitAutenticationService.live()) {
