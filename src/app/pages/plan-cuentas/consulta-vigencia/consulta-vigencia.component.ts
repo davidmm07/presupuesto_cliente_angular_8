@@ -78,8 +78,8 @@ export class ConsultaVigenciaComponent implements OnInit {
     });
     this.commonHelper.geCurrentVigencia().subscribe(res => {
       if (res) {
-        this.vigenciaSel       = res + '';
-        this.strVigenciaActual = this.vigenciaSel;
+        this.vigenciaSel       = res;
+        this.strVigenciaActual = this.vigenciaSel + ' Actual';
       }
     });
     this.tabPlanAdquisicionesRubro = false;

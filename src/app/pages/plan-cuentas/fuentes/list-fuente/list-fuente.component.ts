@@ -175,7 +175,6 @@ export class ListFuenteComponent implements OnInit {
   }
 
   onSelect(selectedItem: any) {
-    // console.log(selectedItem)
     if (selectedItem === 'all') {
       this.vigenciaSel = 'Todas';
       if (this)
@@ -185,8 +184,8 @@ export class ListFuenteComponent implements OnInit {
       if (this)
       this.paramsFieldsName = { Vigencia: this.vigenciaSel, UnidadEjecutora: 1 };
     }
-
   }
+
   onExternalTabActivator($event: string) {
     if ($event === 'external-create') {
       this.auxcambiotab = true;

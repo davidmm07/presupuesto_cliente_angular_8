@@ -2,9 +2,10 @@
   <nb-card>
     <nb-card-header>
       {{ "APROPIACION.title_gestion_preasignacion" | translate }} -
-      <strong
+      <strong *ngIf="vigenciaSel !== ''"
         >{{ "GLOBAL.vigencia" | translate }}: {{ vigenciaSel }}</strong
       >
+      <mat-progress-bar mode="indeterminate" *ngIf="vigenciaSel === ''"></mat-progress-bar>
     </nb-card-header>
     <div class="row">
       <div class="col-md-12">

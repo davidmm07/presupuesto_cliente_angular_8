@@ -4,7 +4,8 @@
             {{ "CRP.crp" | translate }}
             <div class="text-right" *ngIf="vigencias[0]">
                 <strong>{{'GLOBAL.vigencia' | translate}}: </strong>
-                <nb-select id="select_vigencia" placeholder="{{vigenciaUrl || vigencias[0]['valor']}}" hero status="info" [(selected)]="vigenciaUrl">
+                <mat-progress-bar mode="indeterminate" *ngIf="vigenciaUrl === '' || !vigencias || (vigencias && vigencias.length === 0)"></mat-progress-bar>
+                <nb-select *ngIf="vigenciaUrl !== '' || vigencias.length > 0" id="select_vigencia" placeholder="{{vigenciaUrl || vigencias[0]['valor']}}" hero status="info" [(selected)]="vigenciaUrl">
                     <nb-option *ngFor="let v of vigencias" [value]="v.valor" (click)="onSelect(v.valor)">{{v.valor}}
                     </nb-option>
                 </nb-select>

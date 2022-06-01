@@ -162,6 +162,7 @@ export class ListModificacionApropiacionComponent implements OnInit {
     const aplicacion = this.vigencias;
     this.formEntity.campos[this.getIndexForm('Vigencia')].opciones = aplicacion;
   }
+
   getIndexForm(nombre: String): number {
     for (let index = 0; index < this.formEntity.campos.length; index++) {
       const element = this.formEntity.campos[index];
@@ -173,8 +174,15 @@ export class ListModificacionApropiacionComponent implements OnInit {
   }
 
   onSelect(selectedItem: any) {
-    this.vigenciaSel = selectedItem;
-    this.paramsFieldsName = { vigencia: this.vigenciaSel, cg: '1', tipomod: this.tipoModSel.value };
+    if (selectedItem === 'all') {
+      this.vigenciaSel = 'Todas';
+      if (this)
+      this.paramsFieldsName = { vigencia: selectedItem, cg: '1', tipomod: this.tipoModSel.value };
+    } else {
+      this.vigenciaSel = selectedItem;
+      if (this)
+      this.paramsFieldsName = { vigencia: this.vigenciaSel, cg: '1', tipomod: this.tipoModSel.value };
+    }
   }
 
   onSelectTipoMod(selectedItem: any) {
