@@ -10,7 +10,7 @@ import { DocumentoPresupuestalHelper } from '../../../../@core/helpers/documento
 import { PopUpManager } from '../../../../@core/managers/popUpManager';
 import { Router } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
-import { switchMap, mergeMap } from 'rxjs/operators';
+import { switchMap, mergeMap, map } from 'rxjs/operators';
 import { ImplicitAutenticationService } from '../../../../@core/utils/implicit_autentication.service';
 import { TranslateService } from '@ngx-translate/core';
 import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelper';
@@ -39,6 +39,7 @@ export class VerSolicitudCdpComponent implements OnInit {
   estadoNecesidadRechazada: object;
   movimientosRp: any[];
   vigencia: string;
+  disableButton: boolean = false;
 
   cargaNecesidad: boolean;
   cargaDependencias: boolean;
@@ -76,116 +77,149 @@ export class VerSolicitudCdpComponent implements OnInit {
 
     this.getInfoRp();
     this.cargaNecesidad = false;
-    this.cdpHelper.getFullNecesidad(this.solicitud['necesidad'])
-    .pipe(mergeMap((res) => {
-      trNecesidad = res;
-      this.areaFuncional = this.areas[trNecesidad['Necesidad']['AreaFuncional']];
-      this.centroGestor = this.solicitud['centroGestor'] ?
-      this.entidades[this.solicitud['centroGestor']] :
-      this.entidades[this.solicitud['CentroGestor']];
-      return this.getInfoJefeDepdencia(trNecesidad['Necesidad']['DependenciaNecesidadId']['JefeDepSolicitanteId']);
-    }))
-    .pipe(mergeMap((res) =>
-      this.getInfoDependencia(res['DependenciaId'])
-    ))
-    .pipe(mergeMap((res) => {
-      trNecesidad['Necesidad']['DependenciaNecesidadId']['DependenciaSolicitante'] = res;
-      return this.lastVersionPlan.lastVersionPlan(trNecesidad['Necesidad']['PlanAnualAdquisicionesId']);
-    }))
-    .subscribe(
-      (res) => {
-        if (res && res.registroplanadquisiciones && res.registroplanadquisiciones.length) {
-          res.registroplanadquisiciones.forEach((registro) => {
-            const actividades = registro.datos;
-            if (trNecesidad['Rubros']) {
-              trNecesidad['Rubros'].forEach((rubro: any) => {
-                rubro.MontoParcial = 0;
-                if (rubro.Metas) {
-                  rubro.Metas.forEach((meta: any) => {
-                    const actividadesRegistro = actividades.find(
-                      (rubroActividad) => rubroActividad.Rubro === rubro.RubroId
-                    );
-                    if (!actividadesRegistro) {
-                      errorMensaje.push( this.translate.instant(`ERROR.404`) + ' actividades del plan actual de adquisiciones');
-                      return;
-                    }
-                    const datosActividades = actividadesRegistro.datos[0];
-                    const actividadesMetas = datosActividades['registro_funcionamiento-metas_asociadas'];
-                    meta['InfoMeta'] = actividadesMetas.filter((metatemp) =>
-                      metatemp['MetaId']['Numero'].toString() === meta['MetaId']
-                    )[0]['MetaId'];
-                    if (!meta['InfoMeta']) {
-                      errorMensaje.push( this.translate.instant(`ERROR.404`) + ' Meta asociada a la necesidad');
-                      return;
-                    }
-                    const actividadesPlan = datosActividades['registro_plan_adquisiciones-actividad'];
-                    if (meta.Actividades) {
-                      meta.Actividades.forEach((act: any) => {
-                        act['InfoActividad'] = actividadesPlan.filter(
-                          (actividad) => actividad['actividad']['Id'].toString() === act['ActividadId']
-                        );
-                        if (!act['InfoActividad']) {
-                          errorMensaje.push( this.translate.instant(`ERROR.404`) + ' actividades asociados a la necesidad');
-                          return;
+    this.cdpHelper
+      .getFullNecesidad(this.solicitud['necesidad'])
+      .pipe(
+        mergeMap((res) => {
+          trNecesidad = res;
+          this.areaFuncional =
+            this.areas[trNecesidad['Necesidad']['AreaFuncional']];
+          this.centroGestor = this.solicitud['centroGestor']
+            ? this.entidades[this.solicitud['centroGestor']]
+            : this.entidades[this.solicitud['CentroGestor']];
+          return this.getInfoJefeDepdencia(
+            trNecesidad['Necesidad']['DependenciaNecesidadId'][
+              'JefeDepSolicitanteId'
+            ]
+          );
+        })
+      )
+      .pipe(mergeMap((res) => this.getInfoDependencia(res['DependenciaId'])))
+      .pipe(
+        mergeMap((res) => {
+          trNecesidad['Necesidad']['DependenciaNecesidadId'][
+            'DependenciaSolicitante'
+          ] = res;
+          return this.lastVersionPlan.lastVersionPlan(
+            trNecesidad['Necesidad']['PlanAnualAdquisicionesId']
+          );
+        })
+      )
+      .subscribe(
+        (res) => {
+          if (
+            res &&
+            res.registroplanadquisiciones &&
+            res.registroplanadquisiciones.length
+          ) {
+            res.registroplanadquisiciones.forEach((registro) => {
+              const actividades = registro.datos;
+              if (trNecesidad['Rubros']) {
+                trNecesidad['Rubros'].forEach((rubro: any) => {
+                  rubro.MontoParcial = 0;
+                  if (rubro.Metas) {
+                    rubro.Metas.forEach((meta: any) => {
+                      const actividadesRegistro = actividades.find(
+                        (rubroActividad) => rubroActividad.Rubro === rubro.RubroId
+                      );
+                      if (!actividadesRegistro) {
+                        this.disableButton = true;
+                      } else {
+                        const datosActividades = actividadesRegistro.datos[0];
+                        const actividadesMetas =
+                          datosActividades[
+                            'registro_funcionamiento-metas_asociadas'
+                          ];
+                        meta['InfoMeta'] = actividadesMetas.filter(
+                          (metatemp) =>
+                            metatemp['MetaId']['Numero'].toString() ===
+                            meta['MetaId']
+                        )[0]['MetaId'];
+                        if (!meta['InfoMeta']) {
+                          this.disableButton = true;
                         }
-                        if (act.FuentesActividad) {
-                          act.FuentesActividad.forEach((fuente: any) => {
-                            rubro.MontoParcial += fuente.MontoParcial;
+                        const actividadesPlan =
+                          datosActividades[
+                            'registro_plan_adquisiciones-actividad'
+                          ];
+                        if (meta.Actividades) {
+                          meta.Actividades.forEach((act: any) => {
+                            act['InfoActividad'] = actividadesPlan.filter(
+                              (actividad) =>
+                                actividad['actividad']['Id'].toString() ===
+                                act['ActividadId']
+                            );
+                            if (!act['InfoActividad']) {
+                              this.disableButton = true;
+                              return;
+                            }
+                            if (act.FuentesActividad) {
+                              act.FuentesActividad.forEach((fuente: any) => {
+                                rubro.MontoParcial += fuente.MontoParcial;
+                              });
+                            }
                           });
                         }
-                      });
-                    }
-                  });
-                } else {
-                  errorMensaje.push( this.translate.instant(`ERROR.404`) + ' Metas en este CDP');
-                  return;
-                }
-                if (rubro.Fuentes) {
-                  rubro.Fuentes.forEach((fuente) => {
-                    rubro.MontoParcial += fuente.MontoParcial;
-                  });
-                }
-              });
-            } else {
-              errorMensaje.push( this.translate.instant(`ERROR.404`) + ' Rubros en este CDP');
-              return;
-            }
-          });
-        } else {
-          this.popManager.showErrorAlert(this.translate.instant(`ERROR.404`) +
-          ' registros de plan de adquisiciones, No se puede consultar con vigencia ' +
-          trNecesidad['Necesidad'].Vigencia);
-          return;
-        }
-        if (errorMensaje.length > 0) {
-          this.popManager.showErrorAlert(errorMensaje[0]);
-          return;
-        }
-        this.TrNecesidad = trNecesidad;
-        this.admAmazonHelper
-          .getProveedor(
-            this.TrNecesidad['Necesidad']['DependenciaNecesidadId']['OrdenadorGastoId']
-          )
-          .subscribe(
-            (res1) => {
-              if (res1) {
-                this.ordenadorGasto = res1['NomProveedor'];
+                      }
+                    });
+                  } else {
+                    errorMensaje.push(
+                      this.translate.instant(`ERROR.404`) + ' Metas en este CDP'
+                    );
+                    return;
+                  }
+                  if (rubro.Fuentes) {
+                    rubro.Fuentes.forEach((fuente) => {
+                      rubro.MontoParcial += fuente.MontoParcial;
+                    });
+                  }
+                });
+              } else {
+                errorMensaje.push(
+                  this.translate.instant(`ERROR.404`) + ' Rubros en este CDP'
+                );
+                return;
               }
-              this.cargaNecesidad = true;
-            },
-            (error: any) => {
-              this.popManager.showErrorToast(
-                this.translate.instant(`ERROR.${error['status']}`)
-              );
-            },
+            });
+          } else {
+            this.popManager.showErrorAlert(
+              this.translate.instant(`ERROR.404`) +
+                ' registros de plan de adquisiciones, No se puede consultar con vigencia ' +
+                trNecesidad['Necesidad'].Vigencia
+            );
+            return;
+          }
+          if (errorMensaje.length > 0) {
+            this.popManager.showErrorAlert(errorMensaje[0]);
+            return;
+          }
+          this.TrNecesidad = trNecesidad;
+          this.admAmazonHelper
+            .getProveedor(
+              this.TrNecesidad['Necesidad']['DependenciaNecesidadId'][
+                'OrdenadorGastoId'
+              ]
+            )
+            .subscribe(
+              (res1) => {
+                if (res1) {
+                  this.ordenadorGasto = res1['NomProveedor'];
+                }
+                this.cargaNecesidad = true;
+              },
+              (error: any) => {
+                this.popManager.showErrorToast(
+                  this.translate.instant(`ERROR.${error['status']}`)
+                );
+              }
+            );
+        },
+        (error: any) => {
+          this.popManager.showErrorToast(
+            this.translate.instant(`ERROR.${error['status']}`)
           );
-      },
-      (error: any) => {
-        this.popManager.showErrorToast(
-          this.translate.instant(`ERROR.${error['status']}`)
-        );
-      },
-    );
+        }
+      );
 
     this.cargaDependencias = false;
     this.dependenciaHelper
@@ -248,9 +282,15 @@ export class VerSolicitudCdpComponent implements OnInit {
   }
 
   getInfoMeta(planAdquisicionesId: Number): Observable<any> {
-    return this.planAdquisicionHelper.getPlanAdquisicionByDependencia(
-      planAdquisicionesId.toString()
-    );
+    return this.planAdquisicionHelper
+      .getPlanAdquisicionByDependencia(planAdquisicionesId.toString())
+      .pipe(
+        map((res) => {
+          if (res.length) {
+            return res[0];
+          }
+        })
+      );
   }
 
   getInfoJefeDepdencia(jefe_dependencia_id: Number): Observable<any> {

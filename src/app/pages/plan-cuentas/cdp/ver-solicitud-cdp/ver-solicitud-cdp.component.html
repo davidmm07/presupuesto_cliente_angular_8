@@ -77,8 +77,8 @@
                             </tr>
                             <tr *ngFor="let act of rubro.Metas[0].Actividades;let k=index;">
                                 <td  *ngIf="k===0" [attr.rowspan]="act.FuentesActividad.length">
-                                    {{( act && act.ActividadId ) ? act.ActividadId : 'ERROR.404' | translate}} -
-                                    {{act.InfoActividad[0].actividad.Nombre}}
+                                    {{act && act.InfoActividad[0] ? act.InfoActividad[0].actividad.Numero : 'ERROR.404' | translate}} -
+                                    {{act && act.InfoActividad[0] ? act.InfoActividad[0].actividad.Nombre : 'ERROR.404' | translate}}
                                 </td>
                                 <td><ul>
                                     <li *ngFor="let f of act.FuentesActividad">
@@ -151,9 +151,13 @@
                 </div>
 
                 <div class="text-center">
-                    <button *ngIf="!expedido" (click)="expedirCDP(solicitud.consecutivo)"
-                        class="btn btn-success col-md-6">
-                        {{ 'CDP.expedir' | translate}}</button>
+                    <div class="m-2" matTooltip="{{ 'GLOBAL.toolTipDisableCDP' | translate }}" [matTooltipDisabled]="!disableButton">
+                        <button *ngIf="!expedido" [disabled]="disableButton"
+                            (click)="expedirCDP(solicitud.consecutivo)"
+                            class="btn btn-success col-md-6"
+                        >
+                            {{ 'CDP.expedir' | translate}}</button>
+                    </div>
                     <!-- <button *ngIf="!expedido" (click)="rechazarSolicitud()" class="btn btn-danger col-md-6">
                         {{ 'CDP.rechazar_solicitud_cdp' | translate}}</button> -->
                     <button *ngIf="expedido" (click)="mostrarPDF(solicitud.consecutivo_cdp)"
