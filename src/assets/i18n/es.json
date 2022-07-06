@@ -202,7 +202,8 @@
     "cdp_traslado": "CDP traslado",
     "cdp_reduccion": "CDP reducción",
     "anulation_not_allowed": "Anulación para este documento no permitida.",
-    "usuario": "Usuario"
+    "usuario": "Usuario",
+    "toolTipDisableCDP": "Los datos del CDP no coinciden con el Plan más reciente."
   },
   "RUBRO": {
     "asignar_rubro": "Asignar Rubro",
