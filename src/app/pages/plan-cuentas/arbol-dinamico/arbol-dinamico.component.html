@@ -24,7 +24,7 @@
                 {{node.item.Codigo}}
             </div>
             <div>{{node.item.Nombre}}</div>
-            <div *ngIf="campos">{{node.item.ValorInicial | currency:'COP':'symbol':'4.2-2':'co'}}</div>
+            <div *ngIf="campos">{{node.item.ValorActual | currency:'COP':'symbol':'4.2-2':'co'}}</div>
             <mat-progress-bar *ngIf="node.isLoading"
                               mode="indeterminate"
                               class="example-tree-progress-bar">
