@@ -47,6 +47,7 @@ export class ApropiacionesComponent implements OnInit {
     private popManager:        PopUpManager,
     private vigenciaHelper:    VigenciaHelper
   ) {
+    this.allApproved = true;
     this.optionView = 'Apropiaciones';
 
     this.rubroSeleccionado = {
@@ -119,6 +120,7 @@ export class ApropiacionesComponent implements OnInit {
               this.popManager.showSuccessAlert('Aprobación exitosa para la apropiación ' + this.vigenciaSel);
               this.cleanForm(true);
               this.eventChange.emit(true);
+              this.allApproved = true;
             }
           });
         }
@@ -166,6 +168,7 @@ export class ApropiacionesComponent implements OnInit {
           this.popManager.showSuccessAlert('Se registro la preasignación de apropiación correctamente!');
           // this.cleanForm();
           this.eventChange.emit(true);
+          this.allApproved = false
         }
       });
     } else {
@@ -177,12 +180,10 @@ export class ApropiacionesComponent implements OnInit {
 
   onSelect(selectedItem: any) {
     this.vigenciaSel = selectedItem;
-    // this.eventChange.emit(true);
   }
 
   checkComprobacion(event: { balanceado: boolean, approved: boolean }) {
     this.balanceado = event.balanceado;
-    this.allApproved = !event.approved;
   }
   cambioProductosAsignados(productosAsignados: any[]) {
     this.listaProductosAsignados = productosAsignados;
