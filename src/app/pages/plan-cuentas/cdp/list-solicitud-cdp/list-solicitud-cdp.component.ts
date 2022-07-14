@@ -48,8 +48,6 @@ export class ListSolicitudCdpComponent implements OnInit {
         valuePrepareFunction: (value: any) => {
           return value;
         },
-        sort: true,
-        sortDirection: 'desc',
       },
       tipoFinanciacion: {
         title: this.translate.instant('CDP.tipo_financiacion'),
@@ -127,7 +125,9 @@ export class ListSolicitudCdpComponent implements OnInit {
         filter: true,
         valuePrepareFunction: (value: any) => {
           return value;
-        }
+        },
+        sort: true,
+        sortDirection: 'desc',
       }
     };
 
@@ -150,14 +150,14 @@ export class ListSolicitudCdpComponent implements OnInit {
     this.loadDataFunction('').subscribe(res => {
       if (res) {
         const data = <Array<any>>res;
-        this.cdpHelper.getAllNecesidades('limit=-1&sortby=Id&order=desc&fields=Id,TipoFinanciacionNecesidadId,Consecutivo&query=EstadoNecesidadId.CodigoAbreviacionn:CS')
+        this.cdpHelper.getAllNecesidades('limit=-1&sortby=Id&order=desc&fields=Id,TipoFinanciacionNecesidadId,Consecutivo&query=EstadoNecesidadId__CodigoAbreviacionn:CS')
         .subscribe(resNecesidades => {
           const necesidades: object = {};
           if (resNecesidades) {
             resNecesidades.forEach((necesidad: object) => necesidades[necesidad['Id']] = necesidad);
             res.forEach((obj: object) => {
               if (necesidades[obj['necesidad']]) {
-                obj['consecutivoNecesidad'] = necesidades[obj['necesidad']]['ConsecutivoNecesidad'];
+                obj['consecutivoNecesidad'] = necesidades[obj['necesidad']]['Consecutivo'];
                 obj['tipoFinanciacion'] = necesidades[obj['necesidad']];
               }
             });
