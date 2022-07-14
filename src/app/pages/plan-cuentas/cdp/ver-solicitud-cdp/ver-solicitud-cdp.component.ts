@@ -174,6 +174,7 @@ export class VerSolicitudCdpComponent implements OnInit {
                     rubro.Fuentes.forEach((fuente) => {
                       rubro.MontoParcial += fuente.MontoParcial;
                     });
+                    this.disableButton = false;
                   }
                 });
               } else {
