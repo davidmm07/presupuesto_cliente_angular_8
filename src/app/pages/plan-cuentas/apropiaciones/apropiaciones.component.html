@@ -30,12 +30,11 @@
             <!-- Boton aprobar comprobación inicial -->
             <div class="col-md-12 spacingValorAp">
               <button
-                *ngIf="balanceado"
                 type="submit"
                 style="margin-bottom: 3%"
                 class="btn btn-success btn-block"
                 (click)="aprobarApropiacion()"
-                [disabled]="allApproved"
+                [disabled]="allApproved || !balanceado"
               >
                 {{ "GLOBAL.aprobar-apropiacion-inicial" | translate }}
               </button>
@@ -79,6 +78,7 @@
                               type="submit"
                               class="btn btn-info btn-block"
                               (click)="preAsignarApropiacion()"
+                              [disabled]="valorApropiacion == 0"
                             >
                               {{
                                 "APROPIACION.pre-asignar-apropiacion-inicial"
