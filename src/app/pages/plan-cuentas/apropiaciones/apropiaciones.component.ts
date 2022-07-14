@@ -168,7 +168,7 @@ export class ApropiacionesComponent implements OnInit {
           this.popManager.showSuccessAlert('Se registro la preasignación de apropiación correctamente!');
           // this.cleanForm();
           this.eventChange.emit(true);
-          this.allApproved = false
+          this.allApproved = false;
         }
       });
     } else {
