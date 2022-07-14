@@ -56,7 +56,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{rubro.RubroId}} </td>
+                            <td>{{rubro.RubroId}} <br> {{rubro.InfoRubro.Nombre}} </td>
                             <td class="moneyField">{{rubro.MontoParcial | currency: COP }}</td>
                             <!-- TODO calcular valor rubro -->
                         </tr>
@@ -76,7 +76,7 @@
                                 <th>{{'GLOBAL.fuentes' | translate}}</th>
                             </tr>
                             <tr *ngFor="let act of rubro.Metas[0].Actividades;let k=index;">
-                                <td  *ngIf="k===0" [attr.rowspan]="act.FuentesActividad.length">
+                                <td>
                                     {{act && act.InfoActividad[0] ? act.InfoActividad[0].actividad.Numero : 'ERROR.404' | translate}} -
                                     {{act && act.InfoActividad[0] ? act.InfoActividad[0].actividad.Nombre : 'ERROR.404' | translate}}
                                 </td>
