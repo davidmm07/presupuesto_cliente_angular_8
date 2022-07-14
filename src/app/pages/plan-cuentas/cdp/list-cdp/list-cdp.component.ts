@@ -39,13 +39,14 @@ export class ListCdpComponent implements OnInit {
     // tslint:disable-next-line
     private rqManager: RequestManager,
     private vigenciaHelper: VigenciaHelper
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.vigenciaHelper.getCurrentVigencia().subscribe((res) => {
       this.vigencia = res;
+      this.loadData();
     });
+  }
 
+  ngOnInit() {
     this.loadDataFunction =
       this.documentoPresupuestal.GetAllDocumentoPresupuestalByTipo;
     const centrosCopy = this.centros;
@@ -137,19 +138,11 @@ export class ListCdpComponent implements OnInit {
       columns: this.listColumns,
     };
 
-    this.loadData();
   }
 
   loadData(): void {
-    this.vigenciaHelper.getCurrentVigencia().subscribe((res) => {
-      this.vigencia = res;
-    });
     forkJoin({
-      // TODO: Revisar:
-      // - se está sobreescribiendo la vigencia que viene
-      // - this.vigencia llegando undefined por lo que se colocó 2019 como fallback
-
-      documentos: this.loadDataFunction(this.vigencia || '2021', '1', 'cdp'),
+      documentos: this.loadDataFunction(this.vigencia , '1', 'cdp'),
       cdp: this.cdpHelper.getListaCDP(),
     }).subscribe((res) => {
       if (res.cdp) {
