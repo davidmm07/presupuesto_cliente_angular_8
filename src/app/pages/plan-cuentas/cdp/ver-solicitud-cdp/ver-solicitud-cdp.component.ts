@@ -39,7 +39,7 @@ export class VerSolicitudCdpComponent implements OnInit {
   estadoNecesidadRechazada: object;
   movimientosRp: any[];
   vigencia: string;
-  disableButton: boolean = false;
+  disableButton: boolean = true;
 
   cargaNecesidad: boolean;
   cargaDependencias: boolean;
@@ -125,6 +125,7 @@ export class VerSolicitudCdpComponent implements OnInit {
                       if (!actividadesRegistro) {
                         this.disableButton = true;
                       } else {
+                        this.disableButton = false;
                         const datosActividades = actividadesRegistro.datos[0];
                         const actividadesMetas =
                           datosActividades[
@@ -135,8 +136,8 @@ export class VerSolicitudCdpComponent implements OnInit {
                             metatemp['MetaId']['Numero'].toString() ===
                             meta['MetaId']
                         )[0]['MetaId'];
-                        if (!meta['InfoMeta']) {
-                          this.disableButton = true;
+                        if (meta['InfoMeta']) {
+                          this.disableButton = false;
                         }
                         const actividadesPlan =
                           datosActividades[
@@ -149,8 +150,9 @@ export class VerSolicitudCdpComponent implements OnInit {
                                 actividad['actividad']['Id'].toString() ===
                                 act['ActividadId']
                             );
-                            if (!act['InfoActividad']) {
-                              this.disableButton = true;
+                            if (act['InfoActividad']) {
+                              this.disableButton = false;
+                            } else {
                               return;
                             }
                             if (act.FuentesActividad) {
