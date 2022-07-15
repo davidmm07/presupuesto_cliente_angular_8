@@ -4,11 +4,10 @@ import { ApropiacionHelper } from '../../../@core/helpers/apropiaciones/apropiac
 // import { FuenteHelper } from '../../../@core/helpers/fuentes/fuenteHelper';
 import { PopUpManager } from '../../../@core/managers/popUpManager';
 import { ArbolApropiacion } from '../../../@core/data/models/arbol_apropiacion';
-import { CommonHelper } from '../../../@core/helpers/commonHelper';
-// import { VigenciaHelper } from '../../../@core/helpers/vigencia/vigenciaHelper';
 // import { DependenciaHelper } from '../../../@core/helpers/oikos/dependenciaHelper';
 import { registerLocaleData } from '@angular/common';
 import locales from '@angular/common/locales/es-CO';
+import { VigenciaHelper } from '../../../@core/helpers/vigencia/vigenciaHelper';
 registerLocaleData(locales, 'co');
 
 @Component({
@@ -29,18 +28,9 @@ export class ApropiacionesComponent implements OnInit {
   vigenciaSel: any;
   clean = false;
   opcion:            string;
-  VigenciaActual:    string; // TODO: traer del endpoint vigencia_actual
-  VigenciaProxima:   string;
   optionView:        string;
   productos: boolean = false;
   listaProductosAsignados = [];
-  vigencias: any[] = [
-    { vigencia: 2020 },
-    { vigencia: 2019 },
-    { vigencia: 2018 },
-    { vigencia: 2017 },
-    { vigencia: 2016 },
-  ];  // TODO: traer del endpoint vigencias_afuncional
   balanceado: boolean;
   allApproved: boolean;
   AreaFuncional: string;
@@ -54,13 +44,10 @@ export class ApropiacionesComponent implements OnInit {
 
   constructor(
     private apHelper:          ApropiacionHelper,
-    // private fuenteHelper:      FuenteHelper,
-    private commonHelper:      CommonHelper,
     private popManager:        PopUpManager,
-    // private dependenciaHelper: DependenciaHelper,
-    // private vigenciaHelper:    VigenciaHelper
+    private vigenciaHelper:    VigenciaHelper
   ) {
-    this.vigenciaSel = '2020';    // TODO: traer del endpoint vigencia_actual +1
+    this.allApproved = true;
     this.optionView = 'Apropiaciones';
 
     this.rubroSeleccionado = {
@@ -94,15 +81,9 @@ export class ApropiacionesComponent implements OnInit {
 
 
   ngOnInit() {
-    this.commonHelper.geCurrentVigencia(1).subscribe(res => {
-      if (res) {
-        const proxVigenciaInt  = Number(res) + 1;
-        this.VigenciaProxima = proxVigenciaInt.toString();
-        this.vigenciaSel     = this.VigenciaProxima;
-        this.VigenciaActual  = res;
-      }
+    this.vigenciaHelper.getCurrentVigencia().subscribe(res => {
+      this.vigenciaSel = res;
     });
-    this.paramsFieldsName = { Vigencia: this.vigenciaSel, UnidadEjecutora: 1 };
   }
 
   receiveMessage($event) {
@@ -131,7 +112,7 @@ export class ApropiacionesComponent implements OnInit {
   }
 
   aprobarApropiacion() {
-    this.popManager.showAlert('warning', 'Aprobar Apropiación', 'esta seguro?')
+    this.popManager.showAlert('warning', 'Aprobar Apropiación', '¿Está seguro?')
       .then((result) => {
         if (result.value) {
           this.apHelper.apropiacionApprove({ UnidadEjecutora: '1', Vigencia: this.vigenciaSel }).subscribe((res) => {
@@ -139,6 +120,7 @@ export class ApropiacionesComponent implements OnInit {
               this.popManager.showSuccessAlert('Aprobación exitosa para la apropiación ' + this.vigenciaSel);
               this.cleanForm(true);
               this.eventChange.emit(true);
+              this.allApproved = true;
             }
           });
         }
@@ -186,6 +168,7 @@ export class ApropiacionesComponent implements OnInit {
           this.popManager.showSuccessAlert('Se registro la preasignación de apropiación correctamente!');
           // this.cleanForm();
           this.eventChange.emit(true);
+          this.allApproved = false;
         }
       });
     } else {
@@ -197,12 +180,10 @@ export class ApropiacionesComponent implements OnInit {
 
   onSelect(selectedItem: any) {
     this.vigenciaSel = selectedItem;
-    // this.eventChange.emit(true);
   }
 
   checkComprobacion(event: { balanceado: boolean, approved: boolean }) {
     this.balanceado = event.balanceado;
-    this.allApproved = event.approved;
   }
   cambioProductosAsignados(productosAsignados: any[]) {
     this.listaProductosAsignados = productosAsignados;

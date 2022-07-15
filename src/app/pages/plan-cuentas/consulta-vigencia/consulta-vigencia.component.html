@@ -6,20 +6,20 @@
     <!-- Descripcion consulta apropiacion por vigencia -->
     <div class="div-descripcion">
       {{ "APROPIACION.selecciona-ano-consulta" | translate }}
-      <nb-select
+      <mat-progress-bar mode="indeterminate" *ngIf="strVigenciaActual === '' || !vigencias || (vigencias && vigencias.length === 0)"></mat-progress-bar>
+      <nb-select *ngIf="strVigenciaActual !== '' && vigencias && vigencias.length > 0"
       id="select_vigencia"
-      placeholder="{{ vigenciaSel }}"
+      placeholder="{{ strVigenciaActual }}"
       hero
       status="info"
       [(ngModel)]="VigenciaActual"
-      placeholder="--Selecciona--"
-      >
+      placeholder="--Selecciona--">
         <nb-option
           *ngFor="let v of vigencias"
           [value]="v"
-          (click)="onSelect(v.vigencia)"
-          >{{ v.vigencia }}</nb-option
-        >
+          (click)="onSelect(v._id)">
+          {{ v._id }} {{ v.estado }}
+        </nb-option>
       </nb-select>
       <p [innerHTML]="'APROPIACION.parrafo-intro-consulta-apro' | translate "></p>
       <div *ngIf="vigenciaSel == strVigenciaActual">
@@ -29,16 +29,14 @@
             *ngIf="optionView == 'ApropiacionesEstado'"
             type="submit"
             class="btn btn-info btn-block"
-            (click)="changeView('Apropiaciones')"
-          >
+            (click)="changeView('Apropiaciones')">
             {{ "GLOBAL.asignar-nueva-apropiacion-inicial" | translate }}
           </button>
           <button
             *ngIf="optionView == 'Apropiaciones'"
             type="submit"
             class="btn btn-info btn-block"
-            (click)="changeView('ApropiacionesEstado')"
-          >
+            (click)="changeView('ApropiacionesEstado')">
             {{ "GLOBAL.regresar-consulta-apropiacion" | translate }}
           </button>
         </div>
@@ -54,8 +52,8 @@
               (rubroSeleccionado)="receiveMessage($event)"
               [updateSignal]="eventChange"
               [vigencia]="vigenciaSel"
-              [optionSelect]="optionView"
-            ></ngx-arbol>
+              [optionSelect]="optionView">
+            </ngx-arbol>
           </div>
           <!-- Fin Arbol rubros -->
           <!-- Detalle del rubro -->

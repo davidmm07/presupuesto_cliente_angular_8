@@ -10,17 +10,18 @@ import { DocumentoPresupuestalHelper } from '../../../../@core/helpers/documento
 import { PopUpManager } from '../../../../@core/managers/popUpManager';
 import { Router } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
-import { switchMap, mergeMap } from 'rxjs/operators';
+import { switchMap, mergeMap, map } from 'rxjs/operators';
 import { ImplicitAutenticationService } from '../../../../@core/utils/implicit_autentication.service';
 import { TranslateService } from '@ngx-translate/core';
+import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelper';
+import { LastVersionPlanHelper } from '../../../../@core/helpers/plan_adquisicion/last-version-plan';
 
 @Component({
   selector: 'ngx-ver-solicitud-cdp',
   templateUrl: './ver-solicitud-cdp.component.html',
-  styleUrls: ['./ver-solicitud-cdp.component.scss']
+  styleUrls: ['./ver-solicitud-cdp.component.scss'],
 })
 export class VerSolicitudCdpComponent implements OnInit {
-
   @Input('solicitudcdp') solicitud: object;
   @Input('expedido') expedido: boolean;
   @Output() eventChange = new EventEmitter();
@@ -37,10 +38,15 @@ export class VerSolicitudCdpComponent implements OnInit {
   centroGestor: object;
   estadoNecesidadRechazada: object;
   movimientosRp: any[];
+  vigencia: string;
+  disableButton: boolean = true;
+
+  cargaNecesidad: boolean;
+  cargaDependencias: boolean;
 
   mostrandoPDF: boolean = false;
   areas = { '1': 'Rector', '2': 'Convenios' };
-  entidades = {'1': 'Universidad Distrital Francisco José de Caldas' };
+  entidades = { '1': 'Universidad Distrital Francisco José de Caldas' };
   enlacePDF: string = 'assets/images/cdp_ejemplo.pdf';
 
   constructor(
@@ -56,113 +62,238 @@ export class VerSolicitudCdpComponent implements OnInit {
     private implicitAutenticationService: ImplicitAutenticationService,
     private admAmazonHelper: AdmAmazonHelper,
     private translate: TranslateService,
+    private vigenciaHelper: VigenciaHelper,
+    private lastVersionPlan: LastVersionPlanHelper
   ) {
     this.movimientosRp = [];
   }
 
   ngOnInit() {
     let trNecesidad: object;
+    const errorMensaje = [];
+    this.vigenciaHelper.getCurrentVigencia().subscribe((res) => {
+      this.vigencia = res;
+    });
 
     this.getInfoRp();
-
-    this.cdpHelper.getFullNecesidad(this.solicitud['necesidad']).pipe(
-      mergeMap(res => {
-        trNecesidad = res;
-
-        this.areaFuncional = this.areas[trNecesidad['Necesidad']['AreaFuncional']];
-        this.centroGestor = this.solicitud['centroGestor'] ? this.entidades[this.solicitud['centroGestor']] : this.entidades[this.solicitud['CentroGestor']];
-        return this.getInfoJefeDepdencia(trNecesidad['Necesidad']['DependenciaNecesidadId']['JefeDepSolicitanteId']);
-      })
-    ).pipe(
-      mergeMap(res => this.getInfoDependencia(res['DependenciaId']))
-    ).pipe(
-      mergeMap(res => {
-        trNecesidad['Necesidad']['DependenciaNecesidadId']['DependenciaSolicitante'] = res;
-        return this.getInfoMeta(trNecesidad['Necesidad']['Vigencia'], res['Id']);
-      })
-    ).subscribe(res => {
-      const actividades = res;
-
-      if (trNecesidad['Rubros']) {
-        trNecesidad['Rubros'].forEach((rubro: any) => {
-          rubro.MontoParcial = 0;
-          if (rubro.Metas) {
-            rubro.Metas.forEach((meta: any) => {
-              meta['InfoMeta'] = actividades['metas']['actividades'].filter(actividad => actividad['meta_id'] === meta['MetaId']);
-              if (meta.Actividades) {
-                meta.Actividades.forEach((act: any) => {
-                  act['InfoActividad'] = actividades['metas']['actividades'].filter(actividad => actividad['actividad_id'] === act['ActividadId']);
-                  if (act.FuentesActividad) {
-                    act.FuentesActividad.forEach((fuente: any) => {
+    this.cargaNecesidad = false;
+    this.cdpHelper
+      .getFullNecesidad(this.solicitud['necesidad'])
+      .pipe(
+        mergeMap((res) => {
+          trNecesidad = res;
+          this.areaFuncional =
+            this.areas[trNecesidad['Necesidad']['AreaFuncional']];
+          this.centroGestor = this.solicitud['centroGestor']
+            ? this.entidades[this.solicitud['centroGestor']]
+            : this.entidades[this.solicitud['CentroGestor']];
+          return this.getInfoJefeDepdencia(
+            trNecesidad['Necesidad']['DependenciaNecesidadId'][
+              'JefeDepSolicitanteId'
+            ]
+          );
+        })
+      )
+      .pipe(mergeMap((res) => this.getInfoDependencia(res['DependenciaId'])))
+      .pipe(
+        mergeMap((res) => {
+          trNecesidad['Necesidad']['DependenciaNecesidadId'][
+            'DependenciaSolicitante'
+          ] = res;
+          return this.lastVersionPlan.lastVersionPlan(
+            trNecesidad['Necesidad']['PlanAnualAdquisicionesId']
+          );
+        })
+      )
+      .subscribe(
+        (res) => {
+          if (
+            res &&
+            res.registroplanadquisiciones &&
+            res.registroplanadquisiciones.length
+          ) {
+            res.registroplanadquisiciones.forEach((registro) => {
+              const actividades = registro.datos;
+              if (trNecesidad['Rubros']) {
+                trNecesidad['Rubros'].forEach((rubro: any) => {
+                  rubro.MontoParcial = 0;
+                  if (rubro.Metas) {
+                    rubro.Metas.forEach((meta: any) => {
+                      const actividadesRegistro = actividades.find(
+                        (rubroActividad) => rubroActividad.Rubro === rubro.RubroId
+                      );
+                      if (!actividadesRegistro) {
+                        this.disableButton = true;
+                      } else {
+                        this.disableButton = false;
+                        const datosActividades = actividadesRegistro.datos[0];
+                        const actividadesMetas =
+                          datosActividades[
+                            'registro_funcionamiento-metas_asociadas'
+                          ];
+                        meta['InfoMeta'] = actividadesMetas.filter(
+                          (metatemp) =>
+                            metatemp['MetaId']['Numero'].toString() ===
+                            meta['MetaId']
+                        )[0]['MetaId'];
+                        if (meta['InfoMeta']) {
+                          this.disableButton = false;
+                        }
+                        const actividadesPlan =
+                          datosActividades[
+                            'registro_plan_adquisiciones-actividad'
+                          ];
+                        if (meta.Actividades) {
+                          meta.Actividades.forEach((act: any) => {
+                            act['InfoActividad'] = actividadesPlan.filter(
+                              (actividad) =>
+                                actividad['actividad']['Id'].toString() ===
+                                act['ActividadId']
+                            );
+                            if (act['InfoActividad']) {
+                              this.disableButton = false;
+                            } else {
+                              return;
+                            }
+                            if (act.FuentesActividad) {
+                              act.FuentesActividad.forEach((fuente: any) => {
+                                rubro.MontoParcial += fuente.MontoParcial;
+                              });
+                            }
+                          });
+                        }
+                      }
+                    });
+                  } else {
+                    errorMensaje.push(
+                      this.translate.instant(`ERROR.404`) + ' Metas en este CDP'
+                    );
+                    return;
+                  }
+                  if (rubro.Fuentes) {
+                    rubro.Fuentes.forEach((fuente) => {
                       rubro.MontoParcial += fuente.MontoParcial;
                     });
+                    this.disableButton = false;
                   }
                 });
+              } else {
+                errorMensaje.push(
+                  this.translate.instant(`ERROR.404`) + ' Rubros en este CDP'
+                );
+                return;
               }
             });
+          } else {
+            this.popManager.showErrorAlert(
+              this.translate.instant(`ERROR.404`) +
+                ' registros de plan de adquisiciones, No se puede consultar con vigencia ' +
+                trNecesidad['Necesidad'].Vigencia
+            );
+            return;
           }
-          if (rubro.Fuentes) {
-            rubro.Fuentes.forEach(fuente => {
-              rubro.MontoParcial += fuente.MontoParcial;
-            });
+          if (errorMensaje.length > 0) {
+            this.popManager.showErrorAlert(errorMensaje[0]);
+            return;
           }
-        });
-      }
-
-      this.TrNecesidad = trNecesidad;
-      this.admAmazonHelper.getProveedor(this.TrNecesidad['Necesidad']['DependenciaNecesidadId']['OrdenadorGastoId'])
-      .subscribe(res1 => {
-
-        if (res1) {
-          this.ordenadorGasto = res1['NomProveedor'];
-        }
-      },
+          this.TrNecesidad = trNecesidad;
+          this.admAmazonHelper
+            .getProveedor(
+              this.TrNecesidad['Necesidad']['DependenciaNecesidadId'][
+                'OrdenadorGastoId'
+              ]
+            )
+            .subscribe(
+              (res1) => {
+                if (res1) {
+                  this.ordenadorGasto = res1['NomProveedor'];
+                }
+                this.cargaNecesidad = true;
+              },
+              (error: any) => {
+                this.popManager.showErrorToast(
+                  this.translate.instant(`ERROR.${error['status']}`)
+                );
+              }
+            );
+        },
         (error: any) => {
-          this.popManager.showErrorToast(this.translate.instant(`ERROR.${error['status']}`));
+          this.popManager.showErrorToast(
+            this.translate.instant(`ERROR.${error['status']}`)
+          );
         }
       );
-    },
-    (error: any) => {
-      this.popManager.showErrorToast(this.translate.instant(`ERROR.${error['status']}`));
-    });
 
-
-    this.dependenciaHelper.get('', 'query=Nombre__contains:PRESUPUESTO')
+    this.cargaDependencias = false;
+    this.dependenciaHelper
+      .get('', 'query=Nombre__contains:PRESUPUESTO')
       .pipe(
-        mergeMap(res =>  this.coreHelper.getJefeDependenciaByDependencia(res[0]['Id']))
+        mergeMap((res) =>
+          this.coreHelper.getJefeDependenciaByDependencia(res[0]['Id'])
+        )
       )
-      .pipe (
-        mergeMap((res: Array<object>) =>  this.admAmazonHelper.getPersonaNatural(res[1]['TerceroId']))
+      .pipe(
+        mergeMap((res: Array<object>) =>
+          this.admAmazonHelper.getPersonaNatural(res[1]['TerceroId'])
+        )
       )
-    .subscribe((res: object) => {
-      this.responsable = res['PrimerNombre'] + ' ' + res['SegundoNombre'] + ' ' + res['PrimerApellido'] + ' ' + res['SegundoApellido'];
-    });
+      .subscribe((res: object) => {
+        this.responsable =
+          res['PrimerNombre'] +
+          ' ' +
+          res['SegundoNombre'] +
+          ' ' +
+          res['PrimerApellido'] +
+          ' ' +
+          res['SegundoApellido'];
+        this.cargaDependencias = true;
+      });
 
     if (this.implicitAutenticationService.live()) {
-      this.username = (this.implicitAutenticationService.getPayload()).sub;
+      this.username = this.implicitAutenticationService.getPayload().sub;
     }
   }
 
   private getInfoRp() {
     const movimientosRequest = [];
     if (this.solicitud['AfectacionIds']) {
-      this.movimientosHelper.getByDocumentoPresupuestal(this.solicitud['Vigencia'], this.solicitud['CentroGestor'], this.solicitud['_id']).subscribe((res: any) => {
-        res.forEach(element  => {
-          movimientosRequest.push(this.movimientosHelper.getByMovimientoPadre(this.solicitud['Vigencia'], this.solicitud['CentroGestor'], element._id));
-        });
-        forkJoin(movimientosRequest).subscribe(res2 => {
-          res2.forEach(element => {
-            if (element) {
-              this.movimientosRp.push(element);
-            }
+      this.movimientosHelper
+        .getByDocumentoPresupuestal(
+          this.solicitud['Vigencia'],
+          this.solicitud['CentroGestor'],
+          this.solicitud['_id']
+        )
+        .subscribe((res: any) => {
+          res.forEach((element) => {
+            movimientosRequest.push(
+              this.movimientosHelper.getByMovimientoPadre(
+                this.solicitud['Vigencia'],
+                this.solicitud['CentroGestor'],
+                element._id
+              )
+            );
+          });
+          forkJoin(movimientosRequest).subscribe((res2) => {
+            res2.forEach((element) => {
+              if (element) {
+                this.movimientosRp.push(element);
+              }
+            });
           });
         });
-      });
     }
   }
 
-  getInfoMeta(vigencia: Number, dependencia: Number): Observable<any> {
-    return this.planAdquisicionHelper.getPlanAdquisicionByDependencia(vigencia.toString(), dependencia.toString());
+  getInfoMeta(planAdquisicionesId: Number): Observable<any> {
+    return this.planAdquisicionHelper
+      .getPlanAdquisicionByDependencia(planAdquisicionesId.toString())
+      .pipe(
+        map((res) => {
+          if (res.length) {
+            return res[0];
+          }
+        })
+      );
   }
 
   getInfoJefeDepdencia(jefe_dependencia_id: Number): Observable<any> {
@@ -178,96 +309,114 @@ export class VerSolicitudCdpComponent implements OnInit {
   }
 
   expedirCDP(consecutivo: number) {
-    this.popManager.showAlert('warning', `Expedir la solicitud de CDP ${consecutivo}`, 'continuar')
+    this.popManager
+      .showAlert(
+        'warning',
+        `Expedir la solicitud de CDP ${consecutivo}`,
+        'continuar'
+      )
       .then((result) => {
-
         if (result.value) {
-
           const movimiento = this.construirDatosMovimiento();
           let consecutivoExpedido: number;
-          this.movimientosHelper.postMovimiento(movimiento).pipe(
-            mergeMap(res => {
-              consecutivoExpedido = res['DocInfo']['Consecutivo'];
-              return this.cdpHelper.expedirCDP(this.solicitud['_id']);
-            })
-          )
-          .pipe(mergeMap(() => this.actualizarNecesidad())
-          )
-          .subscribe(res => {
-            if (res) {
-              this.popManager.showSuccessAlert(`Se expidió con éxito el CDP Nº ${consecutivoExpedido}`);
-              this.router.navigate(['/pages/plan-cuentas/cdp']);
-            }
-          });
+          this.movimientosHelper
+            .postMovimiento(movimiento)
+            .pipe(
+              mergeMap((res) => {
+                consecutivoExpedido = res['DocInfo']['Consecutivo'];
+                return this.cdpHelper.expedirCDP(this.solicitud['_id']);
+              })
+            )
+            .pipe(mergeMap(() => this.actualizarNecesidad()))
+            .subscribe((res) => {
+              if (res) {
+                this.popManager.showSuccessAlert(
+                  `Se expidió con éxito el CDP Nº ${consecutivoExpedido}`
+                );
+                this.router.navigate(['/pages/plan-cuentas/cdp']);
+              }
+            });
         }
       });
-
   }
 
   private actualizarNecesidad(): Observable<any> {
     let necesidad: object;
     const query = 'query=CodigoAbreviacionn:CDPE';
     return this.necesidadesHelper.getEstados(query).pipe(
-      mergeMap(res => {
-      necesidad = this.TrNecesidad.Necesidad;
-      necesidad['EstadoNecesidadId'] = res[0];
-      return this.necesidadesHelper.putNecesidad(necesidad, necesidad['Id']);
-    }));
+      mergeMap((res) => {
+        necesidad = this.TrNecesidad.Necesidad;
+        necesidad['EstadoNecesidadId'] = res[0];
+        return this.necesidadesHelper.putNecesidad(necesidad, necesidad['Id']);
+      })
+    );
   }
 
   private construirDatosMovimiento(): object {
     const movimiento = {
-      Data: { 'solicitud_cdp': this.solicitud['_id'] },
+      Data: { solicitud_cdp: this.solicitud['_id'] },
       Tipo: 'cdp',
-      Vigencia: 2019,
+      Vigencia: this.vigencia,
       CentroGestor: String(this.solicitud['centroGestor']),
-      AfectacionMovimiento: []
+      AfectacionMovimiento: [],
     };
 
     this.TrNecesidad['Rubros'].forEach((rubro: object) => {
-      movimiento.AfectacionMovimiento.push(
-        {
-          MovimientoProcesoExternoId: {
-              TipoMovimientoId: {
-                  Id: 6,
-                  Acronimo: 'cdp'
-              }
+      movimiento.AfectacionMovimiento.push({
+        MovimientoProcesoExternoId: {
+          TipoMovimientoId: {
+            Id: 6,
+            Acronimo: 'cdp',
           },
-          DocumentoPadre: rubro['RubroId'],
-          Valor: rubro['MontoParcial'],
-          Descripcion: this.TrNecesidad['Necesidad']['Objeto']
-        }
-      );
+        },
+        DocumentoPadre: rubro['RubroId'],
+        Valor: rubro['MontoParcial'],
+        Descripcion: this.TrNecesidad['Necesidad']['Objeto'],
+      });
     });
     return movimiento;
   }
 
   rechazarSolicitud() {
-    this.popManager.showAlertInput('warning', `Rechazar solicitud de CDP`,
-      'Escriba la justificación del rechazo', 'Es necesario escribir una justificación de rechazo', 'textarea')
-        .then((result) => {
-          if (result.value) {
-            this.necesidadesHelper.getEstadoRechazado().pipe(
-              switchMap(estadoRechazada => {
-                  if (estadoRechazada) {
-                    const necesidad = this.TrNecesidad['Necesidad'];
-                    necesidad['EstadoNecesidadId'] = estadoRechazada;
-                    return this.necesidadesHelper.putNecesidad(necesidad, necesidad['Id']);
-                  }
+    this.popManager
+      .showAlertInput(
+        'warning',
+        `Rechazar solicitud de CDP`,
+        'Escriba la justificación del rechazo',
+        'Es necesario escribir una justificación de rechazo',
+        'textarea'
+      )
+      .then((result) => {
+        if (result.value) {
+          this.necesidadesHelper
+            .getEstadoRechazado()
+            .pipe(
+              switchMap((estadoRechazada) => {
+                if (estadoRechazada) {
+                  const necesidad = this.TrNecesidad['Necesidad'];
+                  necesidad['EstadoNecesidadId'] = estadoRechazada;
+                  return this.necesidadesHelper.putNecesidad(
+                    necesidad,
+                    necesidad['Id']
+                  );
                 }
-              )
-            ).subscribe(res => {
+              })
+            )
+            .subscribe((res) => {
               if (res) {
                 const necesidadRechazada = {
                   Justificacion: result.value,
                   NecesidadId: { Id: this.TrNecesidad['Necesidad']['Id'] },
                   FechaRechazo: new Date(),
-                  ConsecutivoNecesidad: this.TrNecesidad['Necesidad']['ConsecutivoNecesidad']
+                  ConsecutivoNecesidad:
+                    this.TrNecesidad['Necesidad']['ConsecutivoNecesidad'],
                 };
-                this.necesidadesHelper.postNecesidadRechazada(necesidadRechazada).subscribe();
+                this.necesidadesHelper
+                  .postNecesidadRechazada(necesidadRechazada)
+                  .subscribe();
               }
             });
-          }
+        }
       });
   }
 
@@ -280,59 +429,88 @@ export class VerSolicitudCdpComponent implements OnInit {
     const { value: tipoAnulacion } = await this.popManager.showAlertRadio(
       'Seleccione el tipo de anulación',
       {
-        'anul_p_cdp': 'Anulación parcial',
-        'anul_t_cdp': 'Anulación total'
+        anul_p_cdp: 'Anulación parcial',
+        anul_t_cdp: 'Anulación total',
       },
-      'Seleccione una opción');
+      'Seleccione una opción'
+    );
 
     if (tipoAnulacion === 'anul_p_cdp') {
-      const { value : valorAnulacion } = await this.popManager.showAlertInput('warning', 'Valor de la anulación', 'Ingrese el valor de la anulación', 'Debe ingresar un valor', 'text');
-      this.expedirMovimientoAnulacion(tipoAnulacion, parseFloat(valorAnulacion));
+      const { value: valorAnulacion } = await this.popManager.showAlertInput(
+        'warning',
+        'Valor de la anulación',
+        'Ingrese el valor de la anulación',
+        'Debe ingresar un valor',
+        'text'
+      );
+      this.expedirMovimientoAnulacion(
+        tipoAnulacion,
+        parseFloat(valorAnulacion)
+      );
     } else {
-        const centroGestor =  String(this.solicitud['centroGestor']);
-        const vigencia = this.solicitud['vigencia'];
-        this.documentoPresuestalHelper.get(vigencia, centroGestor, 'data.solicitud_cdp:' + this.solicitud['_id']).subscribe(res => {
+      const centroGestor = String(this.solicitud['centroGestor']);
+      const vigencia = this.solicitud['vigencia'];
+      this.documentoPresuestalHelper
+        .get(
+          vigencia,
+          centroGestor,
+          'data.solicitud_cdp:' + this.solicitud['_id']
+        )
+        .subscribe((res) => {
           this.expedirMovimientoAnulacion(tipoAnulacion, res['ValorActual']);
-      });
+        });
     }
   }
 
   private expedirMovimientoAnulacion(tipoAnulacion: string, valor: number) {
-    const centroGestor =  String(this.solicitud['centroGestor']);
+    const centroGestor = String(this.solicitud['centroGestor']);
     const vigencia = this.solicitud['vigencia'];
 
-    this.documentoPresuestalHelper.get(vigencia, centroGestor, 'data.solicitud_cdp:' + this.solicitud['_id']).pipe(
-      mergeMap(documentoP => this.movimientosHelper.getByDocumentoPresupuestal(vigencia, centroGestor, documentoP[0]['_id'])
-        .pipe(
-          switchMap(movimientoD => {
-
-            const movimiento = {
-              Data: { 'cdp': documentoP[0]['_id'] },
-              Tipo: tipoAnulacion,
-              Vigencia: Number(this.solicitud['vigencia']),
-              CentroGestor: String(this.solicitud['centroGestor']),
-              AfectacionMovimiento: [
-                {
-                  MovimientoProcesoExternoId: {
-                    TipoMovimientoId: {
-                        Id: 8,
-                        Acronimo: tipoAnulacion
-                    }
-                  },
-                  DocumentoPadre: movimientoD[0]['_id'],
-                  Valor: valor,
-                  Descripcion: 'anulación parcial del cdp'
-              }]
-            };
-            return this.movimientosHelper.postMovimiento(movimiento);
-          }
-        )))).subscribe(res => {
-
-          if (res) {
-            this.popManager.showSuccessAlert('Se realizó la anulación del CDP');
-            this.router.navigate(['/pages/plan-cuentas/cdp']);
-          }
+    this.documentoPresuestalHelper
+      .get(
+        vigencia,
+        centroGestor,
+        'data.solicitud_cdp:' + this.solicitud['_id']
+      )
+      .pipe(
+        mergeMap((documentoP) =>
+          this.movimientosHelper
+            .getByDocumentoPresupuestal(
+              vigencia,
+              centroGestor,
+              documentoP[0]['_id']
+            )
+            .pipe(
+              switchMap((movimientoD) => {
+                const movimiento = {
+                  Data: { cdp: documentoP[0]['_id'] },
+                  Tipo: tipoAnulacion,
+                  Vigencia: Number(this.solicitud['vigencia']),
+                  CentroGestor: String(this.solicitud['centroGestor']),
+                  AfectacionMovimiento: [
+                    {
+                      MovimientoProcesoExternoId: {
+                        TipoMovimientoId: {
+                          Id: 8,
+                          Acronimo: tipoAnulacion,
+                        },
+                      },
+                      DocumentoPadre: movimientoD[0]['_id'],
+                      Valor: valor,
+                      Descripcion: 'anulación parcial del cdp',
+                    },
+                  ],
+                };
+                return this.movimientosHelper.postMovimiento(movimiento);
+              })
+            )
+        )
+      )
+      .subscribe((res) => {
+        if (res) {
+          this.popManager.showSuccessAlert('Se realizó la anulación del CDP');
+          this.router.navigate(['/pages/plan-cuentas/cdp']);
+        }
       });
   }
-
 }

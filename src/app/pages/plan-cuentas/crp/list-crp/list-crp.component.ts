@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { LocalDataSource } from 'ng2-smart-table';
 // import { CDPHelper } from '../../../../@core/helpers/cdp/cdpHelper';
-// import { RequestManager } from '../../../../@core/managers/requestManager';
+import { RequestManager } from '../../../../@core/managers/requestManager';
 import { TranslateService } from '@ngx-translate/core';
 import { CRPHelper } from '../../../../@core/helpers/crp/crpHelper';
 import { DocumentoPresupuestalHelper } from '../../../../@core/helpers/documentoPresupuestal/documentoPresupuestalHelper';
@@ -41,11 +41,13 @@ export class ListCrpComponent implements OnInit {
     // tslint:disable-next-line
     private crpHelper: CRPHelper,
     // tslint:disable-next-line
-    // private rqManager: RequestManager,
+    //NO COMENTAR LA SIGUIENTE LINEA (https://github.com/udistrital/necesidades_cliente/issues/318#issuecomment-1040878836)
+    private rqManager: RequestManager,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    this.rqManager;
     this.vigenciaUrl  = this.getParamRoute('vigencia');
     const centrosCopy = this.centros;
     const areasCopy = this.areas;

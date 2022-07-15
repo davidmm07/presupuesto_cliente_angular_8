@@ -1,7 +1,7 @@
-.moneyField{
+.moneyField {
     text-align: right;
 }
 
-.moneyField ::before { 
+.moneyField ::before {
     content: "$";
   }

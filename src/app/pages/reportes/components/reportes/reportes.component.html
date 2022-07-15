@@ -12,23 +12,22 @@
 </div>
 
 <div>
-    <h5>Reporte CDP con parámetros</h5>
-    <label>Usuario: </label>{{username}}
+    <h5>{{"REPORTES.reportes_cdp_parametros" | translate }}</h5>
+    <label>{{"GLOBAL.usuario" | translate }}: </label>{{username}}
     <br>
-    <label>Área funcional</label>
-    <br>
+    <label>{{"GLOBAL.unidad_ejecutora" | translate }}: </label>
     <select [(ngModel)]="area">
         <option *ngFor="let area of areas" [ngValue]="area.value">{{area.label}}</option>
     </select>
     <br>
-    <label>Vigencia</label>
+    <label>{{"VIGENCIA.titulo" | translate }}: </label>
     <select [(ngModel)]="vigencia">
-        <option *ngFor="let vigencia of vigencias" [ngValue]="vigencia">{{vigencia}}</option>
+        <option *ngFor="let vigencia of vigencias" [ngValue]="vigencia.valor">{{vigencia.valor}}</option>
     </select>
     <br>
-    <label>Consecutivo: </label>
+    <label>{{"GLOBAL.consecutivo" | translate }}: </label>
     <input type="text" [(ngModel)]="consecutivo">
-    <button (click)="buildReportWithParams()"> Generar reporte </button>
+    <button (click)="buildReportWithParams()"> {{"REPORTES.generar_reporte" | translate }} </button>
 </div>
 
 <fieldset>

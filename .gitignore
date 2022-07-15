@@ -2,33 +2,28 @@
 /dist
 /tmp
 /out-tsc
+Lint_last_version.json
 
 # dependencies
-/node_modules
+node_modules
 
 # IDEs and editors
-/.idea
+.idea
 .project
 .classpath
-.c9/
+.c9
 *.launch
-.settings/
+.settings
 *.sublime-workspace
 
 # IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode
 
 # misc
 /.sass-cache
 /connect.lock
 /coverage
-/libpeerconnection.log
-npm-debug.log
-testem.log
+*.log
 /typings
 /docs
 
@@ -39,8 +34,4 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-
-#Packages
-#/package.json
-#*package-lock.json*
-
+*~

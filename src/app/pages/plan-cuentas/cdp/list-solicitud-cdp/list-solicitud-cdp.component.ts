@@ -25,8 +25,8 @@ export class ListSolicitudCdpComponent implements OnInit {
   listColumns: object;
   solicitudcdp: object;
 
-  areas = { '1': 'Rector', '2': 'Convenios' };
-  centros = {'1': 'Universidad Distrital Francisco José de Caldas' };
+  areas = { '1': 'Rector', '2': 'Convenios' }; // ? Parametrizable
+  centros = {'1': 'Universidad Distrital Francisco José de Caldas' }; // ? Parametrizable
 
   source: LocalDataSource = new LocalDataSource();
 
@@ -47,7 +47,7 @@ export class ListSolicitudCdpComponent implements OnInit {
         filter: true,
         valuePrepareFunction: (value: any) => {
           return value;
-        }
+        },
       },
       tipoFinanciacion: {
         title: this.translate.instant('CDP.tipo_financiacion'),
@@ -90,6 +90,7 @@ export class ListSolicitudCdpComponent implements OnInit {
         }
       },
       entidad: {
+        // ? Parametrizable
         title: this.translate.instant('GLOBAL.area_funcional'),
         filter: {
           type: 'list',
@@ -117,14 +118,16 @@ export class ListSolicitudCdpComponent implements OnInit {
         filter: true,
         valuePrepareFunction: (value: any) => {
           return value;
-        }
+        },
       },
       consecutivo: {
         title: this.translate.instant('CDP.n_solicitud'),
         filter: true,
         valuePrepareFunction: (value: any) => {
           return value;
-        }
+        },
+        sort: true,
+        sortDirection: 'desc',
       }
     };
 
@@ -147,14 +150,14 @@ export class ListSolicitudCdpComponent implements OnInit {
     this.loadDataFunction('').subscribe(res => {
       if (res) {
         const data = <Array<any>>res;
-        this.cdpHelper.getAllNecesidades('limit=-1&fields=Id,TipoFinanciacionNecesidadId,ConsecutivoNecesidad&query=EstadoNecesidadId.CodigoAbreviacionn:CS')
+        this.cdpHelper.getAllNecesidades('limit=-1&sortby=Id&order=desc&fields=Id,TipoFinanciacionNecesidadId,Consecutivo&query=EstadoNecesidadId__CodigoAbreviacionn:CS')
         .subscribe(resNecesidades => {
           const necesidades: object = {};
           if (resNecesidades) {
             resNecesidades.forEach((necesidad: object) => necesidades[necesidad['Id']] = necesidad);
             res.forEach((obj: object) => {
               if (necesidades[obj['necesidad']]) {
-                obj['consecutivoNecesidad'] = necesidades[obj['necesidad']]['ConsecutivoNecesidad'];
+                obj['consecutivoNecesidad'] = necesidades[obj['necesidad']]['Consecutivo'];
                 obj['tipoFinanciacion'] = necesidades[obj['necesidad']];
               }
             });

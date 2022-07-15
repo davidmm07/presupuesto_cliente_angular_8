@@ -36,7 +36,7 @@ export class OneColumnLayoutComponent {
   }
 
   toggleSidebar(event): boolean {
-    if (event.target.nextSibling === null &&
+    if (event.target && event.target.nextSibling === null &&
       (event.target.className === 'menu-title' || event.target.lastElementChild.className === 'menu-title')) {
       this.sidebarService.toggle(true, 'menu-sidebar');
       this.layoutService.changeLayoutSize();

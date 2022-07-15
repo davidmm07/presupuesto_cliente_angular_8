@@ -1,3 +1,8 @@
+nb-card-body {
+  overflow-y: scroll;
+  max-height: 400px;
+}
+
 button[nbTreeGridRowToggle] {
   background: transparent;
   border: none;

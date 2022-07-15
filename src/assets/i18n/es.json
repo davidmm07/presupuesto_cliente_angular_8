@@ -86,8 +86,8 @@
     "entidad": "Centro gestor",
     "valor": "Valor",
     "fuente": "Fuente",
-    "producto": "Producto",
-    "productos": "Productos",
+    "producto": "Rubro de gasto",
+    "productos": "Rubros de gastos",
     "fuentes": "Fuentes",
     "ingreso": "Ingreso",
     "meta": "Meta",
@@ -100,7 +100,7 @@
     "nombre-rubro": "Nombre del rubro",
     "codigo-rubro": "Código del rubro",
     "codigo": "Código",
-    "unidad-ejecutora": "Area funcional",
+    "unidad_ejecutora": "Área funcional",
     "descripcion": "Descripción",
     "vigencia": "Vigencia",
     "volver_registro": "Volver a Registro",
@@ -201,7 +201,9 @@
     "cdp_suspension": "CDP suspensión",
     "cdp_traslado": "CDP traslado",
     "cdp_reduccion": "CDP reducción",
-    "anulation_not_allowed": "Anulación para este documento no permitida."
+    "anulation_not_allowed": "Anulación para este documento no permitida.",
+    "usuario": "Usuario",
+    "toolTipDisableCDP": "Los datos del CDP no coinciden con el Plan más reciente."
   },
   "RUBRO": {
     "asignar_rubro": "Asignar Rubro",
@@ -383,9 +385,11 @@
     "pasivo": "Expedido",
     "parcial_comprometido": "Parcialmente comprometido",
     "total_comprometido": "Totalmente comprometido",
-    "saldo": "Saldo del CRP"
+    "saldo": "Saldo del CRP",
+    "expedido": "CRP Expedido"
   },
   "VIGENCIA" : {
+    "titulo" : "Vigencia",
     "cierre_vigencia_titulo" : "Cierre de vigencia.",
     "precierre_button": "Ver información de precierre",
     "ejecucion": "Resumen ejecución presupuestal",
@@ -407,13 +411,20 @@
   "FOOTER": {
     "dias_disponibilidad": "Lunes a Viernes",
     "horario": "8am a 5pm",
-    "oas_sistema": "Sistema Integrado de Informática y Telecomunicaciones",
+    "oas_sistema": "Gestión de los Sistemas de la Información y las Comunicaciones",
     "telefono": "323 93 00",
     "extension": "Ext. 1112",
     "direccion": "Cra. 8 # 40 - 78",
     "piso": "Piso 1",
     "correo": "computo@udistrital.edu.co",
     "oficina": "Oficina Asesora de Sistemas"
+  },
+  "REPORTES": {
+    "reportes_cdp_parametros": "Reporte CDP con parámetros",
+    "generar_reporte": "Generar Reporte"
+  },
+  "VIGENCIAS": {
+    "todas": "Todas"
   },
   "_id": "ID",
   "Nombre": "Nombre",

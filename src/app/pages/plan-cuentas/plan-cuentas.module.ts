@@ -13,6 +13,7 @@ import {
   NbTooltipModule,
   NbRadioModule,
   NbSpinnerModule,
+  NbProgressBarModule,
   NbCheckboxModule } from '@nebular/theme';
 
 import { ProductosRubroComponent } from './rubros/productos-rubro/productos-rubro.component';
@@ -49,6 +50,8 @@ import { ShowVigenciaComponent } from './vigencia/show-vigencia/show-vigencia.co
 import { ShowModificationApropiacionDataComponent } from './consulta-modificacion-apropiacion/show-modificacion-apropiacion/show-modificacion-apropiacion.component';
 import { ReportesComponent } from '../reportes/components/reportes/reportes.component';
 import { LinkSmartTableComponent } from '../ui-features/link-smart-table/link-smart-table.component';
+import { ArbolDinamicoComponent } from './arbol-dinamico/arbol-dinamico.component';
+import { WelcomeComponent } from './inicio/welcome/welcome.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +84,9 @@ import { LinkSmartTableComponent } from '../ui-features/link-smart-table/link-sm
     ExpedirCrpComponent,
     DetalleCrpComponent,
     ReportesComponent,
-    LinkSmartTableComponent
+    LinkSmartTableComponent,
+    ArbolDinamicoComponent,
+    WelcomeComponent
   ],
   providers: [
     ConfiguracionService,
@@ -105,7 +110,8 @@ import { LinkSmartTableComponent } from '../ui-features/link-smart-table/link-sm
     ToasterModule,
     MatStepperModule,
     CurrencyMaskModule,
-    NbSpinnerModule
+    NbSpinnerModule,
+    NbProgressBarModule
   ],
   exports: [
   ],

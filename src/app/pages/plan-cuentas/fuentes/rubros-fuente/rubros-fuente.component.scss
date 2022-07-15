@@ -2,7 +2,7 @@
     text-align: right;
 }
 
-.mod-registration-input-item{
+.mod-registration-input-item {
     flex-basis: 80%;
 }
 
@@ -11,4 +11,6 @@
     text-align: right;
 }
 
-:host /deep/ .customformat{ text-align: right; }
+:host ::ng-deep .customformat {
+    text-align: right;
+}

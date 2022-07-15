@@ -10,6 +10,7 @@ import { PlanAdquisicionHelper } from '../../../../@core/helpers/plan_adquisicio
 // import { PlanAdquisicionHelper } from '../../../../@core/helpers/plan_adquisicion/planAdquisicionHelper';
 import { Observable } from 'rxjs';
 import { DocumentoPresupuestalHelper } from '../../../../@core/helpers/documentoPresupuestal/documentoPresupuestalHelper';
+import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelper';
 
 @Component({
   selector: 'ngx-ver-solicitud-crp',
@@ -45,6 +46,7 @@ export class VerSolicitudCrpComponent implements OnInit {
   r = /\d+/;
   habilitarExpedir = false;
   movimiento: any = null;
+  vigencia: string;
 
   constructor(
     private crpHelper: CRPHelper,
@@ -56,9 +58,14 @@ export class VerSolicitudCrpComponent implements OnInit {
     private router: Router,
     private movimientosHelper: MovimientosHelper,
     private documentoPresHelper: DocumentoPresupuestalHelper,
+    private vigenciaHelper: VigenciaHelper,
   ) { }
 
   ngOnInit() {
+
+    this.vigenciaHelper.getCurrentVigencia().subscribe(res => {
+      this.vigencia = res;
+    });
 
     this.documentoPresHelper.getById(this.solicitud.Vigencia, this.solicitud.CentroGestor, this.solicitud._id).subscribe( res => {
       if (this.solicitud !== undefined) {
@@ -92,7 +99,7 @@ export class VerSolicitudCrpComponent implements OnInit {
                     this.TrNecesidad = res2;
                     if (this.TrNecesidad) {
                       this.objetoNecesidad = this.TrNecesidad.Necesidad.Objeto;
-                      await this.getInfoMeta(this.TrNecesidad['Necesidad'].Vigencia, 122).toPromise().then(resMeta => { this.actividades = resMeta; });
+                      await this.getInfoMeta(this.TrNecesidad['Necesidad'].PlanAnualAdquisicionesId).toPromise().then(resMeta => { this.actividades = resMeta; });
                       if (this.TrNecesidad.Rubros) {
                         this.TrNecesidad.Rubros.forEach(rubro => {
                           rubro.MontoParcial = 0;
@@ -134,8 +141,8 @@ export class VerSolicitudCrpComponent implements OnInit {
     });
   }
 
-  getInfoMeta(vigencia: Number, dependencia: Number): Observable<any> {
-    return this.planAdquisicionHelper.getPlanAdquisicionByDependencia(vigencia.toString(), dependencia.toString());
+  getInfoMeta(planAdquisicionesId: Number): Observable<any> {
+    return this.planAdquisicionHelper.getPlanAdquisicionByDependencia(planAdquisicionesId.toString());
   }
 
   cambioTab() {
@@ -172,7 +179,7 @@ export class VerSolicitudCrpComponent implements OnInit {
     this.movimiento = {
       Data: { 'solicitud_crp': this.solicitudc._id },
       Tipo: 'rp',
-      Vigencia: 2019,
+      Vigencia: this.vigencia,
       CentroGestor: this.solicitud.centroGestor,
       AfectacionMovimiento: []
     };
