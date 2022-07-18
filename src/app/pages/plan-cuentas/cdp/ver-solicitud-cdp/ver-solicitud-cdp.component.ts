@@ -534,7 +534,7 @@ export class VerSolicitudCdpComponent implements OnInit {
 
   obtenerInfo() {
     const dia = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
-    this.cdpHelper.cargoOrdenador(479, dia).subscribe(async res => {
+    this.cdpHelper.cargoOrdenador(this.TrNecesidad.Necesidad.DependenciaNecesidadId.OrdenadorGastoId, dia).subscribe(async res => {
       this.cdpHelper.ordenadorGasto(String(res[0].TerceroId)).subscribe(async res1 => {
         this.solicitante = res1[0].PrimerNombre.trim() + ' ' + res1[0].SegundoNombre.trim() + ' ' + res1[0].PrimerApellido.trim() + ' ' + res1[0].SegundoApellido.trim();
         this.cdpHelper.obtenerCargo(res[0].DependenciaId).subscribe(async res2 => {
