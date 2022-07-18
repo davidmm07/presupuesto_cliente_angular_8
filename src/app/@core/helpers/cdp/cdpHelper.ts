@@ -174,8 +174,67 @@ export class CDPHelper {
                 }
             )
         );
+    }
 
+    public ordenadorGasto(documento: string) {
+        this.rqManager.setPath('ADMINISTRATIVA_PRUEBAS_SERVICE');
+        return this.rqManager.get(`informacion_persona_natural?query=Id:${documento}&limit=-1`).pipe(
+            map(
+                res => {
+                    if (res.status > 300) {
+                        return undefined;
+                    } else {
+                        return res;
+                    }
+                }
+            )
+        );
+    }
 
+    public cargoOrdenador(id: number, fecha: string) {
+        this.rqManager.setPath('CORE_AMAZON_SERVICE');
+        return this.rqManager.get(`jefe_dependencia/?query=Id:${id},FechaInicio__lte:${fecha},FechaFin__gte:${fecha}&limit=-1`).pipe(
+            map(
+                res => {
+                    if (res.status > 300) {
+                        return undefined;
+                    } else {
+
+                        return res;
+                    }
+                }
+            )
+        );
+    }
+
+    public obtenerCargo(idDependencia: number) {
+        this.rqManager.setPath('CORE_AMAZON_SERVICE');
+        return this.rqManager.get(`ordenador_gasto/?query=DependenciaId:${idDependencia}`).pipe(
+            map(
+                res => {
+                    if (res.status > 300) {
+                        return undefined;
+                    } else {
+                        return res;
+                    }
+                }
+            )
+        );
+    }
+
+    public obtenerSolCdp(idCdp: number) {
+        this.rqManager.setPath('PLAN_CUENTAS_MONGO_SERVICE');
+        return this.rqManager.get(`solicitudesCDP/${idCdp}`).pipe(
+            map(
+                res => {
+                    if (res.status > 300) {
+                        return undefined;
+                    } else {
+                        return res;
+                    }
+                }
+            )
+        );
     }
 
 
