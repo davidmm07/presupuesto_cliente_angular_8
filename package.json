@@ -73,6 +73,7 @@
     "normalize.css": "6.0.0",
     "oidc-auth": "^0.3.0",
     "pace-js": "1.0.2",
+    "pdfmake-wrapper": "^2.1.3",
     "roboto-fontface": "0.8.0",
     "rxjs": "6.5.2",
     "rxjs-compat": "6.3.0",
