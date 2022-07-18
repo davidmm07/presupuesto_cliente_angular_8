@@ -1,6 +1,6 @@
 {
   "name": "presupuesto_cliente",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -73,6 +73,7 @@
     "normalize.css": "6.0.0",
     "oidc-auth": "^0.3.0",
     "pace-js": "1.0.2",
+    "pdfmake-wrapper": "^2.1.3",
     "roboto-fontface": "0.8.0",
     "rxjs": "6.5.2",
     "rxjs-compat": "6.3.0",
@@ -99,6 +100,7 @@
     "@types/jest": "^24.0.23",
     "@types/leaflet": "1.2.3",
     "@types/node": "6.0.90",
+    "@types/pdfmake": "^0.2.0",
     "codelyzer": "^5.2.0",
     "conventional-changelog-cli": "1.3.4",
     "husky": "0.13.3",

@@ -160,7 +160,7 @@
                     </div>
                     <!-- <button *ngIf="!expedido" (click)="rechazarSolicitud()" class="btn btn-danger col-md-6">
                         {{ 'CDP.rechazar_solicitud_cdp' | translate}}</button> -->
-                    <button *ngIf="expedido" (click)="mostrarPDF(solicitud.consecutivo_cdp)"
+                    <button *ngIf="expedido" (click)="obtenerInfo()"
                         class="btn btn-info btn-sm">
                         {{ 'CDP.mostrar_pdf' | translate}}</button>
                     <!-- <button *ngIf="expedido" (click)="anularCdp()" class="btn btn-danger">
