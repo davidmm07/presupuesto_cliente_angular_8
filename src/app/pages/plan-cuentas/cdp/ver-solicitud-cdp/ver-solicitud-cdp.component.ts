@@ -15,13 +15,12 @@ import { ImplicitAutenticationService } from '../../../../@core/utils/implicit_a
 import { TranslateService } from '@ngx-translate/core';
 import { VigenciaHelper } from '../../../../@core/helpers/vigencia/vigenciaHelper';
 import { LastVersionPlanHelper } from '../../../../@core/helpers/plan_adquisicion/last-version-plan';
-import { PdfMakeWrapper, Table } from 'pdfmake-wrapper';
+import { Img, PdfMakeWrapper, Table } from 'pdfmake-wrapper';
 import { Txt } from 'pdfmake-wrapper';
 import pdfFonts from '../../../../../assets/skins/lightgray/fonts/custom-fonts.js';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import localEs from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
-import { imagen } from '../../../../../assets/images/imagen';
 registerLocaleData(localEs, 'es');
 
 @Component({
@@ -875,13 +874,6 @@ export class VerSolicitudCdpComponent implements OnInit {
       tabla: [
         this.tabla
       ],
-      escudoImagen: [
-        {
-          image: imagen,
-          alignment: 'center',
-          width: 90,
-        },
-      ],
     };
 
     // -------------------------------------------------------------------------------------
@@ -893,7 +885,7 @@ export class VerSolicitudCdpComponent implements OnInit {
     // TODO: Hacer que los textos siguientes vengan de i18n, Aplicar interpolación de variables
     // en la traducción y según sea necesario, para no concatenar traducciones con variables directamente
 
-    pdf.create().getBlob((blob) => {
+    pdf.create().getBlob(async (blob) => {
       const file = {
         IdDocumento: 16,
         file: blob,
@@ -911,7 +903,7 @@ export class VerSolicitudCdpComponent implements OnInit {
       pdf.add(
         new Table([
           [
-            docDefinition.escudoImagen,
+            await new Img(`${window.location.origin}/assets/images/logo_ud.png`).width(90).alignment('left').build(),
             new Txt('UNIVERSIDAD DISTRITAL \n FRANCISCO JOSÉ DE CALDAS').style('Title').alignment('center').margin(20).fontSize(15).end
           ],
         ]).layout('noBorders').end,
@@ -960,8 +952,5 @@ export class VerSolicitudCdpComponent implements OnInit {
       },
         (error) => { },
       );
-
-
-   // this.regresarInicio();
   }
 }
