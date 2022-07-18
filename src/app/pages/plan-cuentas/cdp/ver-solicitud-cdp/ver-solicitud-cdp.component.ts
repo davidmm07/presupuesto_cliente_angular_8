@@ -832,6 +832,8 @@ export class VerSolicitudCdpComponent implements OnInit {
   }
 
   crearPdf() {
+    // TODO: Eliminar dependencia del archivo pdfFonts, automatizar en el build,
+    // por ejemplo mediante https://www.npmjs.com/package/pdfmake-font-generator
     PdfMakeWrapper.setFonts(pdfFonts, {
       myCustom: {
         normal: `${window.location.origin}/assets/skins/lightgray/fonts/Calibri_Light.ttf`,
